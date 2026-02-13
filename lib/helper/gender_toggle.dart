@@ -79,6 +79,8 @@ class GenderToggle extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
+          splashColor: Colors.transparent, // Hides the ripple
+          highlightColor: Colors.transparent, // Hides the click highlight
           borderRadius: BorderRadius.circular(40.r),
           onTap: onTap,
           child: Center(

@@ -3,6 +3,8 @@ import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:real_true_date/routes/routes.dart';
 
 class HomeAppbarWrapper extends StatelessWidget {
   const HomeAppbarWrapper({super.key});
@@ -32,14 +34,15 @@ class HomeAppbarWrapper extends StatelessWidget {
       //   ],
       // ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Left: title + subtitle
           Expanded(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 5.h,),
                 AppTextFont(
                   'Discover',
                   font: AppFontType.urbanist,
@@ -47,7 +50,7 @@ class HomeAppbarWrapper extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: theme.blackColor,
                 ),
-                SizedBox(height: 13.h),
+                SizedBox(height: 10.h),
                 AppTextFont(
                   'Meet RealTrueDate – 100% Real People &\nPictures',
                   font: AppFontType.lato,
@@ -55,15 +58,40 @@ class HomeAppbarWrapper extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                   color: theme.inactiveTabColor,
                   maxLines: 2,
-                )
+                ),
+              ],
+            ),
+          ),
+
+          /// Icons aligned with title
+          Padding(
+            padding: EdgeInsets.only(top: 5.h), // fine tune alignment
+            child: Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    // Notification click event
+                    print('Notification clicked');
+                    Get.toNamed(Routes.notificationView,);
+                  },
+                  child: AppIcons.getNotificationIcon(context, size: 38),
+                ),
+                SizedBox(width: 12.w),
+                InkWell(
+                  onTap: () {
+                    // Favourite click event
+                    print('Favourite clicked');
+                  },
+                  child: AppIcons.getFavouriteIcon(context, size: 38),
+                ),
               ],
             ),
           ),
 
           // _NavIcon(icon: Icons.notifications_none),
-          AppIcons.getNotificationIcon(context, size: 38),
-          SizedBox(width: 12.h),
-          AppIcons.getFavouriteIcon(context, size: 38),
+          // AppIcons.getNotificationIcon(context, size: 38),
+          // SizedBox(width: 12.h),
+          // AppIcons.getFavouriteIcon(context, size: 38),
         ],
       ),
     );

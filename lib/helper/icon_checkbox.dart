@@ -25,6 +25,8 @@ class SvgIconCheckbox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      splashColor: Colors.transparent, // Hides the ripple
+      highlightColor: Colors.transparent, // Hides the click highlight
       borderRadius: BorderRadius.circular(6.r),
       onTap: () => onChanged(!value),
       child: AnimatedSwitcher(

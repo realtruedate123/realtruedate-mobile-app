@@ -65,6 +65,8 @@ class AppBarIconButton extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(right: 8.w),
       child: InkWell(
+        splashColor: Colors.transparent, // Hides the ripple
+        highlightColor: Colors.transparent, // Hides the click highlight
         onTap: onTap,
         // borderRadius: BorderRadius.circular(14.r),
         child: icon,

@@ -182,6 +182,8 @@ class UploadPictureScreen extends StatelessWidget {
     final theme = AppTheme.of(context);
 
     return InkWell(
+      splashColor: Colors.transparent, // Hides the ripple
+      highlightColor: Colors.transparent, // Hides the click highlight
       onTap: controller.captureImage,
       child: DottedBorder(
         options: RoundedRectDottedBorderOptions(
@@ -291,8 +293,19 @@ class UploadPictureScreen extends StatelessWidget {
   Widget _uploadButton() {
     // final controller = Get.find<UploadPhotoController>();
 
+    String buttonText;
+
+    if (controller.isButtonEnabled) {
+      buttonText = controller.isVideoVerify ? 'Back to Login' : 'Upload Video';
+    } else if (controller.isVideoVerify) {
+      buttonText = 'Back to Login';
+    } else {
+      buttonText = 'View Singles';
+    }
+
     return PrimaryButton(
-      title: controller.isButtonEnabled ? 'Upload Video' : 'View Singles',
+      // title: controller.isButtonEnabled ? 'Upload Video' : 'View Singles',
+      title: buttonText,
       loading: controller.isLoading.value,
       fontWeight: FontWeight.w600,
       onTap: controller.isButtonEnabled
@@ -301,7 +314,7 @@ class UploadPictureScreen extends StatelessWidget {
         // controller.login();
         // }
         print('click ${controller.isButtonEnabled}');
-        Get.toNamed(Routes.uploadVideoPage,);
+        controller.redirectVideoPage();
 
       } : null,
     );

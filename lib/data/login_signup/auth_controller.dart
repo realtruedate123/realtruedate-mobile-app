@@ -5,6 +5,7 @@ import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/core/utils/platform_util.dart';
+import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/login_signup/model/register_model.dart';
 import 'package:real_true_date/helper/bottom_nav_wrapper.dart';
 import 'package:real_true_date/helper/string_class.dart';
@@ -302,10 +303,10 @@ class AuthController extends GetxController {
 
     print('params $params');
 
-    final response = await BaseApiService().postRawData<RegisterResponseModel>(
+    final response = await BaseApiService().postRawData<LoginModel>(
       endpoint: Endpoints.userLogin,
       fields: params,
-      fromJson: (json) => RegisterResponseModel.fromJson(json),
+      fromJson: (json) => LoginModel.fromJson(json),
     );
     isLoading.value = false;
 
@@ -318,37 +319,36 @@ class AuthController extends GetxController {
 
       // Get.snackbar('Success', 'Login success');
 
+      // print('photo verify ${response.data?.data?.verificationStatus?.photoVerified}');
+      // print('video verify ${response.data?.data?.verificationStatus?.videoVerified}');
+      // print('video verify ${response.data?.data?.verificationStatus?.toJson()}');
+
       /// Checked profile verify or not
-      if(response.data?.data?.verificationStatus != null){
-        print('login ${response.data?.data}');
+      await Future.wait([
+        sharedPref.saveRefreshAuthToken(response.data?.data?.tokens?.refresh ?? ''),
+        sharedPref.saveAuthToken(response.data?.data?.tokens?.access ?? '')
+      ]);
+      // await Future.delayed(const Duration(seconds: 1));
+      /// Checked photo upload or not
+      if(response.data?.data?.verificationStatus?.photoVerified == false){
         await Future.wait([
-          // sharedPref.saveIsLoggedIn(true),
-          sharedPref.saveRefreshAuthToken(response.data?.data?.tokens?.refresh ?? ''),
-          sharedPref.saveAuthToken(response.data?.data?.tokens?.access ?? '')
+          sharedPref.saveVideoVerificationFlag(response.data?.data?.verificationStatus?.videoVerified ?? false),
         ]);
-        await Future.delayed(const Duration(seconds: 1));
-        /// Checked photo upload or not
-        if(response.data?.data?.verificationStatus?.photoVerified == false){
-          Get.toNamed(Routes.uploadPhotoPage);
-        }
-        /// Checked video upload or not
-        else if(response.data?.data?.verificationStatus?.videoVerified == false){
-          Get.toNamed(Routes.uploadVideoPage);
-        }
-        else {
-          // Get.toNamed(Routes.profileUnderReviewScreen);
-          Get.offAll(() => BottomNavWrapper());
-          // Get.toNamed(Routes.uploadPhotoPage);
-          // Get.toNamed(Routes.uploadVideoPage);
-        }
-      } else { /// Login user
-        Get.toNamed(
-            Routes.otpScreen,
-            arguments: {
-              'email': response.data?.data?.email ?? '',
-              'otp': response.data?.data?.otp.toString()
-            }
-        );
+        Get.toNamed(Routes.uploadPhotoPage);
+      }
+      /// Checked video upload or not
+      else if(response.data?.data?.verificationStatus?.videoVerified == false){
+        Get.toNamed(Routes.uploadVideoPage);
+      }
+      else { /// Login User
+        await Future.wait([
+          sharedPref.saveIsLoggedIn(true),
+          sharedPref.savePersonList(response.data!.data!),
+        ]);
+
+        Get.offAll(() => BottomNavWrapper());
+        // Get.toNamed(Routes.uploadPhotoPage);
+        // Get.toNamed(Routes.uploadVideoPage);
       }
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();

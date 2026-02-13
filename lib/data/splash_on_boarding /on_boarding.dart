@@ -211,6 +211,8 @@ class OnBoardingPage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(right: 16.w),
             child: InkWell(
+              splashColor: Colors.transparent, // Hides the ripple
+              highlightColor: Colors.transparent, // Hides the click highlight
               onTap: () {
                 Get.to(() => IntroVideo());
               },

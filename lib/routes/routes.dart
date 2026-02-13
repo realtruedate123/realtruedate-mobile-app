@@ -11,4 +11,6 @@ class Routes {
   static const uploadVideoPage = "/uploadVideoPage";
   static const profileUnderReviewScreen = "/profileUnderReview";
   static const userProfileView = "/userProfileView";
+  static const matchesDetailsView = "/matchesDetailsView";
+  static const notificationView = "/notificationView";
 }

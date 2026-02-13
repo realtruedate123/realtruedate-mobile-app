@@ -5,7 +5,8 @@ import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/matches_tab/controller/matches_tab_controller.dart';
 import 'package:real_true_date/data/matches_tab/widget/match_card_list.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:real_true_date/helper/appbar_wrapper/user_profile_appbar_wrapper.dart';
+import 'package:real_true_date/helper/appbar_wrapper/match_appbar_wrapper.dart';
+import 'package:real_true_date/routes/routes.dart';
 
 class MatchesTabView extends StatelessWidget {
   final controller = Get.put(MatchesTabController());
@@ -17,7 +18,7 @@ class MatchesTabView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.whiteColor,
-      // appBar: UserProfileAppbarWrapper(),
+      appBar: MatchAppbarWrapper(),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -27,10 +28,6 @@ class MatchesTabView extends StatelessWidget {
               SizedBox(height: 10.h),
               RichText(
                 text: TextSpan(
-                  style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
                   children: [
                     TextSpan(
                       text: "Your Matches ",
@@ -65,7 +62,11 @@ class MatchesTabView extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return MatchCardListCell(
                       match: controller.matches[index],
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.matchesDetailsView,
+                        );
+                      },
                     );
                   },
                 )

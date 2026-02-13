@@ -28,6 +28,8 @@ class SignupStepOne extends GetView<AuthController> {
           InputContainer(
             height: 58.h,
             child: InkWell(
+              splashColor: Colors.transparent, // Hides the ripple
+              highlightColor: Colors.transparent, // Hides the click highlight
               onTap: () => showGenderPicker(context, controller),
               child: Obx(() => Row(
                 children: [
@@ -71,6 +73,8 @@ class SignupStepOne extends GetView<AuthController> {
           InputContainer(
             height: 58.h,
             child: InkWell(
+              splashColor: Colors.transparent, // Hides the ripple
+              highlightColor: Colors.transparent, // Hides the click highlight
               onTap: () => showDobPicker(context, controller),
               child: Obx(() => Row(
                 children: [

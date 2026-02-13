@@ -48,6 +48,11 @@ class AppIcons{
   static const String closeRedIcon = 'assets/svg/ic_close_red.svg';
   static const String placeHolderGray = 'assets/svg/placeholder_gray.svg';
   static const String onlyGreenTick = 'assets/svg/ic_only_green_tick.svg';
+  static const String commentIcon = 'assets/svg/ic_comment.svg';
+  static const String heartWhiteBG = 'assets/svg/ic_heart_white_bg.svg';
+  static const String homeAppbar = 'assets/svg/ic_home_appbar.svg';
+  static const String heartOnly = 'assets/svg/ic_heart_only.svg';
+  static const String closeWhite = 'assets/svg/ic_close_white.svg';
 
   /// PNG
   static const String splashImagePng = 'assets/png/bg_splash.png';
@@ -371,6 +376,46 @@ class AppIcons{
   static Widget getOnlyGreenTick(BuildContext context, {double size = 24}) {
     return SvgPicture.asset(
         onlyGreenTick,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getCommentIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        commentIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getHeartWhiteBG(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        heartWhiteBG,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getHomeAppbar(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        homeAppbar,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getHeartOnly(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        heartOnly,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getCloseWhite(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        closeWhite,
         width: size.w,
         height: size.h
     );

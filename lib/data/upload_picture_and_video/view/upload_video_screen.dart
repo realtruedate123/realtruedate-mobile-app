@@ -256,6 +256,8 @@ class UploadVideoScreen extends StatelessWidget {
     final theme = AppTheme.of(context);
 
     return InkWell(
+      splashColor: Colors.transparent, // Hides the ripple
+      highlightColor: Colors.transparent, // Hides the click highlight
       onTap: controller.recordVideo,
       child: DottedBorder(
         options: RoundedRectDottedBorderOptions(

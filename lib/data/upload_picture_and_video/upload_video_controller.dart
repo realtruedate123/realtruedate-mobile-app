@@ -32,7 +32,7 @@ class UploadVideoController extends GetxController {
 
   /// Timer
   final RxInt elapsedSeconds = 0.obs;
-  static const int maxSeconds = 20;
+  static const int maxSeconds = 19;
 
   /// Upload simulation
   final RxDouble uploadProgress = 0.0.obs;

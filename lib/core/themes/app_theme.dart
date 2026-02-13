@@ -20,6 +20,7 @@ abstract class AppThemeColors {
   Color get blackColor;
   Color get inactiveTabColor;
   Color get greenButtonColor;
+  Color get notificationBGColor;
 
 
   Color get subTitleText;
@@ -94,6 +95,9 @@ class LightTheme implements AppThemeColors {
 
   @override
   Color get greenButtonColor => Color(0xFF0BA970);
+
+  @override
+  Color get notificationBGColor => Color(0xFFFEF4F5);
 
 
 
@@ -188,6 +192,8 @@ class DarkTheme implements AppThemeColors {
   @override
   Color get greenButtonColor => Color(0xFF0BA970);
 
+  @override
+  Color get notificationBGColor => Color(0xFFFEF4F5);
 
 
   @override

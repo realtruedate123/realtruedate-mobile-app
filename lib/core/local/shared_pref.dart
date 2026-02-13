@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:ffi';
 // import 'package:luma_expert/core/local/preference_key.dart';
 // import 'package:luma_expert/data/model/auth_model.dart';
 import 'package:real_true_date/core/local/preference_key.dart';
+import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefHelper {
@@ -90,24 +92,24 @@ class SharedPrefHelper {
     return preference.getString(PreferenceKeys.refreshAuthToken) ?? '';
   }
 
-  // Future<void> savePersonList(LoginResponseData person) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   // Convert model to JSON string directly
-  //   final userJson = jsonEncode(person.toJson());
-  //   await prefs.setString(PreferenceKeys.userData, userJson);
-  // }
-  //
-  // Future<LoginResponseData?> getPersonList() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final jsonString = prefs.getString(PreferenceKeys.userData);
-  //
-  //   if (jsonString != null) {
-  //     // Parse JSON string to map, then to model
-  //     final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-  //     return LoginResponseData.fromJson(jsonMap);
-  //   }
-  //   return null;
-  // }
+  Future<void> savePersonList(DataModel person) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Convert model to JSON string directly
+    final userJson = jsonEncode(person.toJson());
+    await prefs.setString(PreferenceKeys.userData, userJson);
+  }
+
+  Future<DataModel?> getPersonList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString(PreferenceKeys.userData);
+
+    if (jsonString != null) {
+      // Parse JSON string to map, then to model
+      final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+      return DataModel.fromJson(jsonMap);
+    }
+    return null;
+  }
 
   Future<void> saveFirebaseToken(String value) async {
     final SharedPreferences preference = await SharedPreferences.getInstance();
@@ -126,6 +128,17 @@ class SharedPrefHelper {
   Future<String> getApiToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString("api_token") ?? "";
+  }
+
+  /// Video verification flag
+  Future<void> saveVideoVerificationFlag(bool flag) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("isVideoVerify", flag);
+  }
+
+  Future<bool> getVideoVerificationFlag() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool("isVideoVerify") ?? false;
   }
 
   /// Save OneSignal ID

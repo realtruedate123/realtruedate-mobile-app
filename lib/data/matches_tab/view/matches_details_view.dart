@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
-import 'package:real_true_date/data/home_tab/controller/user_profile_controller.dart';
 import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
+import 'package:real_true_date/data/matches_tab/controller/matches_details_controller.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/appbar_wrapper/user_profile_appbar_wrapper.dart';
 import 'package:get/get.dart';
+import 'package:real_true_date/helper/appbar_wrapper/matches_details_appbar_wrapper.dart';
 import 'package:real_true_date/helper/custom_dialog/reject_match_dialog.dart';
 
-class UserProfileDetailsScreen extends StatelessWidget {
-  final controller = Get.find<UserProfileController>();
+class MatchesDetailsView extends StatelessWidget {
+  final controller = Get.find<MatchesDetailsController>();
 
-  UserProfileDetailsScreen({super.key});
+  MatchesDetailsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +22,8 @@ class UserProfileDetailsScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true, // This is key to allow the body to go behind the app bar
       backgroundColor: Colors.black,
-      appBar: UserProfileAppbarWrapper(
-        isStarFilled: controller.isFavorite,
-        onStarTap: controller.toggleFavorite,
+      appBar: MatchesDetailsAppbarWrapper(
+        showCloseButton: true,
       ),
       body: Stack(
         children: [
@@ -44,7 +44,7 @@ class UserProfileDetailsScreen extends StatelessWidget {
               children: [
                 /// White Card
                 Container(
-                  padding: EdgeInsets.fromLTRB(24.w, 64.h, 24.w, 32.h),
+                  padding: EdgeInsets.fromLTRB(24.w, 45.h, 24.w, 32.h),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.vertical(
@@ -121,37 +121,23 @@ class UserProfileDetailsScreen extends StatelessWidget {
 
                 /// Floating Buttons (HALF OVER CARD)
                 Positioned(
-                  top: -32.r,
-                  left: 0,
-                  right: 0,
+                  top: 10.h,
+                  right: 20,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () {
-                            // TODO: cancel action
-                            print('Cancel tapped');
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (_) => RejectMatchDialog(),
-                            );
+                            // TODO: comment action
+                            print('Comment tapped');
+                            // showDialog(
+                            //   context: context,
+                            //   barrierDismissible: false,
+                            //   builder: (_) => RejectMatchDialog(),
+                            // );
                           },
-                          child: AppIcons.getCancelCardIcon(context, size: 60)
-                      ),
-                      SizedBox(width: 24.w),
-                      GestureDetector(
-                          onTap: () {
-                            // TODO: liked action
-                            print('Liked tapped');
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (_) => const MatchPopup(),
-                            );
-                          },
-                          child: AppIcons.getLikeCardIcon(context, size: 60)
+                          child: AppIcons.getCommentIcon(context, size: 40)
                       ),
                     ],
                   ),

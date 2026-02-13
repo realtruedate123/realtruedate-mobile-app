@@ -5,6 +5,7 @@ import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/matches_tab/controller/matches_tab_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:real_true_date/helper/app_cached_image.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 
 class MatchCardListCell extends StatelessWidget {
@@ -45,10 +46,13 @@ class MatchCardListCell extends StatelessWidget {
                   /// Image
                   AspectRatio(
                     aspectRatio: 3 / 4,
-                    child: Image.network(
-                      match.imageUrl,
-                      fit: BoxFit.cover,
-                    ),
+                    child: AppCachedImage(
+                      imageUrl: match.imageUrl,
+                    )
+                    // Image.network(
+                    //   match.imageUrl,
+                    //   fit: BoxFit.cover,
+                    // ),
                   ),
 
                   /// Match % (Top Center)
@@ -107,6 +111,7 @@ class MatchCardListCell extends StatelessWidget {
           /// Name + Online dot
           Center(
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 AppTextFont(
                   "${match.name}, ${match.age}",
@@ -120,7 +125,7 @@ class MatchCardListCell extends StatelessWidget {
                   width: 5.w,
                   height: 5.h,
                   decoration: BoxDecoration(
-                    color: Color(0xff1BC47D),
+                    color: Color(0xff13E398),
                     shape: BoxShape.circle,
                   ),
                 ),

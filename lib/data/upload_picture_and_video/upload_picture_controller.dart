@@ -17,6 +17,7 @@ import 'package:path/path.dart' as path;
 import 'package:real_true_date/helper/custom_dialog/authenticating_dialog.dart';
 import 'package:real_true_date/helper/custom_dialog/common_dialog_view.dart';
 import 'package:real_true_date/helper/string_class.dart';
+import 'package:real_true_date/routes/routes.dart';
 
 class UploadPhotoController extends GetxController {
   /// CONTROLLERS
@@ -29,15 +30,17 @@ class UploadPhotoController extends GetxController {
   final errorMessage = ''.obs;
 
   int get maxPhotos => 6;
-  // bool get isButtonEnabled => photoListModel.length == maxPhotos;
-  bool get isButtonEnabled => photoListModel.isNotEmpty;
+  bool get isButtonEnabled => photoListModel.length == maxPhotos;
+  // bool get isButtonEnabled => photoListModel.isNotEmpty;
   final sharedPref = SharedPrefHelper();
   File? localImageFile;
+  late var isVideoVerify = false;
 
   @override
   void onInit() {
     super.onInit();
     getImageListApiCall();
+    getVideoFlag();
   }
 
   Future<void> captureImage() async {
@@ -76,7 +79,7 @@ class UploadPhotoController extends GetxController {
 
     final XFile? image = await _picker.pickImage(
       source: ImageSource.camera,
-      imageQuality: 50,
+      // imageQuality: 50,
     );
 
     if (image != null) {
@@ -94,6 +97,19 @@ class UploadPhotoController extends GetxController {
     // photoListModel.removeAt(index);
     final photoId = photoListModel[index].id ?? '';
     deleteSingleImageApiCall(photoId);
+  }
+
+  Future<void> getVideoFlag() async {
+    isVideoVerify = await sharedPref.getVideoVerificationFlag();
+  }
+
+  Future<void> redirectVideoPage() async {
+    if(isVideoVerify){
+      Get.back();
+    }
+    else{
+      Get.toNamed(Routes.uploadVideoPage,);
+    }
   }
 
   /// Show dialog to guide user to settings
