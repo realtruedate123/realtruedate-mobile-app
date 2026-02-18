@@ -21,6 +21,11 @@ abstract class AppThemeColors {
   Color get inactiveTabColor;
   Color get greenButtonColor;
   Color get notificationBGColor;
+  Color get lightGrayBGColor;
+  Color get offWhiteBGColor;
+  Color get darkGrayColor;
+  Color get messageCountColor;
+  Color get chatTitleColor;
 
 
   Color get subTitleText;
@@ -98,6 +103,21 @@ class LightTheme implements AppThemeColors {
 
   @override
   Color get notificationBGColor => Color(0xFFFEF4F5);
+
+  @override
+  Color get lightGrayBGColor => Color(0xFFEDEDED);
+
+  @override
+  Color get offWhiteBGColor => Color(0xFFF8F9F9);
+
+  @override
+  Color get darkGrayColor => Color(0xFF5D6066);
+
+  @override
+  Color get messageCountColor => Color(0xFFFFA8A7);
+
+  @override
+  Color get chatTitleColor => Color(0xFF27292E);
 
 
 
@@ -194,6 +214,22 @@ class DarkTheme implements AppThemeColors {
 
   @override
   Color get notificationBGColor => Color(0xFFFEF4F5);
+
+  @override
+  Color get lightGrayBGColor => Color(0xFFEDEDED);
+
+  @override
+  Color get offWhiteBGColor => Color(0xFFF8F9F9);
+
+  @override
+  Color get darkGrayColor => Color(0xFF5D6066);
+
+  @override
+  Color get messageCountColor => Color(0xFFFFA8A7);
+
+  @override
+  Color get chatTitleColor => Color(0xFF27292E);
+
 
 
   @override

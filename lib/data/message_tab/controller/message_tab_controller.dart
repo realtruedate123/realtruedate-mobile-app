@@ -1,86 +1,59 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:real_true_date/core/network/InternetDialog.dart';
-import 'package:real_true_date/core/network/api_functions/api_request.dart';
-import 'package:real_true_date/core/network/apis_end_points.dart';
-import 'package:real_true_date/data/login_signup/model/register_model.dart';
-import 'package:real_true_date/helper/string_class.dart';
-import 'package:real_true_date/routes/routes.dart';
+import 'package:real_true_date/core/themes/app_icons.dart';
+
+class ChatModel {
+  final String name;
+  final String message;
+  final String image;
+  final int unreadCount;
+  final bool isOnline;
+
+  ChatModel({
+    required this.name,
+    required this.message,
+    required this.image,
+    this.unreadCount = 0,
+    this.isOnline = false,
+  });
+}
+
 
 class MessageTabController extends GetxController {
 
   /// UI State
   final isLoading = false.obs;
-  final errorMessage = ''.obs;
 
-  /// CONTROLLERS
-  final emailCtrl = TextEditingController();
+  final List<ChatModel> chatList = [
+    ChatModel(
+      name: "Katie Mizu",
+      message: "Cool, Will let you know ASAP!",
+      image: AppIcons.dummyProfileCard,
+      unreadCount: 2,
+      isOnline: true,
+    ),
+    ChatModel(
+      name: "Jimoni Wong",
+      message: "Hey, where are you?",
+      image: AppIcons.dummyProfileCard,
+    ),
+    ChatModel(
+      name: "Katie Mizu",
+      message: "Cool, Will let you know ASAP!",
+      image: AppIcons.dummyProfileCard,
+      unreadCount: 1,
+      isOnline: true,
+    ),
+  ];
 
-  /// Button enable state
-  final isLoginEnabled = false.obs;
 
   @override
   void onInit() {
     super.onInit();
 
-    emailCtrl.addListener(_checkLoginEnable);
   }
 
   @override
   void onClose() {
-    emailCtrl.dispose();
     super.onClose();
-  }
-
-  void _checkLoginEnable() {
-    isLoginEnabled.value = emailCtrl.text.isNotEmpty;
-  }
-
-  void forgotPassword(){
-    if(validateEmail(emailCtrl.text) == false){
-      print('login');
-      errorMessage.value = 'Enter a valid email address';
-      isLoading.value = false;
-      return;
-    }
-    else{
-      print('$emailCtrl.text');
-      errorMessage.value = '';
-      forgotPasswordApiCall();
-    }
-  }
-
-  //TODO: Forgot password API Call
-  Future<void> forgotPasswordApiCall() async {
-
-    final params = {
-      "email": emailCtrl.text,
-    };
-
-    print('params $params');
-
-    final response = await BaseApiService().postRawData<RegisterResponseModel>(
-      endpoint: Endpoints.forgotPassword,
-      fields: params,
-      fromJson: (json) => RegisterResponseModel.fromJson(json),
-    );
-    isLoading.value = false;
-
-    if (response.isSuccess && response.statusCode == 200) {
-
-      Get.toNamed(
-          Routes.otpScreen,
-          arguments: {
-            'email': response.data?.data?.email ?? '',
-            'otp': response.data?.data?.otp.toString(),
-            'page_type': 'forgot_screen'
-          }
-      );
-    } else if (response.statusCode == 0) {
-      InternetDialog.showNoInternetDialog();
-    } else {
-      errorMessage.value = response.message ?? 'Something went wrong';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
-    }
   }
 }

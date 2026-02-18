@@ -47,8 +47,4 @@ class NotificationController extends GetxController {
   void onClose() {
     super.onClose();
   }
-
-  void toggleFavorite() {
-    isFavorite.toggle();
-  }
 }

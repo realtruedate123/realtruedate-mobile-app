@@ -69,6 +69,8 @@ class HomeAppbarWrapper extends StatelessWidget {
             child: Row(
               children: [
                 InkWell(
+                  splashColor: Colors.transparent, // Hides the ripple
+                  highlightColor: Colors.transparent, // Hides the click highlight
                   onTap: () {
                     // Notification click event
                     print('Notification clicked');
@@ -78,6 +80,8 @@ class HomeAppbarWrapper extends StatelessWidget {
                 ),
                 SizedBox(width: 12.w),
                 InkWell(
+                  splashColor: Colors.transparent, // Hides the ripple
+                  highlightColor: Colors.transparent, // Hides the click highlight
                   onTap: () {
                     // Favourite click event
                     print('Favourite clicked');

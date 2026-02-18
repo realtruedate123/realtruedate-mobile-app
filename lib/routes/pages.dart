@@ -7,6 +7,8 @@ import 'package:real_true_date/data/login_signup/auth_controller.dart';
 import 'package:real_true_date/data/login_signup/view/auth_screen.dart';
 import 'package:real_true_date/data/matches_tab/controller/matches_details_controller.dart';
 import 'package:real_true_date/data/matches_tab/view/matches_details_view.dart';
+import 'package:real_true_date/data/message_tab/controller/chat_controller.dart';
+import 'package:real_true_date/data/message_tab/view/chat_view.dart';
 import 'package:real_true_date/data/notifications/controller/notification_controller.dart';
 import 'package:real_true_date/data/notifications/view/notifications_view.dart';
 import 'package:real_true_date/data/otp_reset_password/controller/otp_controller.dart';
@@ -104,6 +106,13 @@ class AppPages {
         page: () => NotificationsScreen(),
         binding: BindingsBuilder((){
           Get.lazyPut(() => NotificationController());
+        })
+    ),
+    GetPage(
+        name: Routes.chatView,
+        page: () => ChatView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => ChatController());
         })
     ),
     // GetPage(

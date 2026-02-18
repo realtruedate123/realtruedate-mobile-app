@@ -334,7 +334,8 @@ class AuthController extends GetxController {
         await Future.wait([
           sharedPref.saveVideoVerificationFlag(response.data?.data?.verificationStatus?.videoVerified ?? false),
         ]);
-        Get.toNamed(Routes.uploadPhotoPage);
+        // Get.toNamed(Routes.uploadPhotoPage);
+        Get.offAll(() => BottomNavWrapper());
       }
       /// Checked video upload or not
       else if(response.data?.data?.verificationStatus?.videoVerified == false){

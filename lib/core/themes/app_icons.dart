@@ -53,6 +53,21 @@ class AppIcons{
   static const String homeAppbar = 'assets/svg/ic_home_appbar.svg';
   static const String heartOnly = 'assets/svg/ic_heart_only.svg';
   static const String closeWhite = 'assets/svg/ic_close_white.svg';
+  static const String leftArrow = 'assets/svg/ic_left_arrow.svg';
+  static const String menuIcon = 'assets/svg/ic_menu.svg';
+  static const String searchIcon = 'assets/svg/ic_search.svg';
+  static const String sendButonIcon = 'assets/svg/ic_send_message.svg';
+  static const String myProfileIcon = 'assets/svg/ic_my_profile.svg';
+  static const String saveProfileIcon = 'assets/svg/ic_save_profile.svg';
+  static const String changePasswordIcon = 'assets/svg/ic_change_password.svg';
+  static const String profileVideoIcon = 'assets/svg/ic_360_video.svg';
+  static const String subscriptionsIcon = 'assets/svg/ic_subscriptions.svg';
+  static const String paymentIcon = 'assets/svg/ic_payment.svg';
+  static const String helpSupportIcon = 'assets/svg/ic_help_support.svg';
+  static const String feedbackIcon = 'assets/svg/ic_feedback.svg';
+  static const String aboutUsIcon = 'assets/svg/ic_about_us.svg';
+  static const String userLogoutIcon = 'assets/svg/ic_user_logout.svg';
+  static const String rightArrowIcon = 'assets/svg/ic_right_arrow.svg';
 
   /// PNG
   static const String splashImagePng = 'assets/png/bg_splash.png';
@@ -416,6 +431,126 @@ class AppIcons{
   static Widget getCloseWhite(BuildContext context, {double size = 24}) {
     return SvgPicture.asset(
         closeWhite,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getLeftArrow(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        leftArrow,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getSearchIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        searchIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getMenuIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        menuIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getSendMessageIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        sendButonIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getMyProfileIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        myProfileIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getSaveProfileIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        saveProfileIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getChangePasswordIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        changePasswordIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getProfileVideoIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        profileVideoIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getSubscriptionsIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        subscriptionsIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getPaymentIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        paymentIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getHelpSupportIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        helpSupportIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getFeedbackIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        feedbackIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getAboutUsIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        aboutUsIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getUserLogoutIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        userLogoutIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+
+  static Widget getRightArrowIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        rightArrowIcon,
         width: size.w,
         height: size.h
     );

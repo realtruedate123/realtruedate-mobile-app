@@ -7,6 +7,7 @@ enum AppFontType {
   manrope,
   poppins,
   urbanist,
+  nunitoSans
 }
 
 class AppTextFont extends StatelessWidget {
@@ -109,6 +110,16 @@ class AppFonts {
 
       case AppFontType.urbanist:
         return GoogleFonts.urbanist(
+          fontSize: scaledSize,
+          fontWeight: fontWeight,
+          fontStyle: fontStyle,
+          color: color,
+          height: height,
+          letterSpacing: letterSpacing,
+        );
+
+      case AppFontType.nunitoSans:
+        return GoogleFonts.nunitoSans(
           fontSize: scaledSize,
           fontWeight: fontWeight,
           fontStyle: fontStyle,
