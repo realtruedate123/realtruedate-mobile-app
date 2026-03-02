@@ -61,7 +61,7 @@ class PhotoModel {
   bool? isPrimary;
   bool? isVerified;
   int? order;
-  DateTime? createdAt;
+  String? createdAt;
 
   PhotoModel({
     this.id,
@@ -74,13 +74,13 @@ class PhotoModel {
   });
 
   factory PhotoModel.fromJson(Map<String, dynamic> json) => PhotoModel(
-    id: json["id"],
-    photoUrl: json["photo_url"],
-    photoType: json["photo_type"],
-    isPrimary: json["is_primary"],
-    isVerified: json["is_verified"],
-    order: json["order"],
-    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+    id: json["id"] as String,
+    photoUrl: json["photo_url"] as String,
+    photoType: json["photo_type"] as String,
+    isPrimary: json["is_primary"] as bool,
+    isVerified: json["is_verified"] as bool,
+    order: json["order"] as int,
+    createdAt: json["created_at"] as String,
   );
 
   Map<String, dynamic> toJson() => {
@@ -90,7 +90,7 @@ class PhotoModel {
     "is_primary": isPrimary,
     "is_verified": isVerified,
     "order": order,
-    "created_at": createdAt?.toIso8601String(),
+    "created_at": createdAt,
   };
 }
 
@@ -134,23 +134,23 @@ class ProfileModel {
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) => ProfileModel(
-    height: json["height"],
-    weight: json["weight"],
-    bodyType: json["body_type"],
-    ethnicity: json["ethnicity"],
-    education: json["education"],
-    religion: json["religion"],
-    smoking: json["smoking"],
-    drinking: json["drinking"],
-    lookingFor: json["looking_for"],
-    minAgePreference: json["min_age_preference"],
-    maxAgePreference: json["max_age_preference"],
-    maxDistance: json["max_distance"],
-    interests: json["interests"],
-    profileVisible: json["profile_visible"],
-    showDistance: json["show_distance"],
-    showLastActive: json["show_last_active"],
-    showAge: json["show_age"],
+    height: json["height"] as String,
+    weight: json["weight"] as String,
+    bodyType: json["body_type"] as String,
+    ethnicity: json["ethnicity"] as String,
+    education: json["education"] as String,
+    religion: json["religion"] as String,
+    smoking: json["smoking"] as String,
+    drinking: json["drinking"] as String,
+    lookingFor: json["looking_for"] as String,
+    minAgePreference: json["min_age_preference"] as int,
+    maxAgePreference: json["max_age_preference"] as int,
+    maxDistance: json["max_distance"] as int,
+    interests: json["interests"] as String,
+    profileVisible: json["profile_visible"] as bool,
+    showDistance: json["show_distance"] as bool,
+    showLastActive: json["show_last_active"] as bool,
+    showAge: json["show_age"] as bool,
   );
 
   Map<String, dynamic> toJson() => {
@@ -201,7 +201,7 @@ class UserModel {
   String? firstName;
   String? lastName;
   String? fullName;
-  DateTime? dateOfBirth;
+  String? dateOfBirth;
   String? gender;
   String? bio;
   String? location;
@@ -214,8 +214,8 @@ class UserModel {
   String? longitude;
   bool? isPremium;
   int? tokens;
-  DateTime? createdAt;
-  DateTime? lastLogin;
+  String? createdAt;
+  String? lastLogin;
 
   UserModel({
     this.id,
@@ -242,27 +242,27 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-    id: json["id"],
-    email: json["email"],
-    username: json["username"],
-    firstName: json["first_name"],
-    lastName: json["last_name"],
-    fullName: json["full_name"],
-    dateOfBirth: json["date_of_birth"] == null ? null : DateTime.parse(json["date_of_birth"]),
-    gender: json["gender"],
-    bio: json["bio"],
-    location: json["location"],
-    zipCode: json["zip_code"],
-    city: json["city"],
-    state: json["state"],
-    country: json["country"],
-    occupation: json["occupation"],
-    latitude: json["latitude"],
-    longitude: json["longitude"],
-    isPremium: json["is_premium"],
-    tokens: json["tokens"],
-    createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
-    lastLogin: json["last_login"] == null ? null : DateTime.parse(json["last_login"]),
+    id: json["id"] as String,
+    email: json["email"] as String,
+    username: json["username"] as String,
+    firstName: json["first_name"] as String,
+    lastName: json["last_name"] as String,
+    fullName: json["full_name"] as String,
+    dateOfBirth: json["date_of_birth"] as String,
+    gender: json["gender"] as String,
+    bio: json["bio"] as String,
+    location: json["location"] as String,
+    zipCode: json["zip_code"] as String,
+    city: json["city"] as String,
+    state: json["state"] as String,
+    country: json["country"] as String,
+    occupation: json["occupation"] as String,
+    latitude: json["latitude"] as String,
+    longitude: json["longitude"] as String,
+    isPremium: json["is_premium"] as bool,
+    tokens: json["tokens"] as int,
+    createdAt: json["created_at"] as String,
+    lastLogin: json["last_login"] as String,
   );
 
   Map<String, dynamic> toJson() => {
@@ -272,7 +272,7 @@ class UserModel {
     "first_name": firstName,
     "last_name": lastName,
     "full_name": fullName,
-    "date_of_birth": "${dateOfBirth!.year.toString().padLeft(4, '0')}-${dateOfBirth!.month.toString().padLeft(2, '0')}-${dateOfBirth!.day.toString().padLeft(2, '0')}",
+    "date_of_birth": dateOfBirth,
     "gender": gender,
     "bio": bio,
     "location": location,
@@ -285,8 +285,8 @@ class UserModel {
     "longitude": longitude,
     "is_premium": isPremium,
     "tokens": tokens,
-    "created_at": createdAt?.toIso8601String(),
-    "last_login": lastLogin?.toIso8601String(),
+    "created_at": createdAt,
+    "last_login": lastLogin,
   };
 }
 
@@ -299,7 +299,8 @@ class VerificationStatus {
   int? totalPhotosCount;
   int? requiredPhotosCount;
   bool? needsPhotoUpdate;
-  DateTime? lastPhotoUpdate;
+  String? lastPhotoUpdate;
+  bool? hasDreamDateProfile;
 
   VerificationStatus({
     this.photoVerified,
@@ -311,18 +312,20 @@ class VerificationStatus {
     this.requiredPhotosCount,
     this.needsPhotoUpdate,
     this.lastPhotoUpdate,
+    this.hasDreamDateProfile,
   });
 
   factory VerificationStatus.fromJson(Map<String, dynamic> json) => VerificationStatus(
-    photoVerified: json["photo_verified"],
-    videoVerified: json["video_verified"],
-    emailVerified: json["email_verified"],
-    isVerified: json["is_verified"],
-    verifiedPhotosCount: json["verified_photos_count"],
-    totalPhotosCount: json["total_photos_count"],
-    requiredPhotosCount: json["required_photos_count"],
-    needsPhotoUpdate: json["needs_photo_update"],
-    lastPhotoUpdate: json["last_photo_update"] == null ? null : DateTime.parse(json["last_photo_update"]),
+    photoVerified: json["photo_verified"] as bool,
+    videoVerified: json["video_verified"] as bool,
+    emailVerified: json["email_verified"] as bool,
+    isVerified: json["is_verified"] as bool,
+    verifiedPhotosCount: json["verified_photos_count"] as int,
+    totalPhotosCount: json["total_photos_count"] as int,
+    requiredPhotosCount: json["required_photos_count"] as int,
+    needsPhotoUpdate: json["needs_photo_update"] as bool,
+    lastPhotoUpdate: json["last_photo_update"] as String,
+    hasDreamDateProfile: json["has_dream_date_profile"] as bool,
   );
 
   Map<String, dynamic> toJson() => {
@@ -334,6 +337,7 @@ class VerificationStatus {
     "total_photos_count": totalPhotosCount,
     "required_photos_count": requiredPhotosCount,
     "needs_photo_update": needsPhotoUpdate,
-    "last_photo_update": lastPhotoUpdate?.toIso8601String(),
+    "last_photo_update": lastPhotoUpdate,
+    "has_dream_date_profile": hasDreamDateProfile,
   };
 }

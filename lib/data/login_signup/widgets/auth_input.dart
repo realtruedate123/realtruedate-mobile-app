@@ -60,7 +60,7 @@ class _AuthInputState extends State<AuthInput> {
   }
 
   Color _textColor() {
-    print('call textColor');
+    // print('call textColor');
     final theme = AppTheme.of(Get.context!);
     return _hasError ? theme.alert : theme.primaryColor;
   }

@@ -103,7 +103,7 @@ class SharedPrefHelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(PreferenceKeys.userData);
 
-    if (jsonString != null) {
+    if (jsonString != null && jsonString.isNotEmpty) {
       // Parse JSON string to map, then to model
       final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
       return DataModel.fromJson(jsonMap);

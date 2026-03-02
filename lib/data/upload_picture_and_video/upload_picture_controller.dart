@@ -1,23 +1,19 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gif_view/gif_view.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
-import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/data/upload_picture_and_video/model/photo_list_model.dart';
-import 'package:real_true_date/helper/app_text_font.dart';
+import 'package:real_true_date/data/upload_picture_and_video/widget/custom_camera.dart';
 import 'package:real_true_date/helper/common_model.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:path/path.dart' as path;
 import 'package:real_true_date/helper/custom_dialog/authenticating_dialog.dart';
-import 'package:real_true_date/helper/custom_dialog/common_dialog_view.dart';
 import 'package:real_true_date/helper/string_class.dart';
 import 'package:real_true_date/routes/routes.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 
 class UploadPhotoController extends GetxController {
   /// CONTROLLERS
@@ -29,7 +25,7 @@ class UploadPhotoController extends GetxController {
   final photoListModel = <PhotoObject>[].obs;
   final errorMessage = ''.obs;
 
-  int get maxPhotos => 6;
+  int get maxPhotos => 2;
   bool get isButtonEnabled => photoListModel.length == maxPhotos;
   // bool get isButtonEnabled => photoListModel.isNotEmpty;
   final sharedPref = SharedPrefHelper();
@@ -77,6 +73,7 @@ class UploadPhotoController extends GetxController {
       errorMessage.value = "Camera permission is required.";
     }*/
 
+
     final XFile? image = await _picker.pickImage(
       source: ImageSource.camera,
       // imageQuality: 50,
@@ -91,6 +88,15 @@ class UploadPhotoController extends GetxController {
       localImageFile = File(image.path);
       uploadImagesApiCall();
     }
+
+
+    /*final result = await Get.to(() => CustomCamera());
+
+    if(result != null){
+      print('result ${result.path}');
+      localImageFile = File(result.path);
+      uploadImagesApiCall();
+    }*/
   }
 
   void removePhoto(int index) {
@@ -104,27 +110,19 @@ class UploadPhotoController extends GetxController {
   }
 
   Future<void> redirectVideoPage() async {
-    if(isVideoVerify){
-      Get.back();
-    }
-    else{
-      Get.toNamed(Routes.uploadVideoPage,);
-    }
-  }
+    // if(isVideoVerify){
+    //   Get.back();
+    // }
+    // else{
+    //   Get.toNamed(Routes.uploadVideoPage,);
+    // }
 
-  /// Show dialog to guide user to settings
-  /*void _showPermissionDialog() {
-    // Show dialog using GetX
-    Get.defaultDialog(
-      title: "Camera Access Required",
-      middleText: "Camera access is permanently denied. Please enable it in app settings.",
-      onConfirm: () {
-        Get.back();
-        openAppSettings();
+    // Get.toNamed(Routes.selectDreamPartnerView,);
+    Get.toNamed(Routes.confirmationInfo, arguments: {
+        'initialIndex': 1,
       },
-      textConfirm: "Go to Settings",
     );
-  }*/
+  }
 
   //TODO: Upload images API Call
   Future<void> uploadImagesApiCall() async {

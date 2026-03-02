@@ -7,12 +7,14 @@ class TransparentBackAppBar extends StatelessWidget
   final VoidCallback? onBack;
   final double height;
   final Widget? leadingIcon;
+  final bool backHide;
 
   const TransparentBackAppBar({
     super.key,
     this.onBack,
     this.height = 50,
     this.leadingIcon,
+    this.backHide = false,
   });
 
   @override
@@ -25,7 +27,7 @@ class TransparentBackAppBar extends StatelessWidget
       elevation: 0,
       toolbarHeight: height,
       leading: IconButton(
-        icon: leadingIcon ??
+        icon: backHide ? Container() : leadingIcon ??
             AppIcons.getBackOutLineIcon(context, size: 30),
         onPressed: onBack ?? () => Navigator.pop(context),
       ),

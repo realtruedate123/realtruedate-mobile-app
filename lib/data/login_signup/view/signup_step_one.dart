@@ -10,6 +10,8 @@ import 'package:real_true_date/data/login_signup/widgets/input_container.dart';
 import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:real_true_date/helper/app_text_font.dart';
+import 'package:real_true_date/helper/gender_toggle.dart';
 import 'package:real_true_date/helper/icon_checkbox.dart';
 
 class SignupStepOne extends GetView<AuthController> {
@@ -24,6 +26,55 @@ class SignupStepOne extends GetView<AuthController> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          SizedBox(height: 10.h,),
+          /// Name
+          AuthInput(
+            hint: 'Name',
+            controller: controller.nameCtrl,
+            icon: AppIcons.getPeopleIcon(context),
+          ),
+          SizedBox(height: 5.h,),
+          /// DOB picker
+          InputContainer(
+            height: 58.h,
+            child: InkWell(
+              splashColor: Colors.transparent, // Hides the ripple
+              highlightColor: Colors.transparent, // Hides the click highlight
+              onTap: () => showDobPicker(context, controller),
+              child: Obx(() => Row(
+                children: [
+                  AppIcons.getBirthdayIcon(context, color: controller.dob.value == null
+                      ? theme.iconTintColor
+                      : theme.primaryColor),
+                  SizedBox(width: 20.w),
+                  Expanded(
+                    child: Text(
+                      controller.dob.value == null
+                          ? 'When your Birthday?'
+                          : DateFormat('dd MM yyyy').format(controller.dob.value!),
+                      style: TextStyle(
+                        fontSize: MediaQuery.textScalerOf(context).scale(15),
+                        color: controller.dob.value == null
+                            ? theme.iconTintColor
+                            : theme.primaryColor,
+                      ),
+                    ),
+                  ),
+                  AppIcons.getCalendarIcon(context),
+                ],
+              )),
+            ),
+          ),
+          SizedBox(height: 20.h,),
+          /// Email
+          Obx(() => AuthInput(
+            hint: 'Email Address',
+            controller: controller.singUpEmailCtrl,
+            icon: AppIcons.getEmailIcon(context),
+            keyboardType: TextInputType.emailAddress,
+            errorText: controller.signUpEmailError.value,
+          ),
+          ),
           /// Gender picker
           InputContainer(
             height: 58.h,
@@ -59,47 +110,44 @@ class SignupStepOne extends GetView<AuthController> {
               )),
             ),
           ),
-          SizedBox(height: 25.h,),
-          /// Zipcode
-          AuthInput(
-              hint: 'Enter your zipcode',
-              controller: controller.zipCtrl,
-              icon: AppIcons.getPlaceIcon(context),
-              keyboardType: TextInputType.number
+          SizedBox(height: 20.h,),
+          /// Password
+          Obx(() => AuthInput(
+            hint: 'Password',
+            controller: controller.singUpPasswordCtrl,
+            icon: AppIcons.getPasswordIcon(context),
+            isPassword: true,
+            errorText: controller.signUpPasswordError.value,
           ),
+          ),
+          // SizedBox(height: 5.h,),
 
-          SizedBox(height: 8.h,),
-          /// DOB picker
-          InputContainer(
-            height: 58.h,
-            child: InkWell(
-              splashColor: Colors.transparent, // Hides the ripple
-              highlightColor: Colors.transparent, // Hides the click highlight
-              onTap: () => showDobPicker(context, controller),
-              child: Obx(() => Row(
-                children: [
-                  AppIcons.getBirthdayIcon(context, color: controller.dob.value == null
-                      ? theme.iconTintColor
-                      : theme.primaryColor),
-                  SizedBox(width: 20.w),
-                  Expanded(
-                    child: Text(
-                      controller.dob.value == null
-                          ? 'When your Birthday?'
-                          : DateFormat('dd MM yyyy').format(controller.dob.value!),
-                      style: TextStyle(
-                        fontSize: MediaQuery.textScalerOf(context).scale(15),
-                        color: controller.dob.value == null
-                            ? theme.iconTintColor
-                            : theme.primaryColor,
-                      ),
-                    ),
-                  ),
-                  AppIcons.getCalendarIcon(context),
-                ],
-              )),
+          /// Select your gender
+          Align(
+            alignment: Alignment.centerLeft,
+            child: AppTextFont(
+              'Select your gender',
+              font: AppFontType.manrope,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: theme.inactiveTabColor,
+              maxLines: 1,
+              textAlign: TextAlign.center,
             ),
           ),
+          SizedBox(height: 8.h,),
+          GenderToggle(controller: controller),
+
+          // SizedBox(height: 25.h,),
+          /// Zipcode
+          // AuthInput(
+          //     hint: 'Enter your zipcode',
+          //     controller: controller.zipCtrl,
+          //     icon: AppIcons.getPlaceIcon(context),
+          //     keyboardType: TextInputType.number
+          // ),
+
+
           SizedBox(height: 20.h,),
           /// T&C
           Obx(() =>
@@ -143,12 +191,28 @@ class SignupStepOne extends GetView<AuthController> {
           ),
     ),
           SizedBox(height: 50.h,),
+          /// Error message
+          Obx(() => controller.errorMessageStepTwo.isEmpty
+              ? const SizedBox()
+              : Padding(
+            padding: EdgeInsets.only(top: 12.h, bottom: 20.h),
+            child: Text(
+              controller.errorMessageStepTwo.value,
+              style: TextStyle(
+                color: theme.alert,
+                fontSize: 14.sp,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          )),
+          SizedBox(height: 20.h,),
           Obx(() => PrimaryButton(
-            title: 'Next',
+            title: 'Create Account',
             onTap: controller.isFormValid.value
                 ? () {
               print('Signup one allowed');
-              controller.nextSignupStep();
+              // controller.nextSignupStep();
+              controller.submitSignup();
             }
                 : null,
           )),

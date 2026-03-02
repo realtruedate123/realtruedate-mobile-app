@@ -32,6 +32,7 @@ class MatchAppbarWrapper extends StatelessWidget
       backgroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
+      scrolledUnderElevation: 0,
       title: AppTextFont(
         title,
         font: AppFontType.urbanist,

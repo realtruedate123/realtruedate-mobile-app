@@ -11,6 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:real_true_date/helper/app_cached_image.dart';
+import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/gif_loader_view.dart';
 import 'package:real_true_date/helper/transparent_appbar.dart';
 import 'package:real_true_date/routes/routes.dart';
@@ -19,6 +20,7 @@ class UploadPictureScreen extends StatelessWidget {
   UploadPictureScreen({super.key});
   final UploadPhotoController controller = Get.put(UploadPhotoController());
 
+  /*
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
@@ -26,7 +28,149 @@ class UploadPictureScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
-      appBar: TransparentBackAppBar(),
+      appBar: TransparentBackAppBar(backHide: true),
+
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight,
+              ),
+              child: IntrinsicHeight( // 👈 Important
+                child: Column(
+                  children: [
+
+                    /// STACK (Header + Overlapping Card)
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+
+                        /// HEADER
+                        SizedBox(
+                          height: 260.h,
+                          width: double.infinity,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              Image.asset(
+                                AppIcons.headerHalfImagePng,
+                                fit: BoxFit.cover,
+                              ),
+                              SafeArea(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 2.w),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      AppTextFont(
+                                        'Upload Picture',
+                                        font: AppFontType.manrope,
+                                        fontSize: 32,
+                                        fontWeight: FontWeight.w700,
+                                        color: theme.headerTitleColor,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(height: 10.h),
+                                      AppTextFont(
+                                        'Real people, real connections – powered by AI',
+                                        font: AppFontType.manrope,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: theme.headerTitleColor,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(height: 10.h),
+                                      AppTextFont(
+                                        'Step 2 of 4 – Live Photo Verification',
+                                        font: AppFontType.manrope,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: theme.headerTitleColor,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        /// WHITE CARD (OVERLAP)
+                        Positioned(
+                          top: 220.h,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(28.r),
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+
+                                // SizedBox(height: 40.h),
+
+                                /// PHOTO GRID
+                                Obx(() => _photoGrid(context)),
+
+                                SizedBox(height: 30.h),
+
+                                /// ERROR MESSAGE
+                                Obx(() => controller.errorMessage.isEmpty
+                                    ? const SizedBox()
+                                    : Padding(
+                                  padding: EdgeInsets.only(top: 12.h),
+                                  child: Text(
+                                    controller.errorMessage.value,
+                                    style: TextStyle(
+                                      color: theme.alert,
+                                      fontSize: 14.sp,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                )),
+
+                                SizedBox(height: 40.h),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    /// Spacer to allow scroll after overlap
+                    SizedBox(height: 600.h),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+
+      /// BOTTOM BUTTON
+      bottomNavigationBar: SafeArea(
+        minimum: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+        child: Obx(() => _uploadButton()),
+      ),
+    );
+    }
+    */
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = AppTheme.of(context);
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      extendBodyBehindAppBar: true,
+      appBar: TransparentBackAppBar(backHide: true,),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
@@ -40,7 +184,7 @@ class UploadPictureScreen extends StatelessWidget {
                 children: [
                   /// HEADER IMAGE
                   SizedBox(
-                    height: 250, // fixed header height
+                    height: 260.h, // fixed header height
                     width: double.infinity,
                     child: Stack(
                       fit: StackFit.expand,
@@ -59,28 +203,35 @@ class UploadPictureScreen extends StatelessWidget {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
+                                AppTextFont(
                                   'Upload Picture',
-                                  style: GoogleFonts.manrope(
-                                      fontSize: MediaQuery.textScalerOf(context).scale(32),
-                                      fontWeight: FontWeight.w700,
-                                      fontStyle: FontStyle.normal,
-                                      color: theme.headerTitleColor
-                                  ),
+                                  font: AppFontType.manrope,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w700,
+                                  color: theme.headerTitleColor,
                                   textAlign: TextAlign.center,
                                 ),
                                 SizedBox(height: 10.h,),
-                                Text(
+                                AppTextFont(
                                   'Real people, real connections – powered by AI',
-                                  style: GoogleFonts.manrope(
-                                      fontSize: MediaQuery.textScalerOf(context).scale(14),
-                                      fontWeight: FontWeight.w400,
-                                      fontStyle: FontStyle.normal,
-                                      color: theme.headerTitleColor
-                                  ),
+                                  font: AppFontType.manrope,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: theme.headerTitleColor,
+                                  maxLines: 2,
                                   textAlign: TextAlign.center,
                                 ),
-                                SizedBox(height: 25.h,)
+                                SizedBox(height: 10.h,),
+                                AppTextFont(
+                                  'Step 2 of 3 – Live Photo Verification',
+                                  font: AppFontType.manrope,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: theme.headerTitleColor,
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 80.h,)
                               ],
                             ),
                           ),
@@ -120,8 +271,8 @@ class UploadPictureScreen extends StatelessWidget {
                         ),
                       )),
 
-                      SizedBox(height: 20.h),
-                      Obx(() => _uploadButton()),
+                      // SizedBox(height: 20.h),
+                      // Obx(() => SafeArea(child: _uploadButton())),
                       // SizedBox(height: 32.h),
                     ],
                   ),
@@ -150,6 +301,11 @@ class UploadPictureScreen extends StatelessWidget {
           );
         },
       ),
+      /// PINNED BUTTON HERE
+      bottomNavigationBar: SafeArea(
+        minimum: EdgeInsets.symmetric(horizontal: 16.w, vertical: 30.h),
+        child: Obx(() => _uploadButton()),
+      ),
     );
   }
 
@@ -162,10 +318,10 @@ class UploadPictureScreen extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: controller.maxPhotos,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
+          crossAxisCount: 2,
           mainAxisSpacing: 17,
           crossAxisSpacing: 12,
-          childAspectRatio: 0.55, // matches your screenshot
+          childAspectRatio: 0.60, // matches your screenshot
         ),
         itemBuilder: (context, index) {
           if (index < photoCount) {
@@ -293,19 +449,20 @@ class UploadPictureScreen extends StatelessWidget {
   Widget _uploadButton() {
     // final controller = Get.find<UploadPhotoController>();
 
-    String buttonText;
+    /*String buttonText;
 
     if (controller.isButtonEnabled) {
-      buttonText = controller.isVideoVerify ? 'Back to Login' : 'Upload Video';
+      buttonText = 'Submit';//controller.isVideoVerify ? 'Submit' : 'Upload Video';
     } else if (controller.isVideoVerify) {
-      buttonText = 'Back to Login';
+      // buttonText = 'Back to Login';
+      buttonText = 'Submit';
     } else {
       buttonText = 'View Singles';
-    }
+    }*/
 
     return PrimaryButton(
       // title: controller.isButtonEnabled ? 'Upload Video' : 'View Singles',
-      title: buttonText,
+      title: 'Submit',
       loading: controller.isLoading.value,
       fontWeight: FontWeight.w600,
       onTap: controller.isButtonEnabled

@@ -11,6 +11,7 @@ import 'package:real_true_date/helper/bottom_nav_wrapper.dart';
 import 'package:real_true_date/helper/string_class.dart';
 import 'package:real_true_date/routes/routes.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 enum AuthTab { signup, login }
 enum SignupStep { step1, step2 }
@@ -55,9 +56,18 @@ class AuthController extends GetxController {
   final signUpEmailError = RxnString();
   final signUpPasswordError = RxnString();
 
+  final storage = const FlutterSecureStorage(
+    aOptions: AndroidOptions(
+      encryptedSharedPreferences: true,
+    ),
+  );
+
   @override
   void onInit() {
     super.onInit();
+
+    // emailCtrl.text = 'm7@yopmail.com';
+    // passwordCtrl.text = 'J@123456';
 
     emailCtrl.addListener(_checkLoginEnable);
     passwordCtrl.addListener(_checkLoginEnable);
@@ -142,7 +152,6 @@ class AuthController extends GetxController {
 
     isLoading.value = true;
     userLoginApiCall();
-    // Get.offAll(() => BottomNavWrapper());
   }
 
   void nextSignupStep() {
@@ -168,7 +177,7 @@ class AuthController extends GetxController {
       return;
     }
 
-    if (!signupStepTwoKey.currentState!.validate()) return;
+    // if (!signupStepTwoKey.currentState!.validate()) return;
 
     isLoading.value = true;
     userRegisterApiCall();
@@ -182,10 +191,20 @@ class AuthController extends GetxController {
 
   /// SignUp Step One FORM VALIDATION
   void _validateForm() {
+    // isFormValid.value =
+    //     lookingGender.value != null &&
+    //         zipCtrl.text.trim().isNotEmpty &&
+    //         dob.value != null &&
+    //         isChecked.value;
+
+
     isFormValid.value =
-        lookingGender.value != null &&
-            zipCtrl.text.trim().isNotEmpty &&
+        nameCtrl.text.trim().isNotEmpty &&
             dob.value != null &&
+            singUpEmailCtrl.text.trim().isNotEmpty &&
+            lookingGender.value != null &&
+            singUpPasswordCtrl.text.trim().isNotEmpty &&
+            selectedGender.isNotEmpty &&
             isChecked.value;
   }
 
@@ -221,7 +240,7 @@ class AuthController extends GetxController {
 
   //TODO: Signup API Call
   Future<void> userRegisterApiCall() async {
-    String deviceId = await PlatformUtil.getDeviceUDID();
+    final deviceId = await DeviceUtils.getDeviceUDID();
 
     final dateConvert = DateFormat('yyyy-MM-dd').format(dob.value!);
 
@@ -261,13 +280,17 @@ class AuthController extends GetxController {
           sharedPref.saveAuthToken(response.data?.data?.tokens?.access ?? '')
         ]);
         await Future.delayed(const Duration(seconds: 1));
+        /// Checked video upload or not
+        if(response.data?.data?.verificationStatus?.videoVerified == false){
+          Get.toNamed(Routes.uploadVideoPage);
+        }
         /// Checked photo upload or not
-        if(response.data?.data?.verificationStatus?.photoVerified == false){
+        else if(response.data?.data?.verificationStatus?.photoVerified == false){
           Get.toNamed(Routes.uploadPhotoPage);
         }
-        /// Checked video upload or not
-        else if(response.data?.data?.verificationStatus?.videoVerified == false){
-          Get.toNamed(Routes.uploadVideoPage);
+        /// Checked dream data profile complete or not
+        else if(response.data?.data?.verificationStatus?.hasDreamDateProfile == false){
+          Get.toNamed(Routes.selectDreamPartnerView);
         }
         else {
           // Get.toNamed(Routes.profileUnderReviewScreen);
@@ -291,7 +314,7 @@ class AuthController extends GetxController {
 
   //TODO: Login API Call
   Future<void> userLoginApiCall() async {
-    String deviceId = await PlatformUtil.getDeviceUDID();
+    final deviceId = await DeviceUtils.getDeviceUDID();
 
     final params = {
       "email": emailCtrl.text,
@@ -314,42 +337,35 @@ class AuthController extends GetxController {
       emailCtrl.text = '';
       passwordCtrl.text = '';
 
-      // Redirect Home Page
-      // Get.offAll(() => BottomNavWrapper());
-
-      // Get.snackbar('Success', 'Login success');
-
-      // print('photo verify ${response.data?.data?.verificationStatus?.photoVerified}');
-      // print('video verify ${response.data?.data?.verificationStatus?.videoVerified}');
-      // print('video verify ${response.data?.data?.verificationStatus?.toJson()}');
-
       /// Checked profile verify or not
       await Future.wait([
         sharedPref.saveRefreshAuthToken(response.data?.data?.tokens?.refresh ?? ''),
         sharedPref.saveAuthToken(response.data?.data?.tokens?.access ?? '')
       ]);
-      // await Future.delayed(const Duration(seconds: 1));
+
+      /// Checked video upload or not
+      if(response.data?.data?.verificationStatus?.videoVerified == false){
+        Get.toNamed(Routes.uploadVideoPage);
+      }
       /// Checked photo upload or not
-      if(response.data?.data?.verificationStatus?.photoVerified == false){
+      else if(response.data?.data?.verificationStatus?.photoVerified == false){
         await Future.wait([
           sharedPref.saveVideoVerificationFlag(response.data?.data?.verificationStatus?.videoVerified ?? false),
         ]);
-        // Get.toNamed(Routes.uploadPhotoPage);
-        Get.offAll(() => BottomNavWrapper());
+        Get.toNamed(Routes.uploadPhotoPage);
       }
-      /// Checked video upload or not
-      else if(response.data?.data?.verificationStatus?.videoVerified == false){
-        Get.toNamed(Routes.uploadVideoPage);
+      /// Checked dream data profile complete or not
+      else if(response.data?.data?.verificationStatus?.hasDreamDateProfile == false){
+        Get.toNamed(Routes.selectDreamPartnerView);
       }
       else { /// Login User
         await Future.wait([
           sharedPref.saveIsLoggedIn(true),
           sharedPref.savePersonList(response.data!.data!),
+          sharedPref.saveUserId(response.data?.data?.user?.id ?? '')
         ]);
 
         Get.offAll(() => BottomNavWrapper());
-        // Get.toNamed(Routes.uploadPhotoPage);
-        // Get.toNamed(Routes.uploadVideoPage);
       }
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();

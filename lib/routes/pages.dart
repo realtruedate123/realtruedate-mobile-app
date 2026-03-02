@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:real_true_date/data/confirmation_screens/controller/LivePhotoInformationController.dart';
+import 'package:real_true_date/data/confirmation_screens/view/live_photo_information_view.dart';
 import 'package:real_true_date/data/forgot_password/forgot_password.dart';
 import 'package:real_true_date/data/forgot_password/forgot_password_controller.dart';
 import 'package:real_true_date/data/home_tab/controller/user_profile_controller.dart';
@@ -16,6 +18,10 @@ import 'package:real_true_date/data/otp_reset_password/controller/reset_password
 import 'package:real_true_date/data/otp_reset_password/view/otp_view.dart';
 import 'package:real_true_date/data/otp_reset_password/view/password_reset_success.dart';
 import 'package:real_true_date/data/otp_reset_password/view/reset_password.dart';
+import 'package:real_true_date/data/profile_tab/controller/edit_profile_controller.dart';
+import 'package:real_true_date/data/profile_tab/view/edit_profile_view.dart';
+import 'package:real_true_date/data/select_dream_partner/controller/SelectDreamPartnerController.dart';
+import 'package:real_true_date/data/select_dream_partner/view/select_dream_partner_view.dart';
 import 'package:real_true_date/data/splash_on_boarding%20/on_boarding.dart';
 import 'package:real_true_date/data/splash_on_boarding%20/splash_screen.dart';
 import 'package:real_true_date/data/upload_picture_and_video/upload_picture_controller.dart';
@@ -23,6 +29,10 @@ import 'package:real_true_date/data/upload_picture_and_video/upload_video_contro
 import 'package:real_true_date/data/upload_picture_and_video/view/profile_under_review_screen.dart';
 import 'package:real_true_date/data/upload_picture_and_video/view/upload_picture_screen.dart';
 import 'package:real_true_date/data/upload_picture_and_video/view/upload_video_screen.dart';
+import 'package:real_true_date/data/upload_picture_and_video/widget/camera_controller.dart';
+import 'package:real_true_date/data/upload_picture_and_video/widget/camera_screen.dart';
+import 'package:real_true_date/data/upload_picture_and_video/widget/custom_camera.dart';
+import 'package:real_true_date/data/upload_picture_and_video/widget/custom_camera_controller.dart';
 import 'package:real_true_date/routes/splash_binding.dart';
 import 'routes.dart';
 
@@ -113,6 +123,41 @@ class AppPages {
         page: () => ChatView(),
         binding: BindingsBuilder((){
           Get.lazyPut(() => ChatController());
+        })
+    ),
+    GetPage(
+        name: Routes.editProfileView,
+        page: () => EditProfileView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => EditProfileController());
+        })
+    ),
+    GetPage(
+        name: Routes.cameraView,
+        page: () => CameraScreen(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => CameraViewController());
+        })
+    ),
+    GetPage(
+        name: Routes.selectDreamPartnerView,
+        page: () => SelectDreamPartnerView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => SelectDreamPartnerController());
+        })
+    ),
+    GetPage(
+        name: Routes.customCamera,
+        page: () => CustomCamera(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => CustomCameraController());
+        })
+    ),
+    GetPage(
+        name: Routes.confirmationInfo,
+        page: () => LivePhotoInformationView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => LivePhotoInformationController());
         })
     ),
     // GetPage(

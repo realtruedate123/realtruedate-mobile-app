@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:real_true_date/helper/app_text_font.dart';
 
 class AuthHeader extends StatelessWidget {
   final String title;
   final String subtitle;
+  final bool step;
   final double? height;
 
   const AuthHeader({super.key,
     this.title = 'Hello,\nWelcome Back!',
     this.subtitle =
     'Please enter your email and password details to access your account.',
-    this.height
+    this.height,
+    this.step = false
   });
 
   @override
@@ -48,6 +51,18 @@ class AuthHeader extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
+            if(step == true)...[
+              SizedBox(height: 10.h,),
+              AppTextFont(
+                'Step 1 of 3 – Basic Information',
+                font: AppFontType.manrope,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: theme.headerTitleColor,
+                maxLines: 1,
+                textAlign: TextAlign.center,
+              ),
+            ]
           ],
         ),
       ),

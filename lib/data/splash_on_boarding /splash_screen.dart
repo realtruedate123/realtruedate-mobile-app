@@ -27,52 +27,50 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return GetBuilder<SplashController>(
       builder: (controller) {
-        return ScreenUtilInit(
-          designSize: const Size(360, 690),
-          builder: (_, __) => Scaffold(
-            body: Container(
-              width: double.infinity,
-              height: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(AppIcons.splashImagePng),
-                  fit: BoxFit.cover,
-                ),
+        return Scaffold(
+          body: Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(AppIcons.splashImagePng),
+                fit: BoxFit.cover,
               ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GifView.asset(
-                      AppIcons.gifLogo,
-                      height: 200,
-                      width: 200,
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GifView.asset(
+                    AppIcons.gifLogo,
+                    height: 200,
+                    width: 200,
+                    // loop: false,
+                  ),
+                  Text(
+                    'REAL TRUE DATE',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.manrope(
+                      // textStyle: Theme.of(context).textTheme.displayLarge,
+                      fontSize: MediaQuery.textScalerOf(context).scale(24),
+                      fontWeight: FontWeight.w700,
+                      fontStyle: FontStyle.normal,
+                      color: theme.text
                     ),
-                    Text(
-                      'REAL TRUE DATE',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.manrope(
-                        // textStyle: Theme.of(context).textTheme.displayLarge,
-                        fontSize: MediaQuery.textScalerOf(context).scale(24),
+                  ),
+                  SizedBox(height: 5.h),
+                  Text(
+                    "WORLD'S 1st AI-POWERED\nDATING APP",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.manrope(
+                      // textStyle: Theme.of(context).textTheme.displayLarge,
+                        fontSize: MediaQuery.textScalerOf(context).scale(12),
                         fontWeight: FontWeight.w700,
                         fontStyle: FontStyle.normal,
                         color: theme.text
-                      ),
                     ),
-                    SizedBox(height: 5.h),
-                    Text(
-                      "WORLD'S 1st AI-POWERED\nDATING APP",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.manrope(
-                        // textStyle: Theme.of(context).textTheme.displayLarge,
-                          fontSize: MediaQuery.textScalerOf(context).scale(12),
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                          color: theme.text
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
           ),

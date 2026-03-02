@@ -56,15 +56,27 @@ class AuthenticatingDialog {
   }
 
   /// ================= ERROR POPUP =================
-  static void showError(String message) {
+  static void showError(String message, {VoidCallback? onConfirmCallback,}) {
     Get.dialog(
         CommonDialogView(
           title: '',
           message: message,
           onConfirm: () {
             Get.back();
+            if (onConfirmCallback != null) {
+              onConfirmCallback(); // Trigger controller callback
+            }
           },
         )
     );
   }
+
+  // showError(
+  // "Something went wrong",
+  // onConfirmCallback: () {
+  // // Your controller logic here
+  // print("Confirmed from controller");
+  // fetchData();
+  // },
+  // );
 }

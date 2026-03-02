@@ -15,7 +15,9 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
 
     /// Navigate after delay
     Future.delayed(const Duration(seconds: 2), () async {
-      final user = await sharedPref.getPersonList();
+      checkLogin();
+
+      /*final user = await sharedPref.getPersonList();
 
       if (user != null && user.user?.id != null && user.user?.id != '') {
         print('user ID ${user.user?.id}');
@@ -26,13 +28,28 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
       } else {
         // User not logged in -> go to onboarding
         Get.offAllNamed(Routes.onBoarding);
-      }
+      }*/
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Future<void> checkLogin() async {
+    try {
+      print("Checking login...");
+
+      final user = await sharedPref.getPersonList();
+
+      print("User fetched: $user");
+
+      if (user?.user?.id?.isNotEmpty ?? false) {
+        print('user ID ${user?.user?.id}');
+        Get.offAll(() => BottomNavWrapper());
+      } else {
+        Get.offAllNamed(Routes.onBoarding);
+      }
+    } catch (e) {
+      print("Splash error: $e");
+      Get.offAllNamed(Routes.onBoarding);
+    }
   }
 
   /// Fetch current location once

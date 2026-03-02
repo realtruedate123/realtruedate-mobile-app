@@ -37,6 +37,13 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    dependencies {
+        // Your existing dependencies
+
+        // Add this missing dependency
+        implementation("androidx.concurrent:concurrent-futures:1.2.0")
+    }
 }
 
 flutter {

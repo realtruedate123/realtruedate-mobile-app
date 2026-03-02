@@ -37,16 +37,18 @@ class PrimaryButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(cornerRadius == false ? 25.r : 14.r),
           ),
         ),
-        child: loading
-            ? SizedBox(
-          height: 22.h,
-          width: 22.w,
-          child: CircularProgressIndicator(
-            strokeWidth: 2.w,
-            color: Colors.white,
-          ),
-        )
-            : AppTextFont(
+        child:
+        // loading
+        //     ? SizedBox(
+        //   height: 22.h,
+        //   width: 22.w,
+        //   child: CircularProgressIndicator(
+        //     strokeWidth: 2.w,
+        //     color: Colors.white,
+        //   ),
+        // )
+        //     :
+        AppTextFont(
           title,
           font: AppFontType.inter,
           fontSize: MediaQuery.textScalerOf(context).scale(fontSize),

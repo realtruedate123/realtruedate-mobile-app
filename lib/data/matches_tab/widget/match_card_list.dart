@@ -46,6 +46,7 @@ class MatchCardListCell extends StatelessWidget {
                   /// Image
                   AspectRatio(
                     aspectRatio: 3 / 4,
+                    // child: Image.asset(AppIcons.dummyProfileCard, fit: BoxFit.cover,),
                     child: AppCachedImage(
                       imageUrl: match.imageUrl,
                     )
@@ -113,14 +114,18 @@ class MatchCardListCell extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                AppTextFont(
-                  "${match.name}, ${match.age}",
-                  font: AppFontType.urbanist,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: theme.blackColor,
+                Flexible(
+                  child: AppTextFont(
+                    "${match.name}, ${match.age}",
+                    font: AppFontType.urbanist,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: theme.blackColor,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis, // truncates with "..."
+                  ),
                 ),
-                SizedBox(width: 6.w),
+                SizedBox(width: 5.w),
                 Container(
                   width: 5.w,
                   height: 5.h,

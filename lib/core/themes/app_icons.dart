@@ -68,6 +68,7 @@ class AppIcons{
   static const String aboutUsIcon = 'assets/svg/ic_about_us.svg';
   static const String userLogoutIcon = 'assets/svg/ic_user_logout.svg';
   static const String rightArrowIcon = 'assets/svg/ic_right_arrow.svg';
+  static const String userPlaceholder = 'assets/svg/user_placeholder.svg';
 
   /// PNG
   static const String splashImagePng = 'assets/png/bg_splash.png';
@@ -555,6 +556,15 @@ class AppIcons{
         height: size.h
     );
   }
+
+  static Widget getUserPlaceHolder(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        userPlaceholder,
+        width: size.w,
+        height: size.h
+    );
+  }
+
 
 // static Widget getEmptyBookingRequest(BuildContext context, {double size = 24}){
   //   return SvgPicture.asset(emptyBookingRequest,

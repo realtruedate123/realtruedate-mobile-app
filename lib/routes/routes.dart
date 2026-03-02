@@ -14,4 +14,9 @@ class Routes {
   static const matchesDetailsView = "/matchesDetailsView";
   static const notificationView = "/notificationView";
   static const chatView = "/chatView";
+  static const editProfileView = "/editProfileView";
+  static const cameraView = "/cameraView";
+  static const selectDreamPartnerView = "/selectDreamPartnerView";
+  static const customCamera = "/customCamera";
+  static const confirmationInfo = "/confirmationInfo";
 }

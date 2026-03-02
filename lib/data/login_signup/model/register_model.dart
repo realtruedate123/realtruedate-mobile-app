@@ -91,22 +91,26 @@ class VerificationStatus {
   final bool? photoVerified;
   final bool? videoVerified;
   final bool? isVerified;
+  final bool? hasDreamDateProfile;
 
   VerificationStatus({
     this.photoVerified,
     this.videoVerified,
     this.isVerified = false,
+    this.hasDreamDateProfile,
   });
 
   factory VerificationStatus.fromJson(Map<String, dynamic> json) => VerificationStatus(
     photoVerified: json["photo_verified"] as bool,
     videoVerified: json["video_verified"] as bool,
     isVerified: json["is_verified"] as bool,
+    hasDreamDateProfile: json["has_dream_date_profile"] as bool,
   );
 
   Map<String, dynamic> toJson() => {
     "photo_verified": photoVerified,
     "video_verified": videoVerified,
     "is_verified": isVerified,
+    "has_dream_date_profile": hasDreamDateProfile,
   };
 }

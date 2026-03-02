@@ -1,12 +1,14 @@
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:real_true_date/core/local/preference_key.dart';
+import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
-import 'package:real_true_date/data/login_signup/model/register_model.dart';
-import 'package:real_true_date/helper/string_class.dart';
-import 'package:real_true_date/routes/routes.dart';
+import 'package:real_true_date/data/home_tab/model/feed_response.dart';
+import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
+import 'package:real_true_date/data/root_tab_controller.dart';
 
 class HomeTabController extends GetxController {
 
@@ -14,25 +16,29 @@ class HomeTabController extends GetxController {
   final isLoading = false.obs;
   final errorMessage = ''.obs;
 
+  final sharedPref = SharedPrefHelper();
+
   /// CONTROLLERS
-  final emailCtrl = TextEditingController();
 
   /// Button enable state
   final isLoginEnabled = false.obs;
 
   late final AppinioSwiperController swiperController;
 
+  final feedListModel = <Candidate>[].obs;
+  var userID = '';
+
   @override
   void onInit() {
     super.onInit();
-
-    emailCtrl.addListener(_checkLoginEnable);
+    Get.find<RootTabController>().switchTo(0); // always reset to home
+    getUserData();
+    getFeedListApiCall();
     swiperController = AppinioSwiperController();
   }
 
   @override
   void onClose() {
-    emailCtrl.dispose();
     super.onClose();
   }
 
@@ -42,55 +48,91 @@ class HomeTabController extends GetxController {
     super.dispose();
   }
 
-  void _checkLoginEnable() {
-    isLoginEnabled.value = emailCtrl.text.isNotEmpty;
-  }
-
-  void forgotPassword(){
-    if(validateEmail(emailCtrl.text) == false){
-      print('login');
-      errorMessage.value = 'Enter a valid email address';
+  /// Get saved local user data
+  void getUserData() async {
+    try {
+      // Fetch from API or storage
+      userID = await sharedPref.getUserId;
+      print('home userid $userID');
+    } finally {
       isLoading.value = false;
-      return;
-    }
-    else{
-      print('$emailCtrl.text');
-      errorMessage.value = '';
-      forgotPasswordApiCall();
     }
   }
 
-  //TODO: Forgot password API Call
-  Future<void> forgotPasswordApiCall() async {
+  //TODO: Get feeds API Call
 
-    final params = {
-      "email": emailCtrl.text,
+  Future<void> getFeedListApiCall() async {
+    isLoading.value = true;
+    final authToken = await sharedPref.getAuthToken;
+    errorMessage.value = '';
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
     };
 
-    print('params $params');
-
-    final response = await BaseApiService().postRawData<RegisterResponseModel>(
-      endpoint: Endpoints.forgotPassword,
-      fields: params,
-      fromJson: (json) => RegisterResponseModel.fromJson(json),
+    final response = await BaseApiService().getMethod<FeedResponse>(
+      endpoint: Endpoints.getFeed,
+      headers: header,
+      showLoader: false,
+      fromJson: (json) => FeedResponse.fromJson(json),
     );
+
     isLoading.value = false;
 
-    if (response.isSuccess && response.statusCode == 200) {
-
-      Get.toNamed(
-          Routes.otpScreen,
-          arguments: {
-            'email': response.data?.data?.email ?? '',
-            'otp': response.data?.data?.otp.toString(),
-            'page_type': 'forgot_screen'
-          }
-      );
+    if (response.isSuccess &&
+        response.statusCode == 200 &&
+        response.data?.success == true) {
+      feedListModel.value =
+          response.data?.data.candidates.reversed.toList() ?? [];
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      errorMessage.value = response.message ?? 'Something went wrong';
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          getFeedListApiCall();
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'failed');
+      }
+    }
+    update();
+  }
+
+  //TODO: Swipe card API Call
+  Future<void> swipeCardApiCall(String direction) async {
+    final authToken = await sharedPref.getAuthToken;
+
+    final params = {
+      "user_id": userID,
+      "direction": direction
+    };
+
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    print('token $authToken');
+    print('params $params');
+
+    final response = await BaseApiService().postRawData<SwipeCardModel>(
+      endpoint: Endpoints.swipeCard,
+      fields: params,
+      headers: header,
+      fromJson: (json) => SwipeCardModel.fromJson(json),
+      showLoader: false
+    );
+
+    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
+      print('swipe card ${response.data?.message}');
+
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      // errorMessage.value = response.message ?? 'Login failed';
       // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
+
 }

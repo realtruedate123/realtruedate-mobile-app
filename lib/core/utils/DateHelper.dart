@@ -86,3 +86,26 @@ class DateHelper {
   }
 
 }
+
+// ------------------------------------------------------------
+// CONVERT TIME FORMATTING
+// ------------------------------------------------------------
+String formatTime(Duration time) {
+  final hours = time.inHours;
+  final minutes = time.inMinutes.remainder(60);
+  final seconds = time.inSeconds.remainder(60);
+
+  if (hours > 0) {
+    return '$hours ${hours == 1 ? 'hour' : 'hours'} left';
+  }
+
+  if (minutes > 0) {
+    return '$minutes ${minutes == 1 ? 'minute' : 'minutes'} left';
+  }
+
+  if (seconds > 0) {
+    return '$seconds ${seconds == 1 ? 'second' : 'seconds'} left';
+  }
+
+  return '0 seconds left';
+}

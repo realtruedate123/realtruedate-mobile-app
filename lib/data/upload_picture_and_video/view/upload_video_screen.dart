@@ -25,7 +25,7 @@ class UploadVideoScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.white, // 👈 set BG color
       extendBodyBehindAppBar: true,
-        appBar: TransparentBackAppBar(),
+        appBar: TransparentBackAppBar(backHide: true,),
       body: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
@@ -35,6 +35,7 @@ class UploadVideoScreen extends StatelessWidget {
                     minHeight: constraints.maxHeight, // 🔥 KEY FIX
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       /// HEADER IMAGE
                       _headerView(context),
@@ -42,6 +43,7 @@ class UploadVideoScreen extends StatelessWidget {
                     offset: Offset(0, -60), // 👈 overlap amount
                     child: Container(
                       padding: EdgeInsets.only(left: 16.w, right: 16.w),
+                      // padding: EdgeInsets.zero,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.vertical(
@@ -76,42 +78,14 @@ class UploadVideoScreen extends StatelessWidget {
 
                                   SizedBox(height: 20.h),
 
-                                  // controller.videoFile.value == null
-                                  //     ? _recordCard(context)
-                                  //     : _uploadedVideoTile(context),
                                   _recordCard(context),
                                   if(controller.videoFile.value != null)...[
                                     SizedBox(height: 20.h),
                                     _uploadedVideoTile(context),
-
-                                    // Obx(() {
-                                    //   if (controller.uploadProgress.value == 1.0 &&
-                                    //       controller.isVideoUpload.value == false) {
-                                    //     return Column(
-                                    //       children: [
-                                    //         SizedBox(height: 20.h),
-                                    //         Center(
-                                    //           child: SizedBox(
-                                    //             width: 40.w,
-                                    //             height: 40.h,
-                                    //             child: CircularProgressIndicator(
-                                    //               valueColor: AlwaysStoppedAnimation<Color>(
-                                    //                 theme.primaryColor,
-                                    //               ),
-                                    //               strokeWidth: 5.0,
-                                    //             ),
-                                    //           ),
-                                    //         ),
-                                    //       ],
-                                    //     );
-                                    //   }
-                                    //   return const SizedBox();
-                                    // }),
-
-
-                                    SizedBox(height: MediaQuery.of(context).size.height * 0.10),
+                                    SizedBox(height: 10.h),
+                                    // SizedBox(height: MediaQuery.of(context).size.height * 0.10),
                                   ] else ...[
-                                      SizedBox(height: MediaQuery.of(context).size.height * 0.20),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.14),
                                   ],
 
                                   /// Error message
@@ -131,13 +105,12 @@ class UploadVideoScreen extends StatelessWidget {
                                     ),
                                   )),
 
-                                  SizedBox(height: 20.h),
-
-                                  _submitButton(),
+                                  // SizedBox(height: 20.h),
                                 ],
                               );
                             }),
                           ),
+                          // _submitButton(),
                         ],
                       ),
 
@@ -147,7 +120,12 @@ class UploadVideoScreen extends StatelessWidget {
                   ),
                 )
             );
-          })
+          }),
+        /// PINNED BUTTON HERE
+      bottomNavigationBar: SafeArea(
+        minimum: EdgeInsets.symmetric(horizontal: 16.w, vertical: 30.h),
+        child: _submitButton(),
+      ),
     );
   }
 
@@ -155,7 +133,7 @@ class UploadVideoScreen extends StatelessWidget {
   Widget _headerView(BuildContext context) {
       final theme = AppTheme.of(context);
     return SizedBox(
-      height: 320.h, // fixed header height
+      height: 370.h, // fixed header height
       width: double.infinity,
       child: Stack(
         fit: StackFit.expand,
@@ -174,28 +152,36 @@ class UploadVideoScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  AppTextFont(
                     'Let AI Understand You Better!',
-                    style: GoogleFonts.manrope(
-                        fontSize: MediaQuery.textScalerOf(context).scale(32),
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.normal,
-                        color: theme.headerTitleColor
-                    ),
+                    font: AppFontType.manrope,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w700,
+                    color: theme.headerTitleColor,
                     textAlign: TextAlign.center,
+                    maxLines: 2,
                   ),
                   SizedBox(height: 10.h,),
-                  Text(
+                  AppTextFont(
                     'Upload a video introducing yourself. Our AI will analyze your personality to personalize your matches based on your preferences.',
-                    style: GoogleFonts.manrope(
-                        fontSize: MediaQuery.textScalerOf(context).scale(14),
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        color: theme.headerTitleColor
-                    ),
+                    font: AppFontType.manrope,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: theme.headerTitleColor,
+                    textAlign: TextAlign.center,
+                    maxLines: 5,
+                  ),
+                  SizedBox(height: 10.h,),
+                  AppTextFont(
+                    'Step 2 of 3 – Live Video Verification',
+                    font: AppFontType.manrope,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: theme.headerTitleColor,
+                    maxLines: 1,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 70.h,)
+                  SizedBox(height: 80.h,)
                 ],
               ),
             ),
@@ -259,6 +245,7 @@ class UploadVideoScreen extends StatelessWidget {
       splashColor: Colors.transparent, // Hides the ripple
       highlightColor: Colors.transparent, // Hides the click highlight
       onTap: controller.recordVideo,
+      // onTap: controller.cameraVideo,
       child: DottedBorder(
         options: RoundedRectDottedBorderOptions(
           dashPattern: [8, 6],
@@ -346,7 +333,7 @@ class UploadVideoScreen extends StatelessWidget {
                             AppIcons.getDotIcon(context, size: 6),
                             SizedBox(width: 8.w),
                             AppTextFont(
-                              '${controller.secondsLeft.value} second left',
+                              controller.secondsLeft.value,
                               font: AppFontType.inter,
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
@@ -387,47 +374,44 @@ class UploadVideoScreen extends StatelessWidget {
 
   /// 🚀 Submit
   Widget _submitButton() {
-    return SafeArea(
-      top: false,
-      child: Obx(() {
-        final enabled = controller.isMessage.value;
+    return Obx(() {
+      final enabled = controller.isMessage.value;
 
-        return PrimaryButton(
-          title: 'Submit',
-          loading: controller.isLoading.value,
-          fontWeight: FontWeight.w600,
-          onTap: enabled
-              ? () {
-            // if (controller.loginKey.currentState!.validate()) {
-            // controller.login();
-            // }
-            print('click $enabled');
-            // Get.toNamed(Routes.profileUnderReviewScreen,);
-            Get.offAllNamed(
-              Routes.authPage,
-              arguments: AuthTab.login,
-            );
+      return PrimaryButton(
+        title: 'Submit',
+        loading: controller.isLoading.value,
+        fontWeight: FontWeight.w600,
+        onTap: enabled
+            ? () {
+          // if (controller.loginKey.currentState!.validate()) {
+          // controller.login();
+          // }
+          print('click $enabled');
+          Get.toNamed(Routes.uploadPhotoPage,);
+          // Get.offAllNamed(
+          //   Routes.authPage,
+          //   arguments: AuthTab.login,
+          // );
 
-          } : null,
-        );
-        //   Container(
-        //   height: 54,
-        //   width: double.infinity,
-        //   decoration: BoxDecoration(
-        //     color: enabled ? const Color(0xFF6B63A8) : Colors.grey.shade300,
-        //     borderRadius: BorderRadius.circular(30),
-        //   ),
-        //   alignment: Alignment.center,
-        //   child: Text(
-        //     'Submit',
-        //     style: TextStyle(
-        //       color: enabled ? Colors.white : Colors.grey,
-        //       fontWeight: FontWeight.w600,
-        //       fontSize: 16,
-        //     ),
-        //   ),
-        // );
-      }),
-    );
+        } : null,
+      );
+      //   Container(
+      //   height: 54,
+      //   width: double.infinity,
+      //   decoration: BoxDecoration(
+      //     color: enabled ? const Color(0xFF6B63A8) : Colors.grey.shade300,
+      //     borderRadius: BorderRadius.circular(30),
+      //   ),
+      //   alignment: Alignment.center,
+      //   child: Text(
+      //     'Submit',
+      //     style: TextStyle(
+      //       color: enabled ? Colors.white : Colors.grey,
+      //       fontWeight: FontWeight.w600,
+      //       fontSize: 16,
+      //     ),
+      //   ),
+      // );
+    });
   }
 }

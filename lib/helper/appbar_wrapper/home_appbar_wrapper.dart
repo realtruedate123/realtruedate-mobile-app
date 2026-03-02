@@ -50,7 +50,7 @@ class HomeAppbarWrapper extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: theme.blackColor,
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 8.h),
                 AppTextFont(
                   'Meet RealTrueDate – 100% Real People &\nPictures',
                   font: AppFontType.lato,

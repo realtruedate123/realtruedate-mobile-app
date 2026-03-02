@@ -1,7 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-
+import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart' hide MultipartFile, FormData, Response;
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +8,9 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
-import 'package:real_true_date/helper/common_model.dart';
+import 'package:real_true_date/core/utils/DateHelper.dart';
+import 'package:real_true_date/data/upload_picture_and_video/model/photo_list_model.dart';
+import 'package:real_true_date/data/upload_picture_and_video/widget/camera_screen.dart';
 import 'package:real_true_date/helper/custom_dialog/authenticating_dialog.dart';
 import 'package:real_true_date/helper/string_class.dart';
 import 'package:video_player/video_player.dart';
@@ -23,12 +24,15 @@ class UploadVideoController extends GetxController {
 
   /// Recording state
   final RxBool isRecording = false.obs;
-  final RxInt secondsLeft = 0.obs;
+  final RxString secondsLeft = '0'.obs;
   final RxBool isUploading = false.obs;
   final RxString fileName = 'Introduction Video.mp4'.obs;
   final RxString fileSize = '0.0'.obs;
   final isLoading = false.obs;
   final errorMessage = ''.obs;
+  final RxBool showText = false.obs;
+  final RxString currentText = "".obs;
+  late String sessionID = '';
 
   /// Timer
   final RxInt elapsedSeconds = 0.obs;
@@ -53,6 +57,13 @@ class UploadVideoController extends GetxController {
     return '$m:$s';
   }
 
+  @override
+  void onInit() {
+    super.onInit();
+    getChallengesListApiCall();
+  }
+
+
   /// 🎥 Record video (camera only)
   Future<void> recordVideo() async {
     print('click video record');
@@ -71,10 +82,9 @@ class UploadVideoController extends GetxController {
     _stopRecording();
 
     if (result != null) {
+      // sessionID = result["session_id"];
       videoFile.value = File(result.path);
       await _initPlayer(videoFile.value!);
-      // _simulateUpload();
-      print('1111111');
 
       String fName = path.basename(result.path);
       int fSize = await result.length();
@@ -83,16 +93,40 @@ class UploadVideoController extends GetxController {
       print('Size: ${formatFileSize(fSize)}');
       fileName.value = shortenFileName(fName);
       fileSize.value = formatFileSize(fSize);
-      videoUploadApiCall();
+      videoUploadApiCall(sessionID);
     }
   }
 
-  /// After recording success
+  /*
+  Future<void> cameraVideo() async {
+    // final result = await Get.to<File>(() => CameraScreen());
+
+    final result = await Get.to(() => CameraScreen());
+
+    if(result != null){
+      print(result);
+      File file = result["file"];
+      sessionID = result["session_id"];
+
+      videoFile.value = File(file.path);
+      await _initPlayer(videoFile.value!);
+
+      String fName = path.basename(file.path);
+      int fSize = await file.length();
+
+      print('Name: $fName');
+      print('Size: ${formatFileSize(fSize)}');
+      fileName.value = shortenFileName(fName);
+      fileSize.value = formatFileSize(fSize);
+      videoUploadApiCall(sessionID);
+    }
+  }
+*/
+    /// After recording success
   void onVideoCaptured(File file) {
     videoFile.value = file;
-    // _simulateUpload();
-    print('2222222');
   }
+
 
   void _startTimer() {
     _timer?.cancel();
@@ -138,24 +172,6 @@ class UploadVideoController extends GetxController {
     // cancelToken.cancel("User cancelled upload");
   }
 
-  /// Fake upload progress
-  /*void _simulateUpload() {
-    isUploading.value = true;
-    uploadProgress.value = 0;
-    secondsLeft.value = 4;
-    Timer.periodic(const Duration(milliseconds: 300), (timer) {
-      uploadProgress.value += 0.08;
-      secondsLeft.value =
-          (4 - (uploadProgress.value * 4)).clamp(0, 4).toInt();
-      if (uploadProgress.value >= 1) {
-        uploadProgress.value = 1;
-        secondsLeft.value = 0;
-        isUploading.value = false;
-        timer.cancel();
-      }
-    });
-  }*/
-
   @override
   void onClose() {
     videoPlayer?.dispose();
@@ -164,16 +180,17 @@ class UploadVideoController extends GetxController {
   }
 
   //TODO: Video upload API Call
-  Future<void> videoUploadApiCall() async {
+  Future<void> videoUploadApiCall(String sessionID) async {
 
     final authToken = await sharedPref.getAuthToken;
 
-    final header = {
-      'Content-Type': 'multipart/form-data',
-      "Authorization": 'Bearer $authToken'
-    };
+    // final header = {
+    //   'Content-Type': 'multipart/form-data',
+    //   "Authorization": 'Bearer $authToken'
+    // };
 
     print('Bearer $authToken');
+    print('video file url ${videoFile.value!}');
     errorMessage.value = '';
     isVideoUpload.value = false;
     isMessage.value = false;
@@ -188,67 +205,12 @@ class UploadVideoController extends GetxController {
           print('remaining $remaining');
           isUploading.value = true;
           uploadProgress.value = progress;
-          secondsLeft.value = remaining.inSeconds;
+          // secondsLeft.value = remaining.inSeconds.toString();
+          secondsLeft.value = formatTime(remaining);//remaining.inSeconds;
           if (uploadProgress.value == 1.0) {
             AuthenticatingDialog.showLoader();
           }
         });
-
-    // if (response.data['success'] == true && response.statusCode == 200) {
-    //   print('video upload success ${response.data}');
-    //
-    // } else if (response.statusCode == 0) {
-    //   InternetDialog.showNoInternetDialog();
-    // } else {
-    //   if (response.data['token_expired'] == true) {
-    //     final result = await BaseApiService().refreshToken();
-    //     if (result.isSuccess) {
-    //       videoUploadApiCall();
-    //     }
-    //   } else {
-    //     errorMessage.value = response.statusMessage ?? 'Video uploading failed';
-    //     print(response.statusMessage ?? 'Picture upload failed');
-    //     Get.snackbar(
-    //         'Failed', response.statusMessage ?? 'Picture upload failed');
-    //   }
-    // }
-    // update();
-
-
-    // final response = await BaseApiService().uploadWithDio<CommonModel>(
-    //   endpoint: Endpoints.uploadVerificationVideo,
-    //   file: videoFile.value,
-    //   fileField: 'video',
-    //   headers: header,
-    //   // cancelToken: cancelToken,
-    //   fromJson: (json) => CommonModel.fromJson(json),
-    //   onProgress: (progress, remaining) {
-    //       // uploadProgress = progress;
-    //       // remainingTime = "${remaining.inSeconds}s remaining";
-    //       isUploading.value = true;
-    //       uploadProgress.value = progress;
-    //       secondsLeft.value = remaining.inSeconds;
-    //   },
-    // );
-    //
-    // if (response.isSuccess && response.statusCode == 200) {
-    //   print('video upload success ${response.data?.message}');
-    //
-    // } else if (response.statusCode == 0) {
-    //   InternetDialog.showNoInternetDialog();
-    // } else {
-    //   if(response.tokenExpired == true){
-    //     final result = await BaseApiService().refreshToken();
-    //     if (result.isSuccess) {
-    //       videoUploadApiCall();
-    //     }
-    //   } else {
-    //     errorMessage.value = response.message ?? 'Video uploading failed';
-    //     print(response.message ?? 'Picture upload failed');
-    //     Get.snackbar('Failed', response.message ?? 'Picture upload failed');
-    //   }
-    // }
-    // update();
   }
 
   Future<Response> uploadFileWithProgress({
@@ -271,12 +233,13 @@ class UploadVideoController extends GetxController {
         validateStatus: (status) => true,
       ),
     );
-
+    
     final formData = FormData.fromMap({
       fileField: await MultipartFile.fromFile(
         file.path,
         filename: file.path.split('/').last,
       ),
+      'session_id': sessionID
     });
 
     final stopwatch = Stopwatch()..start();
@@ -320,7 +283,7 @@ class UploadVideoController extends GetxController {
         print('token_expired');
         final result = await BaseApiService().refreshToken();
         if (result.isSuccess) {
-          videoUploadApiCall();
+          videoUploadApiCall(sessionID);
         }
         throw Exception(response.data.toString());
       }
@@ -339,4 +302,46 @@ class UploadVideoController extends GetxController {
     }
   }
 
+  //TODO: Get challenges list API Call
+  Future<void> getChallengesListApiCall() async {
+
+    final authToken = await sharedPref.getAuthToken;
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken'
+    };
+
+    final response = await BaseApiService().getMethod<ChallengesListModel>(
+      endpoint: Endpoints.challenges,
+      headers: header,
+      showLoader: false,
+      fromJson: (json) => ChallengesListModel.fromJson(json),
+    );
+
+    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
+      print('get challenge ${response.data?.data?.challenges?.length}');
+
+      sessionID = response.data?.data?.sessionId ?? '';
+      // challengeListModel.value = response.data?.data?.challenges ?? [];
+
+      // Extract instructions into List<String>
+      // randomTexts = List<String>.from(
+      //     challengeListModel.map((challenge) => capitalizeWords(challenge.instruction ?? ''))
+      // );
+
+
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      print('response.tokenExpired ${response.tokenExpired}');
+      if(response.tokenExpired == true){
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          getChallengesListApiCall();
+        }
+      } else{
+        // Get.snackbar('Failed', response.message ?? 'failed');
+      }
+    }
+  }
 }

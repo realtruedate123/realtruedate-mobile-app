@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
+import 'package:real_true_date/data/login_signup/auth_controller.dart';
+import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/login_signup/model/register_model.dart';
+import 'package:real_true_date/data/login_signup/view/auth_screen.dart';
 import 'package:real_true_date/data/profile_tab/model/profile_model.dart';
 import 'package:real_true_date/helper/string_class.dart';
 import 'package:real_true_date/routes/routes.dart';
@@ -14,6 +18,9 @@ class ProfileTabController extends GetxController {
   /// UI State
   final isLoading = false.obs;
   final errorMessage = ''.obs;
+  var userProfile = DataModel().obs; // ✅ initialize safely
+
+  final prefHelper = SharedPrefHelper();
 
   final List<ProfileSection> profileSections = [
     ProfileSection(
@@ -81,11 +88,32 @@ class ProfileTabController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
+    getUserData();
   }
 
   @override
   void onClose() {
     super.onClose();
+  }
+
+  /// Get saved local user data
+  void getUserData() async {
+    try {
+      // Fetch from API or storage
+      final data = await prefHelper.getPersonList();
+      userProfile.value = data ?? DataModel();
+
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Removed local data saved
+  void removePreference() {
+    prefHelper.clearAllPreferences();
+    // Get.offNamed(Routes.authPage);
+    // Get.offAll(() => AuthController());
+    Get.deleteAll();
+    Get.offAllNamed(Routes.authPage);
   }
 }

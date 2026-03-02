@@ -301,7 +301,7 @@ class OnBoardingPage extends StatelessWidget {
                 CarouselImage.assetPng('assets/png/sd_dummy_one.png'),
                 CarouselImage.assetPng('assets/png/sd_dummy_one.png'),
               ],
-              height: screenHeight * 0.58,
+              height: screenHeight * 0.57,
               autoPlay: true,
               enlargeCenterPage: true,
               initialPage: 0,

@@ -23,6 +23,8 @@ class OtpController extends GetxController {
 
   /// Button enable state
   final isLoginEnabled = false.obs;
+  final TextEditingController otpController = TextEditingController();
+  final FocusNode focusNode = FocusNode();
 
   @override
   void onInit() {
@@ -110,9 +112,15 @@ class OtpController extends GetxController {
           sharedPref.saveAuthToken(response.data?.data?.tokens?.access ?? '')
         ]);
 
-        Get.toNamed(
-          Routes.uploadPhotoPage,
+        /// Open next step info page
+        Get.toNamed(Routes.confirmationInfo, arguments: {
+            'initialIndex': 0,
+          },
         );
+
+        // Get.toNamed(
+        //   Routes.uploadVideoPage,
+        // );
       }
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();

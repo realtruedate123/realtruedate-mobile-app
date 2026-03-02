@@ -15,4 +15,9 @@ class Endpoints {
   static const String getPhotos = 'photos';
   static const String refreshToken = 'token/refresh';
   static const String meApi = 'me';
+  static const String challenges = 'challenges';
+  static const String getDreamCatalog = 'dream-date/catalog';
+  static const String saveDreamDateSelect = 'dream-date/select';
+  static const String getFeed = 'feed';
+  static const String swipeCard = 'swipe';
 }

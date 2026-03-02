@@ -47,6 +47,7 @@ class AuthScreen extends GetView<AuthController> {
                             return AuthHeader(
                               title: isSignup ? 'Join TrueDate\nToday!' : 'Hello,\nWelcome Back!',
                               subtitle: isSignup ? 'Real people, real connections – powered by AI' : 'Please enter your email and password details to access your account.',
+                              step: isSignup,
                             );
                           }),
                           // SizedBox(height: 20.h),

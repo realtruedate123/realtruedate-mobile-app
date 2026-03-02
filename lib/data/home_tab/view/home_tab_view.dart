@@ -23,51 +23,89 @@ class HomeTabView extends StatelessWidget {
         CupertinoPageScaffold(
           backgroundColor: CupertinoColors.white,
           child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.70,
+            height: MediaQuery.of(context).size.height * 0.68,
             // width: MediaQuery.of(context).size.width - 100,
-            child: AppinioSwiper(
-              controller: controller.swiperController,
-              cardCount: 10,
-              cardBuilder: (BuildContext context, int index) {
-                return ProfileSwipeCard(
-                  onCancel: () {
-                    controller.swiperController.swipeLeft();
-                  },
-                  onLike: () {
-                    controller.swiperController.swipeRight();
-                  },
-                  onFavorites: () {
-                    controller.swiperController.swipeUp();
-                  },
-                  onPhoto: () {
-                    print('click photo');
-                    Get.toNamed(
-                        Routes.userProfileView,
-                    );
-                  },
+            child:
+            Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (controller.feedListModel.isEmpty) {
+                return const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.person_off, size: 64, color: Colors.grey),
+                      SizedBox(height: 16),
+                      Text(
+                        'No profiles available',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 );
-              },
+              }
 
-              onSwipeBegin: (previousIndex, targetIndex, activity) {
-                print('Swipe started from $previousIndex to $targetIndex');
-              },
+              return AppinioSwiper(
+                controller: controller.swiperController,
+                cardCount: controller.feedListModel.length,
 
-              onSwipeEnd: (previousIndex, targetIndex, activity) {
-                print('Swipe ended from $previousIndex to $targetIndex');
-              },
+                // Swipe configuration
+                swipeOptions: const SwipeOptions.only(
+                  left: true,
+                  right: true,
+                  up: false,
+                  down: false,
+                ),
 
-              onSwipeCancelled: (activity) {
-                print('Swipe was cancelled');
-              },
+                cardBuilder: (context, index) {
+                  final item = controller.feedListModel[index];
 
-              onCardPositionChanged: (position) {
-                print('Card pos: $position');
-              },
+                  return ProfileSwipeCard(
+                    name: item.firstName,
+                    age: item.age,
+                    city: [item.city, item.state]
+                        .where((e) => e != null && e.isNotEmpty)
+                        .join(' '),
+                    imageUrl: item.photoUrl ?? '',
+                    isVerified: item.isVerified,
 
-              onEnd: () {
-                print('No more cards');
-              },
-            ),
+                    // Action handlers
+                    onCancel: () => controller.swiperController.swipeLeft(),
+                    onLike: () => controller.swiperController.swipeRight(),
+                    onFavorites: () => controller.swiperController.swipeUp(),
+                    onPhoto: () {
+                      debugPrint('Photo clicked for index: $index');
+                      Get.toNamed(Routes.userProfileView);
+                    },
+                  );
+                },
+
+                // Optional callbacks
+                onSwipeBegin: (previousIndex, targetIndex, activity) {
+                  debugPrint('Swipe started: $previousIndex → $targetIndex');
+                },
+
+                onSwipeEnd: (previousIndex, targetIndex, activity) {
+                  debugPrint('Swipe ended: $previousIndex → $targetIndex');
+                  print('activity.direction ${activity.direction}');
+                  // Optional: Handle like/dislike logic here
+                  if (activity.direction == AxisDirection.right) {
+                    controller.swipeCardApiCall('right');
+                  } else if (activity.direction == AxisDirection.left) {
+                    controller.swipeCardApiCall('left');
+                  }
+                },
+
+                onEnd: () {
+                  debugPrint('No more cards');
+                  controller.feedListModel.value = [];
+                  // Optional: Load more cards
+                  // controller.loadMoreProfiles();
+                },
+              );
+            }),
           ),
         )
           ],

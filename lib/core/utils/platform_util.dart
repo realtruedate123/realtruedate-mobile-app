@@ -3,6 +3,10 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:device_marketing_names/device_marketing_names.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
+
 class PlatformUtil {
   // static const String _deviceIdKey = "device_id";
 
@@ -89,6 +93,45 @@ class PlatformUtil {
     } catch (e) {
       debugPrint("❌ Error getting device info: $e");
       return "Error";
+    }
+  }
+}
+
+class DeviceUtils {
+  static final Uuid _uuid = Uuid();
+
+  /// Returns a unique device ID for Android or iOS
+  static Future<String> getDeviceUDID() async {
+    final deviceInfo = DeviceInfoPlugin();
+
+    try {
+      if (Platform.isAndroid) {
+        final androidInfo = await deviceInfo.androidInfo;
+
+        // androidInfo.id is the closest unique ID, fallback to UUID
+        final id = androidInfo.id ?? _uuid.v4();
+        final model = androidInfo.model;
+        final brand = androidInfo.brand;
+        final version = androidInfo.version.release;
+
+        debugPrint("Android: $brand $model ($version) - $id");
+        return id;
+      } else if (Platform.isIOS) {
+        final iosInfo = await deviceInfo.iosInfo;
+
+        final id = iosInfo.identifierForVendor ?? _uuid.v4();
+        final model = iosInfo.utsname.machine;
+        final name = iosInfo.name;
+        final version = iosInfo.systemVersion;
+
+        debugPrint("iOS: $name $model ($version) - $id");
+        return id;
+      } else {
+        return _uuid.v4(); // fallback for other platforms
+      }
+    } catch (e) {
+      debugPrint("❌ Error getting device info: $e");
+      return _uuid.v4(); // fallback UUID
     }
   }
 }
