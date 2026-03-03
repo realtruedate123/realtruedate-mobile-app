@@ -146,11 +146,11 @@ response.statusCode == 200 &&
 
     if (response.isSuccess && response.statusCode == 200) {
       // Success feedback
-      Get.snackbar(
-        'Success',
-        'Selection submitted successfully!',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      // Get.snackbar(
+      //   'Success',
+      //   'Selection submitted successfully!',
+      //   snackPosition: SnackPosition.BOTTOM,
+      // );
 
       // Optional: clear selection after submit
       controller.selectedCatalogListModel.clear();
@@ -160,7 +160,7 @@ response.statusCode == 200 &&
       // Get.offAll(() => BottomNavWrapper());
 
       Get.toNamed(Routes.confirmationInfo, arguments: {
-        'initialIndex': 2,
+        'initialIndex': 1,
         },
       );
 

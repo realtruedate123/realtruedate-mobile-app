@@ -197,6 +197,10 @@ class ProfileTabView extends StatelessWidget {
   void _buildMenuItemIndex(String name, BuildContext context) {
       if(name == 'My Profile'){
         Get.toNamed(Routes.editProfileView);
+      } else if(name == 'Saved Profiles'){
+        Get.toNamed(Routes.savedProfileView);
+      } else if(name == 'Change Password'){
+        Get.toNamed(Routes.changePassword);
       }
       else if(name == 'Log Out'){
         showDialog(

@@ -76,6 +76,7 @@ class UploadPhotoController extends GetxController {
 
     final XFile? image = await _picker.pickImage(
       source: ImageSource.camera,
+      preferredCameraDevice: CameraDevice.front,
       // imageQuality: 50,
     );
 
@@ -119,7 +120,7 @@ class UploadPhotoController extends GetxController {
 
     // Get.toNamed(Routes.selectDreamPartnerView,);
     Get.toNamed(Routes.confirmationInfo, arguments: {
-        'initialIndex': 1,
+        'initialIndex': 3,
       },
     );
   }

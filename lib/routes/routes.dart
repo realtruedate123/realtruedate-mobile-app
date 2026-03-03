@@ -19,4 +19,6 @@ class Routes {
   static const selectDreamPartnerView = "/selectDreamPartnerView";
   static const customCamera = "/customCamera";
   static const confirmationInfo = "/confirmationInfo";
+  static const changePassword = "/changePassword";
+  static const savedProfileView = "/savedProfileView";
 }

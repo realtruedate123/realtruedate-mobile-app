@@ -69,6 +69,9 @@ class AppIcons{
   static const String userLogoutIcon = 'assets/svg/ic_user_logout.svg';
   static const String rightArrowIcon = 'assets/svg/ic_right_arrow.svg';
   static const String userPlaceholder = 'assets/svg/user_placeholder.svg';
+  static const String driveEtaIcon = 'assets/svg/ic_drive-eta.svg';
+  static const String editProfileIcon = 'assets/svg/ic_edit_profile.svg';
+  static const String starProfileIcon = 'assets/svg/ic_star_profile.svg';
 
   /// PNG
   static const String splashImagePng = 'assets/png/bg_splash.png';
@@ -560,6 +563,27 @@ class AppIcons{
   static Widget getUserPlaceHolder(BuildContext context, {double size = 24}) {
     return SvgPicture.asset(
         userPlaceholder,
+        width: size.w,
+        height: size.h
+    );
+  }
+  static Widget getDriveEtaIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        driveEtaIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+  static Widget getEditProfileIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        editProfileIcon,
+        width: size.w,
+        height: size.h
+    );
+  }
+  static Widget getStarProfileIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+        starProfileIcon,
         width: size.w,
         height: size.h
     );

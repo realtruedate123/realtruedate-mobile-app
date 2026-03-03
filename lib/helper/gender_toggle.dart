@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 
 class GenderToggle extends StatelessWidget {
-  final AuthController controller;
+  final dynamic controller;
 
   const GenderToggle({super.key, required this.controller});
 

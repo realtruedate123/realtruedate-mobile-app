@@ -1,6 +1,7 @@
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:real_true_date/core/utils/GlobalSkeletonWrapper.dart';
 import 'package:real_true_date/data/home_tab/controller/home_tab_controller.dart';
 import 'package:real_true_date/data/home_tab/swipe_card/profile_swipe_card.dart';
 import 'package:get/get.dart';
@@ -27,9 +28,9 @@ class HomeTabView extends StatelessWidget {
             // width: MediaQuery.of(context).size.width - 100,
             child:
             Obx(() {
-              if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
-              }
+              // if (controller.isLoading.value) {
+              //   return GlobalSkeletonWrapper(type: SkeletonType.home);
+              // }
 
               if (controller.feedListModel.isEmpty) {
                 return const Center(

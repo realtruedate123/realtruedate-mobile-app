@@ -8,6 +8,8 @@ class TransparentBackAppBar extends StatelessWidget
   final double height;
   final Widget? leadingIcon;
   final bool backHide;
+  final String? title; // optional title
+  final TextStyle? titleStyle; // optional custom text style
 
   const TransparentBackAppBar({
     super.key,
@@ -15,6 +17,8 @@ class TransparentBackAppBar extends StatelessWidget
     this.height = 50,
     this.leadingIcon,
     this.backHide = false,
+    this.title,
+    this.titleStyle,
   });
 
   @override
@@ -25,9 +29,18 @@ class TransparentBackAppBar extends StatelessWidget
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
+      centerTitle: true, // center the title
+      title: title != null
+          ? Text(
+        title!,
+        style: titleStyle ?? Theme.of(context).textTheme.titleMedium,
+      )
+          : null,
       toolbarHeight: height,
-      leading: IconButton(
-        icon: backHide ? Container() : leadingIcon ??
+      leading: backHide
+          ? null
+          : IconButton(
+        icon: leadingIcon ??
             AppIcons.getBackOutLineIcon(context, size: 30),
         onPressed: onBack ?? () => Navigator.pop(context),
       ),

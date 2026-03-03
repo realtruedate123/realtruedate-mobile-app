@@ -1,14 +1,25 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:real_true_date/core/themes/app_icons.dart';
-import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'package:real_true_date/core/themes/app_icons.dart';
+import 'package:real_true_date/core/themes/app_theme.dart';
+import 'package:real_true_date/data/login_signup/widgets/auth_input.dart';
+import 'package:real_true_date/data/login_signup/widgets/input_container.dart';
+import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:real_true_date/data/profile_tab/controller/edit_profile_controller.dart';
 import 'package:real_true_date/data/profile_tab/model/profile_model.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
+import 'package:real_true_date/helper/gender_toggle.dart';
 
 class EditProfileView extends StatelessWidget {
   final controller = Get.put(EditProfileController());
+
   EditProfileView({super.key});
 
   @override
@@ -17,90 +28,427 @@ class EditProfileView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.whiteColor,
-      body: Obx(
-            () => SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [
-
-              /// Gradient Header
-              Container(
-                height: 200.h,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFFEE9EA9),
-                      Color(0xFF5D5494),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            /// Gradient Header
+            Stack(
+              children: [
+                /// Gradient background
+                Container(
+                  height: 250.h,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: const [Color(0xFFEE9EA9), Color(0xFF5D5494)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                   ),
                 ),
-              ),
 
-              /// Content Card + Avatar
-              Transform.translate(
-                offset: Offset(0, 0.h),
-                child: Stack(
-                    alignment: Alignment.topCenter,
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.fromLTRB(20.w, 70.h, 20.w, 30.h),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(30.r),
+                /// Custom header (on top of gradient)
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top + 16.h,
+                      left: 16.w,
+                      right: 16.w,
+                      bottom: 16.h,
+                    ),
+                    color: Colors.transparent,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        /// Title in center
+                        Text(
+                          'Edit Profile',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: AppFontType.urbanist.toString(),
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
                           ),
                         ),
-                        child: Column(
-                          children: [
 
-                            SizedBox(height: 30.h),
-
-                            /// Dynamic Sections
-                            // ...controller.profileSections
-                            //     .map((section) => _buildSection(section))
-                            //     .toList(),
-                          ],
+                        /// Back button aligned left
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: AppIcons.getBackOutLineIcon(context),
+                          ),
                         ),
-                      ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
 
-                      /// Avatar
-                      Transform.translate(
-                        offset: Offset(0, -70.h),
-                        child: Column(
-                          children: [
-                            CircleAvatar(
-                              radius: 50.r,
-                              backgroundColor: Colors.transparent,
-                              child: CircleAvatar(
-                                radius: 50.r,
-                                backgroundImage: const NetworkImage(
-                                    'https://i.pravatar.cc/150?img=12'),
+            /// Content Card + Avatar
+            Transform.translate(
+              offset: Offset(0, -25.h),
+              child: Stack(
+                alignment: Alignment.topCenter,
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.fromLTRB(20.w, 70.h, 20.w, 30.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(30.r),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 10,
+                          spreadRadius: 1,
+                          offset: const Offset(0, -2),
+                          color: Colors.black.withOpacity(0.05),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Form(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(height: 5.h),
+
+                              /// Name
+                              AuthInput(
+                                hint: 'Name',
+                                controller: controller.nameCtrl,
+                                icon: AppIcons.getPeopleIcon(context),
+                              ),
+                              SizedBox(height: 5.h),
+
+                              /// DOB picker
+                              InputContainer(
+                                height: 58.h,
+                                child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () => showDobPicker(context, controller),
+                                  child: Obx(
+                                        () => Row(
+                                      children: [
+                                        AppIcons.getBirthdayIcon(
+                                          context,
+                                          color: controller.dob.value == null
+                                              ? theme.iconTintColor
+                                              : theme.primaryColor,
+                                        ),
+                                        SizedBox(width: 20.w),
+                                        Expanded(
+                                          child: Text(
+                                            controller.dob.value == null
+                                                ? 'When your Birthday?'
+                                                : DateFormat('dd MM yyyy').format(
+                                              controller.dob.value!,
+                                            ),
+                                            style: TextStyle(
+                                              fontSize: MediaQuery.textScalerOf(context).scale(15),
+                                              color: controller.dob.value == null
+                                                  ? theme.iconTintColor
+                                                  : theme.primaryColor,
+                                            ),
+                                          ),
+                                        ),
+                                        AppIcons.getCalendarIcon(context),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox(height: 25.h),
+
+                              /// email
+                              AuthInput(
+                                hint: 'Email Address',
+                                controller: controller.emailCtrl,
+                                icon: AppIcons.getEmailIcon(context),
+                                keyboardType: TextInputType.emailAddress,
+                                // enabled: false,
+                                validator: (v) {
+                                  if (v == null || v.isEmpty) return 'Email required';
+                                  if (!GetUtils.isEmail(v)) return 'Invalid email address';
+                                  return null;
+                                },
+                              ),
+
+                              SizedBox(height: 5.h),
+
+                              /// Gender picker (Looking for)
+                              InputContainer(
+                                height: 58.h,
+                                child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () => showGenderPicker(context, controller),
+                                  child: Obx(
+                                        () => Row(
+                                      children: [
+                                        AppIcons.getPeopleIcon(
+                                          context,
+                                          color: controller.lookingGender.value == null
+                                              ? theme.iconTintColor
+                                              : theme.primaryColor,
+                                        ),
+                                        SizedBox(width: 20.w),
+                                        Expanded(
+                                          child: Text(
+                                            controller.lookingGender.value ??
+                                                'Looking for (Male/Female)',
+                                            style: TextStyle(
+                                              fontSize: MediaQuery.textScalerOf(context).scale(15),
+                                              color: controller.lookingGender.value == null
+                                                  ? theme.iconTintColor
+                                                  : theme.primaryColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: AppIcons.getDownArrowIcon(
+                                            context,
+                                            size: 18,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 25.h),
+
+                              /// How far are you willing to drive?
+                              Obx(
+                                    () => AuthInput(
+                                  hint: 'How far are you willing to drive?',
+                                  controller: controller.farWilingToDriveCtrl,
+                                  icon: AppIcons.getDriveEtaIcon(context),
+                                  errorText: controller.farWilingToDriveError.value,
+                                ),
+                              ),
+
+                              SizedBox(height: 5.h),
+                              Row(
+                                children: [
+                                  AppTextFont(
+                                    'Select your gender',
+                                    font: AppFontType.inter,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w300,
+                                    color: theme.primaryColor,
+                                  ),
+                                  const Spacer(),
+                                ],
+                              ),
+                              SizedBox(height: 5.h),
+
+                              GenderToggle(controller: controller),
+
+                              SizedBox(height: 25.h),
+
+                              /// Bio TextField
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 18,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(28),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.08),
+                                      blurRadius: 16,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: TextField(
+                                  maxLines: 5,
+                                  decoration: InputDecoration(
+                                    hintText: "Write Short bio",
+                                    hintStyle: TextStyle(
+                                      color: theme.iconTintColor,
+                                      fontSize: MediaQuery.textScalerOf(context).scale(15),
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    border: InputBorder.none,
+                                  ),
+                                  style: TextStyle(
+                                    fontFamily: AppFontType.lato.toString(),
+                                    fontSize: 16,
+                                    color: theme.primaryColor,
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox(height: 25.h),
+
+                              PrimaryButton(
+                                title: 'Update Profile',
+                                onTap: () {
+                                  print('Update Profile');
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  /// Avatar - Fixed: Removed nested Obx
+                  Positioned(
+                    top: -60.h,
+                    child: Obx(
+                          () => Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          /// Avatar
+                          CircleAvatar(
+                            radius: 60.r,
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: controller.avatarPath.value.isNotEmpty
+                                ? FileImage(File(controller.avatarPath.value)) as ImageProvider
+                                : null,
+                            child: controller.avatarPath.value.isEmpty
+                                ? AppIcons.getUserPlaceHolder(
+                              context,
+                              size: 125,
+                            )
+                                : null,
+                          ),
+
+                          /// Edit Button
+                          Positioned(
+                            bottom: 16,
+                            right: 16,
+                            child: GestureDetector(
+                              onTap: () => controller.showImagePickerOptions(context),
+                              child: AppIcons.getEditProfileIcon(
+                                context,
+                                size: 24,
                               ),
                             ),
-                            SizedBox(height: 10.h,),
-                            /// Name
-                            AppTextFont(
-                              'Ganesha Kencana',
-                              font: AppFontType.urbanist,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ]
-                ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  void showGenderPicker(
+      BuildContext context,
+      EditProfileController controller,
+      ) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: ['Male', 'Female'].map((e) {
+              return ListTile(
+                title: Text(e),
+                onTap: () {
+                  controller.setLookingGender(e);
+                  Get.back();
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+
+  void showDobPicker(BuildContext context, EditProfileController controller) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /// Drag handle
+              SizedBox(height: 5.h),
+              Container(
+                width: 40.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade400,
+                  borderRadius: BorderRadius.circular(2.r),
+                ),
+              ),
+              SizedBox(height: 12.h),
+
+              /// Header with Close
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(width: 48.w),
+                    Text(
+                      'Select Date',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Get.back(),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(
+                height: 200.h,
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.date,
+                  initialDateTime: controller.dob.value ?? DateTime(2000),
+                  maximumDate: DateTime.now(),
+                  onDateTimeChanged: controller.setDob,
+                ),
+              ),
+
+              SizedBox(height: 12.h),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -127,10 +475,7 @@ class EditProfileView extends StatelessWidget {
   Widget _buildMenuItem(ProfileMenuItem item) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(vertical: 4.w),
-      leading: Container(
-        padding: EdgeInsets.all(0),
-        child: item.icon,
-      ),
+      leading: Container(padding: EdgeInsets.zero, child: item.icon),
       title: AppTextFont(
         item.title,
         font: AppFontType.urbanist,

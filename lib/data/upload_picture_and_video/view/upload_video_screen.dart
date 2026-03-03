@@ -79,7 +79,17 @@ class UploadVideoScreen extends StatelessWidget {
                                   SizedBox(height: 20.h),
 
                                   _recordCard(context),
-                                  if(controller.videoFile.value != null)...[
+                                  if(controller.compressingProcessDisplay.value) ...[
+                                    SizedBox(height: 20.h),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        CircularProgressIndicator(),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10.h),
+                                  ]
+                                 else if(controller.videoFile.value != null)...[
                                     SizedBox(height: 20.h),
                                     _uploadedVideoTile(context),
                                     SizedBox(height: 10.h),
@@ -173,7 +183,7 @@ class UploadVideoScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 10.h,),
                   AppTextFont(
-                    'Step 2 of 3 – Live Video Verification',
+                    'Step 3 of 3 – Live Video Verification',
                     font: AppFontType.manrope,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,

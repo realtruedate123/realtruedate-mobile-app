@@ -223,7 +223,7 @@ class UploadPictureScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 10.h,),
                                 AppTextFont(
-                                  'Step 2 of 3 – Live Photo Verification',
+                                  'Step 3 of 3 – Live Photo Verification',
                                   font: AppFontType.manrope,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,

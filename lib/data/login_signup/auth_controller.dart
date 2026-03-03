@@ -7,7 +7,9 @@ import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/core/utils/platform_util.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/login_signup/model/register_model.dart';
+import 'package:real_true_date/data/select_dream_partner/view/select_dream_partner_view.dart';
 import 'package:real_true_date/helper/bottom_nav_wrapper.dart';
+import 'package:real_true_date/helper/custom_dialog/authenticating_dialog.dart';
 import 'package:real_true_date/helper/string_class.dart';
 import 'package:real_true_date/routes/routes.dart';
 import 'package:intl/intl.dart';
@@ -134,6 +136,9 @@ class AuthController extends GetxController {
   /// Login api call
   Future<void> login() async {
     // Get.offAll(() => BottomNavWrapper());
+
+    // Get.offAll(() => SelectDreamPartnerView());
+
 
     emailError.value = null;
     passwordError.value = null;
@@ -271,7 +276,9 @@ class AuthController extends GetxController {
       singUpPasswordCtrl.text = '';
       nameCtrl.text = '';
       zipCtrl.text = '';
-      lookingGender.value = '';
+      lookingGender.value = null;
+      dob.value = null;
+      agreeTC.value = false;
 
       /// Checked profile verify or not
       if(response.data?.data?.tokens != null){
@@ -280,17 +287,17 @@ class AuthController extends GetxController {
           sharedPref.saveAuthToken(response.data?.data?.tokens?.access ?? '')
         ]);
         await Future.delayed(const Duration(seconds: 1));
+        /// Checked dream data profile complete or not
+        if(response.data?.data?.verificationStatus?.hasDreamDateProfile == false){
+          Get.toNamed(Routes.selectDreamPartnerView);
+        }
         /// Checked video upload or not
-        if(response.data?.data?.verificationStatus?.videoVerified == false){
+        else if(response.data?.data?.verificationStatus?.videoVerified == false){
           Get.toNamed(Routes.uploadVideoPage);
         }
         /// Checked photo upload or not
         else if(response.data?.data?.verificationStatus?.photoVerified == false){
           Get.toNamed(Routes.uploadPhotoPage);
-        }
-        /// Checked dream data profile complete or not
-        else if(response.data?.data?.verificationStatus?.hasDreamDateProfile == false){
-          Get.toNamed(Routes.selectDreamPartnerView);
         }
         else {
           // Get.toNamed(Routes.profileUnderReviewScreen);
@@ -307,7 +314,7 @@ class AuthController extends GetxController {
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      errorMessageStepTwo.value = response.message ?? 'Registration failed';
+      errorMessageStepTwo.value = 'Registration failed';
       // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
@@ -343,8 +350,13 @@ class AuthController extends GetxController {
         sharedPref.saveAuthToken(response.data?.data?.tokens?.access ?? '')
       ]);
 
+
+      /// Checked dream data profile complete or not
+      if(response.data?.data?.verificationStatus?.hasDreamDateProfile == false){
+        Get.toNamed(Routes.selectDreamPartnerView);
+      }
       /// Checked video upload or not
-      if(response.data?.data?.verificationStatus?.videoVerified == false){
+      else if(response.data?.data?.verificationStatus?.videoVerified == false){
         Get.toNamed(Routes.uploadVideoPage);
       }
       /// Checked photo upload or not
@@ -353,10 +365,6 @@ class AuthController extends GetxController {
           sharedPref.saveVideoVerificationFlag(response.data?.data?.verificationStatus?.videoVerified ?? false),
         ]);
         Get.toNamed(Routes.uploadPhotoPage);
-      }
-      /// Checked dream data profile complete or not
-      else if(response.data?.data?.verificationStatus?.hasDreamDateProfile == false){
-        Get.toNamed(Routes.selectDreamPartnerView);
       }
       else { /// Login User
         await Future.wait([
@@ -370,7 +378,7 @@ class AuthController extends GetxController {
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      errorMessage.value = response.message ?? 'Login failed';
+      errorMessage.value = 'Login failed';
       // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }

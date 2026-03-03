@@ -9,7 +9,7 @@ import 'package:real_true_date/routes/routes.dart';
 class HomeAppbarWrapper extends StatelessWidget {
   const HomeAppbarWrapper({super.key});
 
-  static double height = 80.h;
+  static double height = 85.h;
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +17,9 @@ class HomeAppbarWrapper extends StatelessWidget {
 
     return Container(
       color: Colors.white,
-      height: height + MediaQuery.of(context).padding.top,
+      // height: height + MediaQuery.of(context).padding.top,
       padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top,
+        // top: MediaQuery.of(context).padding.top,
         left: 16.w,
         right: 16.w,
       ),
@@ -50,7 +50,7 @@ class HomeAppbarWrapper extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: theme.blackColor,
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 4.h),
                 AppTextFont(
                   'Meet RealTrueDate – 100% Real People &\nPictures',
                   font: AppFontType.lato,

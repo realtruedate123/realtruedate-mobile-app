@@ -32,6 +32,7 @@ class HomeTabController extends GetxController {
   void onInit() {
     super.onInit();
     Get.find<RootTabController>().switchTo(0); // always reset to home
+    isLoading.value = true;
     getUserData();
     getFeedListApiCall();
     swiperController = AppinioSwiperController();
