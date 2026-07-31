@@ -15,3 +15,28 @@ Future<File> flipImage(File file) async {
 
   return flippedFile;
 }
+
+Future<File> ProcessCapturedImage({
+  required File file,
+  required bool isFrontCamera,
+}) async {
+  final bytes = await file.readAsBytes();
+
+  final decoded = img.decodeImage(bytes);
+  if (decoded == null) return file;
+
+  // Fix EXIF orientation
+  img.Image processed = img.bakeOrientation(decoded);
+
+  // Remove mirror effect for front camera
+  if (isFrontCamera) {
+    processed = img.flipHorizontal(processed);
+  }
+
+  final newFile = File(file.path);
+  await newFile.writeAsBytes(
+    img.encodeJpg(processed, quality: 95),
+  );
+
+  return newFile;
+}

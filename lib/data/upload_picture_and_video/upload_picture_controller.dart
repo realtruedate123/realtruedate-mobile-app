@@ -5,15 +5,13 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
+import 'package:real_true_date/data/login_signup/model/login_model.dart';
+import 'package:real_true_date/data/upload_picture_and_video/custom_camera/camera_screen.dart';
 import 'package:real_true_date/data/upload_picture_and_video/model/photo_list_model.dart';
-import 'package:real_true_date/data/upload_picture_and_video/widget/custom_camera.dart';
 import 'package:real_true_date/helper/common_model.dart';
 import 'package:real_true_date/helper/custom_dialog/authenticating_dialog.dart';
 import 'package:real_true_date/helper/string_class.dart';
 import 'package:real_true_date/routes/routes.dart';
-import 'package:image/image.dart' as img;
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 
 class UploadPhotoController extends GetxController {
   /// CONTROLLERS
@@ -31,10 +29,17 @@ class UploadPhotoController extends GetxController {
   final sharedPref = SharedPrefHelper();
   File? localImageFile;
   late var isVideoVerify = false;
+  String isComing = '';
+  String selectedPhotoID = '';
 
   @override
   void onInit() {
     super.onInit();
+
+    final String args = Get.arguments ?? '';
+    print('args $args');
+    isComing = args;
+
     getImageListApiCall();
     getVideoFlag();
   }
@@ -100,10 +105,30 @@ class UploadPhotoController extends GetxController {
     }*/
   }
 
+  void openCameraAndUpload() async {
+    // 1. Open Camera screen & wait for confirmed preview result
+    localImageFile = await Get.to<File?>(() => const CameraScreen());
+
+    // 2. Upload to server only if user tapped "Use Photo"
+    if (localImageFile != null) {
+      // int fSize = await localImageFile.length();
+      // print('Confirmed Mirrored Image Size: $fSize bytes');
+
+      // Trigger your upload API call
+      uploadImagesApiCall();
+    }
+  }
+
   void removePhoto(int index) {
     // photoListModel.removeAt(index);
     final photoId = photoListModel[index].id ?? '';
     deleteSingleImageApiCall(photoId);
+  }
+
+  void changePhoto(int index){
+    final photoId = photoListModel[index].id ?? '';
+    selectedPhotoID = photoId;
+    openCameraAndUpload();
   }
 
   Future<void> getVideoFlag() async {
@@ -131,13 +156,21 @@ class UploadPhotoController extends GetxController {
 
     final authToken = await sharedPref.getAuthToken;
 
+    var url = Endpoints.uploadVerificationPhoto;
+    var method = 'POST';
+    if(isComing == 'update_video'){
+      method = 'PUT';
+      url = '${Endpoints.getPhotos}/$selectedPhotoID/update';
+    }
+    print('$isComing update photo url $url');
     final header = {
       'Content-Type': 'application/json',
       "Authorization": 'Bearer $authToken'
     };
     errorMessage.value = '';
     final response = await BaseApiService().formDataWithFile<CommonModel>(
-      endpoint: Endpoints.uploadVerificationPhoto,
+      method: method,
+      endpoint: url,
       file: localImageFile,
       fileField: 'photo',
       headers: header,
@@ -150,6 +183,10 @@ class UploadPhotoController extends GetxController {
 
     if (response.isSuccess && response.statusCode == 200) {
       getImageListApiCall();
+      // if(isButtonEnabled) {
+        print('Go to feed page');
+        getUserDataApiCall();
+      // }
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
@@ -211,6 +248,7 @@ class UploadPhotoController extends GetxController {
   Future<void> deleteSingleImageApiCall(String photoId) async {
     final authToken = await sharedPref.getAuthToken;
     final pid = photoId;
+    selectedPhotoID = photoId;
     final header = {
       'Content-Type': 'application/json',
       "Authorization": 'Bearer $authToken'
@@ -235,6 +273,43 @@ class UploadPhotoController extends GetxController {
         }
       }else {
         Get.snackbar('Failed', response.message ?? 'Picture upload failed');
+      }
+    }
+  }
+
+  Future<void> getUserDataApiCall() async {
+    final authToken = await sharedPref.getAuthToken;
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    final response = await BaseApiService().getMethod<LoginModel>(
+      endpoint: Endpoints.meApi,
+      headers: header,
+      showLoader: false,
+      fromJson: (json) => LoginModel.fromJson(json),
+    );
+
+    print('Get me api $header');
+
+    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
+      print('get me ${response.data?.data?.user?.id}');
+      await Future.wait([
+        sharedPref.saveIsLoggedIn(true),
+        sharedPref.savePersonList(response.data!.data!),
+        sharedPref.saveUserId(response.data!.data?.user?.id ?? '')
+      ]);
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          getUserDataApiCall();
+        }
+      } else {
+        // Get.snackbar('Failed', response.message ?? 'failed');
       }
     }
   }

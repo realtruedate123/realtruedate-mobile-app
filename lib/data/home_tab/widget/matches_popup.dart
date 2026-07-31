@@ -10,12 +10,33 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MatchPopup extends StatelessWidget {
-  const MatchPopup({super.key});
+  final String userId;
+  final String name;
+  final int age;
+  final String city;
+  final String state;
+  final String photoUrl;
+  final bool isVerified;
+  final String userProfileUrl;
+
+  final VoidCallback onMessage;
+  const MatchPopup({
+    super.key,
+    required this.onMessage,
+    required this.userId,
+    required this.name,
+    required this.age,
+    required this.city,
+    required this.state,
+    required this.photoUrl,
+    required this.isVerified,
+    required this.userProfileUrl
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
-
+    print('userProfileUrl $userProfileUrl');
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -47,7 +68,7 @@ class MatchPopup extends StatelessWidget {
                         top: 0,
                         child: _buildProfileImage(
                           context,
-                          "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&q=80",
+                          userProfileUrl,
                         ),
                       ),
 
@@ -57,7 +78,8 @@ class MatchPopup extends StatelessWidget {
                         top: 40,
                         child: _buildProfileImage(
                           context,
-                          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80",
+                          photoUrl
+                          // "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80",
                         ),
                       ),
 
@@ -91,7 +113,7 @@ class MatchPopup extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "Amanda Sugar, ",
+                        text: name.capitalize,
                         style: GoogleFonts.inter(
                             color: theme.blackColor,
                             fontWeight: FontWeight.w600,
@@ -99,7 +121,7 @@ class MatchPopup extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: "24",
+                        text: ', $age',
                         style: GoogleFonts.inter(
                             color: theme.blackColor,
                             fontWeight: FontWeight.w400,
@@ -113,7 +135,7 @@ class MatchPopup extends StatelessWidget {
                 SizedBox(height: 6.h),
 
                 AppTextFont(
-                  'Junior Chef',
+                  '$city, $state',
                   font: AppFontType.inter,
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -129,6 +151,7 @@ class MatchPopup extends StatelessWidget {
                   onTap: () {
                     print('click');
                     Get.back();
+                    onMessage();
                   },
                 ),
               ],

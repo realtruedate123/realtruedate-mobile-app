@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
@@ -223,7 +224,7 @@ class ProfileSwipeCard extends StatelessWidget {
                       ),
 
                       // Distance badge (example static for now)
-                      Positioned(
+                      /*Positioned(
                         top: 10.h,
                         left: 5.w,
                         child: Container(
@@ -239,7 +240,7 @@ class ProfileSwipeCard extends StatelessWidget {
                             color: theme.whiteColor,
                           ),
                         ),
-                      ),
+                      ),*/
 
                       // Verified badge
                       if (isVerified)
@@ -261,7 +262,7 @@ class ProfileSwipeCard extends StatelessWidget {
 
             // NAME & AGE
             AppTextFont(
-              '$name, $age',
+              '${name.capitalize}, $age',
               font: AppFontType.urbanist,
               fontSize: 24,
               fontWeight: FontWeight.w600,

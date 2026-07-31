@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
-import 'package:real_true_date/data/forgot_password/forgot_password_controller.dart';
-import 'package:real_true_date/data/login_signup/widgets/auth_header.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:real_true_date/data/login_signup/widgets/auth_input.dart';
-import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:real_true_date/data/profile_tab/controller/profile_tab_controller.dart';
 import 'package:real_true_date/data/profile_tab/model/profile_model.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/custom_dialog/confirmation_dialog.dart';
-import 'package:real_true_date/helper/string_class.dart';
-import 'package:real_true_date/helper/transparent_appbar.dart';
 import 'package:real_true_date/routes/routes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -111,9 +105,10 @@ class ProfileTabView extends StatelessWidget {
                             child: Center(
                                 child:
                                 CachedNetworkImage(
-                                  imageUrl: '',
+                                  imageUrl: controller.userProfile.value.user?.profileImage ?? '',
                                   imageBuilder: (context, imageProvider) => Container(
                                     decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(125.r), // Adjust radius value as needed
                                       image: DecorationImage(
                                         image: imageProvider,
                                         fit: BoxFit.cover, // This is the key for setting it as a cover image
@@ -194,13 +189,19 @@ class ProfileTabView extends StatelessWidget {
     );
   }
 
-  void _buildMenuItemIndex(String name, BuildContext context) {
+  Future<void> _buildMenuItemIndex(String name, BuildContext context) async {
       if(name == 'My Profile'){
-        Get.toNamed(Routes.editProfileView);
+        final result = await Get.toNamed(Routes.editProfileView);
+        if(result == true){
+          controller.getUserData();
+        }
       } else if(name == 'Saved Profiles'){
         Get.toNamed(Routes.savedProfileView);
       } else if(name == 'Change Password'){
         Get.toNamed(Routes.changePassword);
+      } else if(name == 'Update Video & Photos'){
+        Get.toNamed(Routes.uploadVideoPage, arguments: 'update_video');
+        // Get.toNamed(Routes.uploadPhotoPage, arguments: 'update_video');
       }
       else if(name == 'Log Out'){
         showDialog(

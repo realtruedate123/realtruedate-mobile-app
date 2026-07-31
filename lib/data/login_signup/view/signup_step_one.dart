@@ -75,7 +75,56 @@ class SignupStepOne extends GetView<AuthController> {
             errorText: controller.signUpEmailError.value,
           ),
           ),
-          /// Gender picker
+
+          /// Select Your Gender picker
+          InputContainer(
+            height: 58.h,
+            child: InkWell(
+              splashColor: Colors.transparent, // Hides the ripple
+              highlightColor: Colors.transparent, // Hides the click highlight
+              onTap: () => showSelectYourGenderPicker(context, controller),
+              child: Obx(() => Row(
+                children: [
+                  AppIcons.getPeopleIcon(context, color: controller.selectedGender.value == null
+                      ? theme.iconTintColor
+                      : theme.primaryColor),
+                  SizedBox(width: 20.w),
+                  Expanded(
+                    child: Text(
+                      controller.selectedGender.value ?? 'Gender',
+                      style: TextStyle(
+                        fontSize: MediaQuery.textScalerOf(context).scale(15),
+                        color: controller.selectedGender.value == null
+                            ? theme.iconTintColor
+                            : theme.primaryColor,
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: AppIcons.getDownArrowIcon(
+                      context,
+                      size: 18,
+                    ),
+                  ),
+                ],
+              )),
+            ),
+          ),
+          SizedBox(height: 20.h,),
+
+          /// Password
+          Obx(() => AuthInput(
+            hint: 'Password',
+            controller: controller.singUpPasswordCtrl,
+            icon: AppIcons.getPasswordIcon(context),
+            isPassword: true,
+            errorText: controller.signUpPasswordError.value,
+          ),
+          ),
+          // SizedBox(height: 5.h,),
+
+          /// Looking Gender picker
           InputContainer(
             height: 58.h,
             child: InkWell(
@@ -111,32 +160,22 @@ class SignupStepOne extends GetView<AuthController> {
             ),
           ),
           SizedBox(height: 20.h,),
-          /// Password
-          Obx(() => AuthInput(
-            hint: 'Password',
-            controller: controller.singUpPasswordCtrl,
-            icon: AppIcons.getPasswordIcon(context),
-            isPassword: true,
-            errorText: controller.signUpPasswordError.value,
-          ),
-          ),
-          // SizedBox(height: 5.h,),
 
           /// Select your gender
-          Align(
-            alignment: Alignment.centerLeft,
-            child: AppTextFont(
-              'Select your gender',
-              font: AppFontType.manrope,
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: theme.inactiveTabColor,
-              maxLines: 1,
-              textAlign: TextAlign.center,
-            ),
-          ),
-          SizedBox(height: 8.h,),
-          GenderToggle(controller: controller),
+          // Align(
+          //   alignment: Alignment.centerLeft,
+          //   child: AppTextFont(
+          //     'Select your gender',
+          //     font: AppFontType.manrope,
+          //     fontSize: 13,
+          //     fontWeight: FontWeight.w500,
+          //     color: theme.inactiveTabColor,
+          //     maxLines: 1,
+          //     textAlign: TextAlign.center,
+          //   ),
+          // ),
+          // SizedBox(height: 8.h,),
+          // GenderToggle(controller: controller),
 
           // SizedBox(height: 25.h,),
           /// Zipcode
@@ -271,6 +310,32 @@ class SignupStepOne extends GetView<AuthController> {
                 title: Text(e),
                 onTap: () {
                   controller.setLookingGender(e);
+                  Get.back();
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+
+  void showSelectYourGenderPicker(BuildContext context, AuthController controller) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: ['Male', 'Female'].map((e) {
+              return ListTile(
+                title: Text(e),
+                onTap: () {
+                  controller.setSelectYourGender(e);
                   Get.back();
                 },
               );

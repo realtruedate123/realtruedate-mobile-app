@@ -107,7 +107,7 @@ class ProfileModel {
   int? minAgePreference;
   int? maxAgePreference;
   int? maxDistance;
-  String? interests;
+  final List<String>? interests;
   bool? profileVisible;
   bool? showDistance;
   bool? showLastActive;
@@ -146,11 +146,17 @@ class ProfileModel {
     minAgePreference: json["min_age_preference"] as int,
     maxAgePreference: json["max_age_preference"] as int,
     maxDistance: json["max_distance"] as int,
-    interests: json["interests"] as String,
-    profileVisible: json["profile_visible"] as bool,
-    showDistance: json["show_distance"] as bool,
-    showLastActive: json["show_last_active"] as bool,
-    showAge: json["show_age"] as bool,
+    interests: json["interests"] == null ? [] : List<String>.from(json["interests"]!.map((x) => x)),
+    // profileVisible: json["profile_visible"] as bool,
+    // showDistance: json["show_distance"] as bool,
+    // showLastActive: json["show_last_active"] as bool,
+    // showAge: json["show_age"] as bool,
+
+    // Safe bool parsing (prevents Null crash)
+    profileVisible: json["profile_visible"] == true,
+    showDistance: json["show_distance"] == true,
+    showLastActive: json["show_last_active"] == true,
+    showAge: json["show_age"] == true,
   );
 
   Map<String, dynamic> toJson() => {
@@ -166,7 +172,7 @@ class ProfileModel {
     "min_age_preference": minAgePreference,
     "max_age_preference": maxAgePreference,
     "max_distance": maxDistance,
-    "interests": interests,
+    "interests": interests == null ? [] : List<dynamic>.from(interests!.map((x) => x)),
     "profile_visible": profileVisible,
     "show_distance": showDistance,
     "show_last_active": showLastActive,
@@ -216,6 +222,7 @@ class UserModel {
   int? tokens;
   String? createdAt;
   String? lastLogin;
+  String? profileImage;
 
   UserModel({
     this.id,
@@ -239,6 +246,7 @@ class UserModel {
     this.tokens,
     this.createdAt,
     this.lastLogin,
+    this.profileImage,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
@@ -263,6 +271,7 @@ class UserModel {
     tokens: json["tokens"] as int,
     createdAt: json["created_at"] as String,
     lastLogin: json["last_login"] as String,
+    profileImage: json["profile_image"] as String,
   );
 
   Map<String, dynamic> toJson() => {
@@ -287,6 +296,7 @@ class UserModel {
     "tokens": tokens,
     "created_at": createdAt,
     "last_login": lastLogin,
+    "profile_image": profileImage,
   };
 }
 

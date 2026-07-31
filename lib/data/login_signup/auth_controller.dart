@@ -8,6 +8,7 @@ import 'package:real_true_date/core/utils/platform_util.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/login_signup/model/register_model.dart';
 import 'package:real_true_date/data/select_dream_partner/view/select_dream_partner_view.dart';
+import 'package:real_true_date/data/video_slide/video_slide.dart';
 import 'package:real_true_date/helper/bottom_nav_wrapper.dart';
 import 'package:real_true_date/helper/custom_dialog/authenticating_dialog.dart';
 import 'package:real_true_date/helper/string_class.dart';
@@ -29,7 +30,8 @@ class AuthController extends GetxController {
   RxBool isChecked = false.obs;
   RxBool isFormValid = false.obs;
   RxBool isSecondFormValid = false.obs;
-  RxString selectedGender = 'Male'.obs;
+  // RxString selectedGender = 'Male'.obs;
+  RxnString selectedGender = RxnString();
 
   /// FORM KEYS
   final signupStepOneKey = GlobalKey<FormState>();
@@ -81,14 +83,14 @@ class AuthController extends GetxController {
 
     /// Listen to changes
     everAll(
-      [lookingGender, dob, isChecked],
+      [selectedGender, lookingGender, dob, isChecked],
           (_) => _validateForm(),
     );
 
-    everAll(
-      [selectedGender],
-          (_) => _validateTwoForm(),
-    );
+    // everAll(
+    //   [selectedGender],
+    //       (_) => _validateTwoForm(),
+    // );
 
     /// Selected form type
     if(Get.arguments != null) {
@@ -138,7 +140,6 @@ class AuthController extends GetxController {
     // Get.offAll(() => BottomNavWrapper());
 
     // Get.offAll(() => SelectDreamPartnerView());
-
 
     emailError.value = null;
     passwordError.value = null;
@@ -207,9 +208,9 @@ class AuthController extends GetxController {
         nameCtrl.text.trim().isNotEmpty &&
             dob.value != null &&
             singUpEmailCtrl.text.trim().isNotEmpty &&
-            lookingGender.value != null &&
+            selectedGender.value != null &&
             singUpPasswordCtrl.text.trim().isNotEmpty &&
-            selectedGender.isNotEmpty &&
+            lookingGender.value != null &&
             isChecked.value;
   }
 
@@ -224,6 +225,11 @@ class AuthController extends GetxController {
     _validateForm();
   }
 
+  void setSelectYourGender(String value) {
+    selectedGender.value = value;
+    _validateForm();
+  }
+
   void setDob(DateTime value) {
     dob.value = value;
     _validateForm();
@@ -235,7 +241,7 @@ class AuthController extends GetxController {
         nameCtrl.text.trim().isNotEmpty &&
             singUpEmailCtrl.text.trim().isNotEmpty &&
             singUpPasswordCtrl.text.trim().isNotEmpty &&
-            selectedGender.isNotEmpty;
+            selectedGender.value != null;
   }
 
   void setGender(String value) {
@@ -246,6 +252,7 @@ class AuthController extends GetxController {
   //TODO: Signup API Call
   Future<void> userRegisterApiCall() async {
     final deviceId = await DeviceUtils.getDeviceUDID();
+    final token = await sharedPref.getFirebaseToken;
 
     final dateConvert = DateFormat('yyyy-MM-dd').format(dob.value!);
 
@@ -258,7 +265,7 @@ class AuthController extends GetxController {
       "date_of_birth": dateConvert, //yyyy-mm-dd
       "zip_code": zipCtrl.text,
       "device_id": deviceId,
-      "fcm_token": '',
+      "fcm_token": token,
       "device_type": PlatformUtil.getPlatformName().toString()
     };
 
@@ -277,6 +284,7 @@ class AuthController extends GetxController {
       nameCtrl.text = '';
       zipCtrl.text = '';
       lookingGender.value = null;
+      // selectedGender.value = null;
       dob.value = null;
       agreeTC.value = false;
 
@@ -303,14 +311,17 @@ class AuthController extends GetxController {
           // Get.toNamed(Routes.profileUnderReviewScreen);
         }
       } else { /// New user register
+        print('signup page ${selectedGender.value.toString()[0]}');
         Get.toNamed(
             Routes.otpScreen,
             arguments: {
               'email': response.data?.data?.email ?? '',
-              'otp': response.data?.data?.otp.toString()
+              'otp': response.data?.data?.otp.toString(),
+              'gender': selectedGender.value.toString()[0]
             }
         );
       }
+      selectedGender.value = null;
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
@@ -322,12 +333,13 @@ class AuthController extends GetxController {
   //TODO: Login API Call
   Future<void> userLoginApiCall() async {
     final deviceId = await DeviceUtils.getDeviceUDID();
+    final token = await sharedPref.getFirebaseToken;
 
     final params = {
       "email": emailCtrl.text,
       "password": passwordCtrl.text,
       "device_id": deviceId,
-      "fcm_token": '',
+      "fcm_token": token,
       "device_type": PlatformUtil.getPlatformName().toString()
     };
 
@@ -367,6 +379,11 @@ class AuthController extends GetxController {
         Get.toNamed(Routes.uploadPhotoPage);
       }
       else { /// Login User
+
+        print("Response data: ${response.data}");
+        print("Response inner data: ${response.data?.data}");
+        print("User: ${response.data?.data?.user}");
+
         await Future.wait([
           sharedPref.saveIsLoggedIn(true),
           sharedPref.savePersonList(response.data!.data!),
@@ -374,6 +391,7 @@ class AuthController extends GetxController {
         ]);
 
         Get.offAll(() => BottomNavWrapper());
+        // Get.toNamed(Routes.uploadPhotoPage);
       }
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();

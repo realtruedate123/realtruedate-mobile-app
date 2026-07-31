@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
-import 'package:real_true_date/data/matches_tab/controller/matches_tab_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:real_true_date/data/matches_tab/model/matches_list_model.dart';
 import 'package:real_true_date/helper/app_cached_image.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 
 class MatchCardListCell extends StatelessWidget {
-  final MatchModel match;
+  final MatchList match;
   final VoidCallback? onTap;
 
   const MatchCardListCell({
@@ -48,7 +48,7 @@ class MatchCardListCell extends StatelessWidget {
                     aspectRatio: 3 / 4,
                     // child: Image.asset(AppIcons.dummyProfileCard, fit: BoxFit.cover,),
                     child: AppCachedImage(
-                      imageUrl: match.imageUrl,
+                      imageUrl: match.user?.photoUrl ?? '',
                     )
                     // Image.network(
                     //   match.imageUrl,
@@ -80,7 +80,7 @@ class MatchCardListCell extends StatelessWidget {
                               color: Colors.white.withOpacity(0.15),
                             ),
                             child: AppTextFont(
-                              "${match.matchPercent}% Match",
+                              "${match.matchPercentage}% Match",
                               font: AppFontType.urbanist,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -93,7 +93,7 @@ class MatchCardListCell extends StatelessWidget {
                   ),
 
                   /// Verified badge (Bottom Left)
-                  if (match.isVerified)
+                  if (match.user?.isVerified == true)
                     Positioned(
                       bottom: 2.h,
                       left: 2.w,
@@ -116,7 +116,8 @@ class MatchCardListCell extends StatelessWidget {
               children: [
                 Flexible(
                   child: AppTextFont(
-                    "${match.name}, ${match.age}",
+                    // "${match.user?.firstName}, ${match.age}",
+                    "${match.user?.firstName}, ${match.user?.age}",
                     font: AppFontType.urbanist,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -143,7 +144,7 @@ class MatchCardListCell extends StatelessWidget {
           /// Location
           Center(
             child: AppTextFont(
-              match.location,
+              '${match.user?.city}, ${match.user?.state}',
               font: AppFontType.lato,
               fontSize: 10,
               fontWeight: FontWeight.w400,

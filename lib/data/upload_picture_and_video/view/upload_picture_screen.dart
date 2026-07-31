@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
@@ -170,11 +171,11 @@ class UploadPictureScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
-      appBar: TransparentBackAppBar(backHide: true,),
+      appBar: TransparentBackAppBar(backHide: controller.isComing != 'update_video' ? true : false,),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
+            physics: ClampingScrollPhysics(), // prevents bouncing/overscroll
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 minHeight: constraints.maxHeight, // 🔥 KEY FIX
@@ -199,7 +200,7 @@ class UploadPictureScreen extends StatelessWidget {
                         SafeArea(
                           // bottom: false,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 25.w),
+                            padding: EdgeInsets.symmetric(horizontal: 20.w),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -223,7 +224,9 @@ class UploadPictureScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 10.h,),
                                 AppTextFont(
-                                  'Step 3 of 3 – Live Photo Verification',
+                                  controller.isComing != 'update_video' ?
+                                  'Step 3 of 3 – Live Photo Verification' :
+                                  'Update Live Photo Verification',
                                   font: AppFontType.manrope,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
@@ -231,7 +234,7 @@ class UploadPictureScreen extends StatelessWidget {
                                   maxLines: 1,
                                   textAlign: TextAlign.center,
                                 ),
-                                SizedBox(height: 80.h,)
+                                SizedBox(height: 50.h,)
                               ],
                             ),
                           ),
@@ -340,7 +343,8 @@ class UploadPictureScreen extends StatelessWidget {
     return InkWell(
       splashColor: Colors.transparent, // Hides the ripple
       highlightColor: Colors.transparent, // Hides the click highlight
-      onTap: controller.captureImage,
+      // onTap: controller.captureImage,
+      onTap: controller.openCameraAndUpload,
       child: DottedBorder(
         options: RoundedRectDottedBorderOptions(
           dashPattern: [8, 6],
@@ -366,6 +370,7 @@ class UploadPictureScreen extends StatelessWidget {
 
   Widget _imageTile(BuildContext context, int index) {
     final controller = Get.find<UploadPhotoController>();
+    final theme = AppTheme.of(context);
 
     return Stack(
       clipBehavior: Clip.none,
@@ -435,11 +440,25 @@ class UploadPictureScreen extends StatelessWidget {
 
         /// CLOSE BUTTON
         Positioned(
-          top: -8,
-          right: -15,
+          top: controller.isComing != 'update_video' ? -8 : -6,
+          right: controller.isComing != 'update_video' ? -15 : -6,
           child: GestureDetector(
-            onTap: () => controller.removePhoto(index),
-            child: AppIcons.getCrossDeleteIcon(context, size: 45)
+            onTap: () {
+              if(controller.isComing == 'update_video'){
+                controller.changePhoto(index);
+              }
+              else{
+                controller.removePhoto(index);
+              }
+            },
+            child: controller.isComing != 'update_video' ?
+            AppIcons.getCrossDeleteIcon(context, size: 45) :
+            SvgPicture.asset(
+                AppIcons.editProfileIcon,
+                width: 30.w,
+                height: 30.h,
+              colorFilter: ColorFilter.mode(theme.blackColor, BlendMode.srcIn),
+            )
           ),
         ),
       ],

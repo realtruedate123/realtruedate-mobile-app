@@ -38,7 +38,7 @@ class MatchesTabView extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                      text: "52",
+                      text: controller.matchesList.length.toString(),
                       style: GoogleFonts.urbanist(
                           color: theme.primaryColor,
                           fontWeight: FontWeight.w600,
@@ -50,9 +50,26 @@ class MatchesTabView extends StatelessWidget {
               ),
               SizedBox(height: 20.h),
               Expanded(
-                child: GridView.builder(
+                child: controller.matchesList.isEmpty
+                    ? const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.person_off, size: 64, color: Colors.grey),
+                      SizedBox(height: 16),
+                      Text(
+                        'No matches profile available',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                    : GridView.builder(
                   padding: EdgeInsets.symmetric(horizontal: 5.w),
-                  itemCount: controller.matches.length,
+                  itemCount: controller.matchesList.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 16.w,
@@ -61,17 +78,20 @@ class MatchesTabView extends StatelessWidget {
                   ),
                   itemBuilder: (context, index) {
                     return MatchCardListCell(
-                      match: controller.matches[index],
-                      onTap: () {
-                        Get.toNamed(
+                      match: controller.matchesList[index],
+                      onTap: () async {
+                        final result = await Get.toNamed(
                           Routes.matchesDetailsView,
+                          arguments: controller.matchesList[index],
                         );
+                        if(result == true){
+                          controller.getMatchesListApiCall();
+                        }
                       },
                     );
                   },
-                )
-
-              ),
+                ),
+              )
             ],
           ),
         ),

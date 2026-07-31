@@ -25,11 +25,11 @@ class UploadVideoScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.white, // 👈 set BG color
       extendBodyBehindAppBar: true,
-        appBar: TransparentBackAppBar(backHide: true,),
+        appBar: TransparentBackAppBar(backHide: controller.isComing != 'update_video' ? true : false,),
       body: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+                physics: ClampingScrollPhysics(), // prevents bouncing/overscroll
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
                     minHeight: constraints.maxHeight, // 🔥 KEY FIX
@@ -40,7 +40,7 @@ class UploadVideoScreen extends StatelessWidget {
                       /// HEADER IMAGE
                       _headerView(context),
                   Transform.translate(
-                    offset: Offset(0, -60), // 👈 overlap amount
+                    offset: Offset(0, -30), // 👈 overlap amount
                     child: Container(
                       padding: EdgeInsets.only(left: 16.w, right: 16.w),
                       // padding: EdgeInsets.zero,
@@ -69,7 +69,7 @@ class UploadVideoScreen extends StatelessWidget {
                                 children: [
                                   SizedBox(height: 20.h,),
                                   AppTextFont(
-                                    'Record a video up to 20 seconds long',
+                                    'Record a video up to 10 seconds long',
                                     font: AppFontType.inter,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w300,
@@ -133,7 +133,7 @@ class UploadVideoScreen extends StatelessWidget {
           }),
         /// PINNED BUTTON HERE
       bottomNavigationBar: SafeArea(
-        minimum: EdgeInsets.symmetric(horizontal: 16.w, vertical: 30.h),
+        minimum: EdgeInsets.symmetric(horizontal: 16.w, vertical: 15.h),
         child: _submitButton(),
       ),
     );
@@ -143,7 +143,7 @@ class UploadVideoScreen extends StatelessWidget {
   Widget _headerView(BuildContext context) {
       final theme = AppTheme.of(context);
     return SizedBox(
-      height: 370.h, // fixed header height
+      height: controller.isComing != 'update_video' ? 300.h : 350.h, // fixed header height
       width: double.infinity,
       child: Stack(
         fit: StackFit.expand,
@@ -156,12 +156,13 @@ class UploadVideoScreen extends StatelessWidget {
 
           /// HEADER TEXT
           SafeArea(
-            // bottom: false,
+            top: false,
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25.w),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SizedBox(height: 20.h,),
                   AppTextFont(
                     'Let AI Understand You Better!',
                     font: AppFontType.manrope,
@@ -183,7 +184,9 @@ class UploadVideoScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 10.h,),
                   AppTextFont(
-                    'Step 3 of 3 – Live Video Verification',
+                    controller.isComing != 'update_video' ?
+                    'Step 3 of 3 – Live Video Verification' :
+                    'Update Live Video Verification',
                     font: AppFontType.manrope,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
@@ -191,7 +194,7 @@ class UploadVideoScreen extends StatelessWidget {
                     maxLines: 1,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 80.h,)
+                  SizedBox(height: 10.h,)
                 ],
               ),
             ),
@@ -397,7 +400,7 @@ class UploadVideoScreen extends StatelessWidget {
           // controller.login();
           // }
           print('click $enabled');
-          Get.toNamed(Routes.uploadPhotoPage,);
+          Get.toNamed(Routes.uploadPhotoPage, arguments: controller.isComing);
           // Get.offAllNamed(
           //   Routes.authPage,
           //   arguments: AuthTab.login,

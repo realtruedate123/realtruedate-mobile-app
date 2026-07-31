@@ -25,205 +25,221 @@ class SelectDreamPartnerView extends StatelessWidget {
     return Scaffold(
       backgroundColor: theme.whiteColor,
       extendBodyBehindAppBar: true,
-      // appBar: TransparentBackAppBar(backHide: true,),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'Select Dream Partner',
-          style: TextStyle(
-            fontFamily: AppFontType.urbanist.toString(),
-            fontSize: 22,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        leading: Container(),
-        // leading: IconButton(
-        //   icon: AppIcons.getBackButtonIcon(context, size: 30),
-        //   onPressed: () => Navigator.pop(context),
-        // ),
-      ),
-      // body: LayoutBuilder(
-      //   builder: (context, constraints) {
-      //     return SingleChildScrollView(
-      //       physics: const BouncingScrollPhysics(),
-      //       child: ConstrainedBox(
-      //         constraints: BoxConstraints(
-      //           minHeight: constraints.maxHeight, // 🔥 KEY FIX
-      //         ),
-      //         child: Column(
-      //           crossAxisAlignment: CrossAxisAlignment.stretch,
-      //           children: [
-      //             /// HEADER IMAGE
-      //             SizedBox(
-      //               height: 260.h, // fixed header height
-      //               width: double.infinity,
-      //               child: Stack(
-      //                 fit: StackFit.expand,
-      //                 children: [
-      //                   /// HEADER IMAGE
-      //                   Image.asset(
-      //                     AppIcons.headerHalfImagePng,
-      //                     fit: BoxFit.cover,
-      //                   ),
-      //
-      //                   /// HEADER TEXT
-      //                   SafeArea(
-      //                     // bottom: false,
-      //                     child: Padding(
-      //                       padding: EdgeInsets.symmetric(horizontal: 25.w),
-      //                       child: Column(
-      //                         mainAxisAlignment: MainAxisAlignment.center,
-      //                         children: [
-      //                           AppTextFont(
-      //                             'Select Dream Partner',
-      //                             font: AppFontType.manrope,
-      //                             fontSize: 32,
-      //                             fontWeight: FontWeight.w700,
-      //                             color: theme.headerTitleColor,
-      //                             textAlign: TextAlign.center,
-      //                           ),
-      //                           SizedBox(height: 10.h,),
-      //                           AppTextFont(
-      //                             'Tap 2 looks you are attracted to. You can change your selection before saving.',
-      //                             font: AppFontType.manrope,
-      //                             fontSize: 14,
-      //                             fontWeight: FontWeight.w500,
-      //                             color: theme.lightBlackColor,
-      //                             maxLines: 3,
-      //                             textAlign: TextAlign.center,
-      //                           ),
-      //                           SizedBox(height: 20.h,),
-      //                           AppTextFont(
-      //                             'Step 2 of 3 – Build Your Partner visual selection flow',
-      //                             font: AppFontType.manrope,
-      //                             fontSize: 15,
-      //                             fontWeight: FontWeight.w600,
-      //                             color: theme.headerTitleColor,
-      //                             maxLines: 1,
-      //                             textAlign: TextAlign.center,
-      //                           ),
-      //                           SizedBox(height: 10.h,)
-      //                         ],
-      //                       ),
-      //                     ),
-      //                   ),
-      //                 ],
-      //               ),
-      //             ),
-      //             SizedBox(height: 20.h,),
-      //
-      //             /// WHITE CARD
-      //             Transform.translate(
-      //               offset: Offset(0, -60), // 👈 overlap amount
-      //               child: Container(
-      //                 padding: EdgeInsets.only(left: 16.w, right: 16.w),
-      //                 decoration: BoxDecoration(
-      //                   color: Colors.white,
-      //                   borderRadius: BorderRadius.vertical(
-      //                     top: Radius.circular(28.r),
-      //                   ),
-      //                 ),
-      //                 child: Column(
-      //                   children: [
-      //                     Obx(() {
-      //                       if (controller.isLoading.value) {
-      //                         return SizedBox(
-      //                           height: MediaQuery.of(context).size.height - 300,
-      //                           width: MediaQuery.of(context).size.width,
-      //                           child: Center(
-      //                             child: CircularProgressIndicator(),
-      //                           ),
-      //                         );
-      //                       }
-      //                       if (controller.catalogListModel.isEmpty) {
-      //                         return Padding(
-      //                           padding: EdgeInsets.only(top: 12.h),
-      //                           child: Text(
-      //                             'Not Partners available',
-      //                             style: TextStyle(
-      //                               color: theme.alert,
-      //                               fontSize: 14.sp,
-      //                             ),
-      //                             textAlign: TextAlign.center,
-      //                           ),
-      //                         );
-      //                       }
-      //                       return GridView.builder(
-      //                         shrinkWrap: true,
-      //                         physics: NeverScrollableScrollPhysics(),
-      //                         itemCount: controller.catalogListModel.length,
-      //                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      //                           crossAxisCount: 3,
-      //                           mainAxisSpacing: 17,
-      //                           crossAxisSpacing: 12,
-      //                           childAspectRatio: 0.55,
-      //                         ),
-      //                         itemBuilder: (context, index) {
-      //                           return _imageTile(context, index, controller);
-      //                         },
-      //                       );
-      //
-      //                     }),
-      //                     // SizedBox(height: 50.h),
-      //                     /// Error message
-      //                     /*Obx(() => controller.errorMessage.isEmpty
-      //                         ? const SizedBox()
-      //                         : Padding(
-      //                       padding: EdgeInsets.only(top: 12.h),
-      //                       child: Text(
-      //                         controller.errorMessage.value,
-      //                         style: TextStyle(
-      //                           color: theme.alert,
-      //                           fontSize: 14.sp,
-      //                         ),
-      //                         textAlign: TextAlign.center,
-      //                       ),
-      //                     )),*/
-      //
-      //                     // SizedBox(height: 20.h),
-      //                     // Obx(() => SafeArea(child: _uploadButton())),
-      //                     // SizedBox(height: 32.h),
-      //
-      //                     PrimaryButton(
-      //                       title: 'Submit',
-      //                       loading: controller.isLoading.value,
-      //                       fontWeight: FontWeight.w600,
-      //                       onTap: controller.isSubmitButtonEnable
-      //                           ? () {
-      //                         debugPrint("controller.selectedCatalogListModel.toString");
-      //                         controller.submitSelectedCatalogs();
-      //                       } : null,
-      //                     )
-      //                   ],
-      //                 ),
-      //               ),
-      //             ),
-      //
-      //             /// Loader Overlay
-      //             // Obx(() {
-      //             //   return controller.isLoading.value
-      //             //       ? Container(
-      //             //     color: Colors.black.withOpacity(0.4),
-      //             //     child: Center(
-      //             //       child: Stack(
-      //             //         children: [
-      //             //           GifLoaderView(isLoading: controller.isLoading.value),
-      //             //         ],
-      //             //       )
-      //             //     ),
-      //             //   )
-      //             //       : const SizedBox();
-      //             // }),
-      //
-      //           ],
-      //         ),
-      //       ),
-      //     );
-      //   },
+      appBar: TransparentBackAppBar(backHide: true,),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   centerTitle: true,
+      //   title: Text(
+      //     'Select Dream Partner',
+      //     style: TextStyle(
+      //       fontFamily: AppFontType.urbanist.toString(),
+      //       fontSize: 22,
+      //       fontWeight: FontWeight.w600,
+      //     ),
+      //   ),
+      //   leading: Container(),
+      //   // leading: IconButton(
+      //   //   icon: AppIcons.getBackButtonIcon(context, size: 30),
+      //   //   onPressed: () => Navigator.pop(context),
+      //   // ),
       // ),
+      body: GetBuilder<SelectDreamPartnerController>(
+        builder: (SelectDreamPartnerController controller) {
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: ClampingScrollPhysics(), // prevents bouncing/overscroll
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight, // 🔥 KEY FIX
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      /// HEADER IMAGE
+                      SizedBox(
+                        height: 270.h, // fixed header height
+                        width: double.infinity,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            /// HEADER IMAGE
+                            Image.asset(
+                              AppIcons.headerHalfImagePng,
+                              fit: BoxFit.cover,
+                            ),
 
+                            /// HEADER TEXT
+                            SafeArea(
+                              top: false,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 25.w),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(height: 40.h,),
+                                    AppTextFont(
+                                      'Select Dream Partner',
+                                      font: AppFontType.manrope,
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.w700,
+                                      color: theme.headerTitleColor,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 10.h,),
+                                    AppTextFont(
+                                      'Tap 2 looks you are attracted to. You can change your selection before saving.',
+                                      font: AppFontType.manrope,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: theme.lightBlackColor,
+                                      maxLines: 3,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 20.h,),
+                                    AppTextFont(
+                                      'Step 2 of 3 – Build Your Partner visual selection flow',
+                                      font: AppFontType.manrope,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: theme.headerTitleColor,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 10.h,)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 30.h,),
+
+                      /// WHITE CARD
+                      Transform.translate(
+                        offset: Offset(0, -60), // 👈 overlap amount
+                        child: Container(
+                          padding: EdgeInsets.only(left: 16.w, right: 16.w),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(28.r),
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Obx(() {
+                                if (controller.isLoading.value) {
+                                  return SizedBox(
+                                    height: MediaQuery.of(context).size.height - 300,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                }
+                                if (controller.catalogListModel.isEmpty) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(top: 12.h),
+                                    child: Text(
+                                      'Not Partners available',
+                                      style: TextStyle(
+                                        color: theme.alert,
+                                        fontSize: 14.sp,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  );
+                                }
+                                return GridView.builder(
+                                  padding: EdgeInsets.only(top: 30.h, bottom: 20.h),
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: controller.catalogListModel.length,
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    mainAxisSpacing: 17,
+                                    crossAxisSpacing: 12,
+                                    childAspectRatio: 0.60,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    return _imageTile(context, index, controller);
+                                  },
+                                );
+
+                              }),
+
+                              // SizedBox(height: 50.h),
+                              /// Error message
+                              /*Obx(() => controller.errorMessage.isEmpty
+                                ? const SizedBox()
+                                : Padding(
+                              padding: EdgeInsets.only(top: 12.h),
+                              child: Text(
+                                controller.errorMessage.value,
+                                style: TextStyle(
+                                  color: theme.alert,
+                                  fontSize: 14.sp,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            )),*/
+
+                              // SizedBox(height: 20.h),
+                              // Obx(() => SafeArea(child: _uploadButton())),
+                              // SizedBox(height: 32.h),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      /// Loader Overlay
+                      // Obx(() {
+                      //   return controller.isLoading.value
+                      //       ? Container(
+                      //     color: Colors.black.withOpacity(0.4),
+                      //     child: Center(
+                      //       child: Stack(
+                      //         children: [
+                      //           GifLoaderView(isLoading: controller.isLoading.value),
+                      //         ],
+                      //       )
+                      //     ),
+                      //   )
+                      //       : const SizedBox();
+                      // }),
+
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+
+      /// PINNED BUTTON HERE
+      bottomNavigationBar: SafeArea(
+        minimum: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+        child: Obx(() {
+          return PrimaryButton(
+            title: 'Submit',
+            loading: controller.isLoading.value,
+            fontWeight: FontWeight.w600,
+            onTap: controller.isSubmitButtonEnable
+                ? () {
+              debugPrint("controller.selectedCatalogListModel.toString");
+              controller.submitSelectedCatalogs();
+            } : null,
+          );
+        })
+      ),
+
+        /*
       body: GetBuilder<SelectDreamPartnerController>(
         builder: (controller) {
           if (controller.isLoading.value) {
@@ -288,6 +304,7 @@ class SelectDreamPartnerView extends StatelessWidget {
           );
         },
       ),
+      */
     );
   }
 

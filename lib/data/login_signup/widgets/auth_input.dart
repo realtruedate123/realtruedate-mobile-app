@@ -13,6 +13,7 @@ class AuthInput extends StatefulWidget {
   final Widget icon;
   final TextInputType keyboardType;
   final String? errorText;
+  final bool enabled;
   final VoidCallback? onChanged;
 
   const AuthInput({
@@ -24,6 +25,7 @@ class AuthInput extends StatefulWidget {
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
     this.errorText,
+    this.enabled = true,
     this.onChanged,
   });
 
@@ -105,6 +107,7 @@ class _AuthInputState extends State<AuthInput> {
               focusNode: _focusNode,
               keyboardType: widget.keyboardType,
               obscureText: widget.isPassword && _obscure,
+              enabled: widget.enabled,
               // onChanged: (_) => widget.onChanged?.call(),
               style: TextStyle(
                 fontSize: MediaQuery.textScalerOf(context).scale(16),

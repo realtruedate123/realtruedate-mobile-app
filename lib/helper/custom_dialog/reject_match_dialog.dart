@@ -5,7 +5,12 @@ import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 
 class RejectMatchDialog extends StatelessWidget {
-  const RejectMatchDialog({super.key});
+  final VoidCallback onReject;
+
+  const RejectMatchDialog({
+    super.key,
+    required this.onReject,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +75,7 @@ class RejectMatchDialog extends StatelessWidget {
                         onTap: () {
                           // TODO: Reject action
                           Navigator.pop(context);
+                          onReject();
                         },
                       ),
                     ),

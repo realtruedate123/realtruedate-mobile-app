@@ -1,16 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
-import 'package:real_true_date/core/network/InternetDialog.dart';
-import 'package:real_true_date/core/network/api_functions/api_request.dart';
-import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
-import 'package:real_true_date/data/login_signup/auth_controller.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
-import 'package:real_true_date/data/login_signup/model/register_model.dart';
-import 'package:real_true_date/data/login_signup/view/auth_screen.dart';
 import 'package:real_true_date/data/profile_tab/model/profile_model.dart';
-import 'package:real_true_date/helper/string_class.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class ProfileTabController extends GetxController {
@@ -41,7 +33,7 @@ class ProfileTabController extends GetxController {
           onTap: () {},
         ),
         ProfileMenuItem(
-          title: "360 Video",
+          title: "Update Video & Photos",
           icon: AppIcons.getProfileVideoIcon(Get.context!, size: 38),
           onTap: () {},
         ),

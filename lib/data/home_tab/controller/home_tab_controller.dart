@@ -1,5 +1,6 @@
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/preference_key.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
@@ -8,6 +9,8 @@ import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/data/home_tab/model/feed_response.dart';
 import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
+import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
+import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/root_tab_controller.dart';
 
 class HomeTabController extends GetxController {
@@ -15,6 +18,7 @@ class HomeTabController extends GetxController {
   /// UI State
   final isLoading = false.obs;
   final errorMessage = ''.obs;
+  late var userProfileUrl = '';
 
   final sharedPref = SharedPrefHelper();
 
@@ -54,7 +58,17 @@ class HomeTabController extends GetxController {
     try {
       // Fetch from API or storage
       userID = await sharedPref.getUserId;
+
+      final data = await sharedPref.getPersonList();
+      final userProfile = data ?? DataModel();
+
+      userProfileUrl = userProfile.user?.profileImage ?? '';
+      if(userProfile.user?.profileImage?.isEmpty ?? false){
+        userProfileUrl = userProfile.photos?.first.photoUrl ?? '';
+      }
+
       print('home userid $userID');
+      print('home userProfileUrl $userProfileUrl');
     } finally {
       isLoading.value = false;
     }
@@ -101,11 +115,11 @@ class HomeTabController extends GetxController {
   }
 
   //TODO: Swipe card API Call
-  Future<void> swipeCardApiCall(String direction) async {
+  Future<void> swipeCardApiCall(String direction, Candidate item) async {
     final authToken = await sharedPref.getAuthToken;
 
     final params = {
-      "user_id": userID,
+      "user_id": item.userId,
       "direction": direction
     };
 
@@ -124,10 +138,30 @@ class HomeTabController extends GetxController {
       fromJson: (json) => SwipeCardModel.fromJson(json),
       showLoader: false
     );
-
+    print('swipe card matched ${response.data?.data.matched}');
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
       print('swipe card ${response.data?.message}');
+      print('swipe card matched ${response.data?.data.matched}');
 
+      // if(response.data?.data.matched == true){
+        showDialog(
+          context: Get.context!,
+          barrierDismissible: false,
+          builder: (_) => MatchPopup(
+            userId: item.userId,
+            name: item.firstName,
+            age: item.age,
+            city: item.city ?? '',
+            state: item.state ?? '',
+            photoUrl: item.photoUrl ?? '',
+            isVerified: item.isVerified,
+              userProfileUrl: userProfileUrl,
+            onMessage: () {
+              print('message');
+            },
+          ),
+        );
+      // }
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {

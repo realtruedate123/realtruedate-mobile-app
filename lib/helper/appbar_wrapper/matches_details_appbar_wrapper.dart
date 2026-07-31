@@ -3,20 +3,27 @@ import 'package:get/get.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
+import 'package:real_true_date/data/matches_tab/controller/matches_details_controller.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/custom_dialog/user_block_dialog.dart';
 
 class MatchesDetailsAppbarWrapper extends StatelessWidget
     implements PreferredSizeWidget {
   final bool showCloseButton;
+  final bool verifiedProfile;
+  final bool showShadow;
   final VoidCallback? onBack;
   final VoidCallback? onBlock;
+  final MatchesDetailsController controller; // add dynamic controller
 
   const MatchesDetailsAppbarWrapper({
     super.key,
     this.showCloseButton = false,
+    this.verifiedProfile = false,
+    this.showShadow = false,
     this.onBack,
     this.onBlock,
+    required this.controller,
   });
 
   void _showBlockPopup(BuildContext context) {
@@ -47,7 +54,15 @@ class MatchesDetailsAppbarWrapper extends StatelessWidget
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (_) => UserBlockDialog(),
+                      builder: (_) => UserBlockDialog(
+                        onSure: () {
+                          // Block user
+                          controller.blockUserApiCall();
+                        },
+                        onCancel: () {
+                          // Optional cancel action
+                        },
+                      ),
                     );
                   },
                   child: Container(
@@ -104,22 +119,61 @@ class MatchesDetailsAppbarWrapper extends StatelessWidget
       leadingWidth: 55.w,
       leading: Padding(
         padding: EdgeInsets.only(left: 16.w),
-        child: _iconContainer(
-          icon: AppIcons.getBackOutLineIcon(context, size: 35),
-          onTap: onBack ?? () => Get.back(),
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: showShadow
+                ? [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.15),
+                blurRadius: 8,
+                spreadRadius: 1,
+                offset: const Offset(0, 3),
+              ),
+            ]
+                : [],
+          ),
+          child: _iconContainer(
+            icon: AppIcons.getBackOutLineIcon(context, size: 35),
+            onTap: onBack ?? () => Get.back(),
+          ),
         ),
       ),
       actions: [
         /// Verified Badge
-        AppIcons.getTickOutlineIcon(context, size: 38),
+        if(verifiedProfile)...[
+          AppIcons.getTickOutlineIcon(context, size: 38),
+        ],
 
         /// Close Button (flag based)
         if (showCloseButton)
+          // Padding(
+          //   padding: EdgeInsets.only(right: 16.w, left: 12.w),
+          //   child: _iconContainer(
+          //     icon: AppIcons.getCloseWhite(context, size: 38),
+          //     onTap: () => _showBlockPopup(context),
+          //   ),
+          // ),
           Padding(
             padding: EdgeInsets.only(right: 16.w, left: 12.w),
-            child: _iconContainer(
-              icon: AppIcons.getCloseWhite(context, size: 38),
-              onTap: () => _showBlockPopup(context),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: showShadow
+                    ? [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+                    : [],
+              ),
+              child: _iconContainer(
+                icon: AppIcons.getCloseWhite(context, size: 38),
+                onTap: () => _showBlockPopup(context),
+              ),
             ),
           ),
       ],

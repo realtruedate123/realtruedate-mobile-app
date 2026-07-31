@@ -20,4 +20,10 @@ class Endpoints {
   static const String saveDreamDateSelect = 'dream-date/select';
   static const String getFeed = 'feed';
   static const String swipeCard = 'swipe';
+  static const String getMatchesList = 'matches';
+  static const String blockUser = 'block';
+  static const String unBlockUser = 'unblock';
+  static const String deleteAccount = 'delete-account';
+  static const String matchProfileUser = 'users';
+  static const String updateUserProfile = 'update-profile';
 }

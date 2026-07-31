@@ -78,7 +78,7 @@ class HomeTabView extends StatelessWidget {
                     onFavorites: () => controller.swiperController.swipeUp(),
                     onPhoto: () {
                       debugPrint('Photo clicked for index: $index');
-                      Get.toNamed(Routes.userProfileView);
+                      Get.toNamed(Routes.userProfileView, arguments: item);
                     },
                   );
                 },
@@ -91,11 +91,16 @@ class HomeTabView extends StatelessWidget {
                 onSwipeEnd: (previousIndex, targetIndex, activity) {
                   debugPrint('Swipe ended: $previousIndex → $targetIndex');
                   print('activity.direction ${activity.direction}');
+
+                  final item = controller.feedListModel[previousIndex];
+                  print('${item.userId} =swip ${activity.direction}= ${item.firstName}');
+
+
                   // Optional: Handle like/dislike logic here
                   if (activity.direction == AxisDirection.right) {
-                    controller.swipeCardApiCall('right');
+                    controller.swipeCardApiCall('right', item);
                   } else if (activity.direction == AxisDirection.left) {
-                    controller.swipeCardApiCall('left');
+                    controller.swipeCardApiCall('left', item);
                   }
                 },
 

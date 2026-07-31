@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
@@ -6,6 +7,7 @@ import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/data/login_signup/model/register_model.dart';
 import 'package:real_true_date/data/otp_reset_password/model/verify_otp_model.dart';
+import 'package:real_true_date/data/video_slide/video_slide.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class OtpController extends GetxController {
@@ -15,6 +17,7 @@ class OtpController extends GetxController {
   final errorMessage = ''.obs;
   final emailId = Get.arguments['email'];
   final apiOTP = Get.arguments['otp'];
+  final gender = Get.arguments['gender'];
 
   /// OTP state
   final otpCode = ''.obs;
@@ -111,12 +114,17 @@ class OtpController extends GetxController {
           sharedPref.saveRefreshAuthToken(response.data?.data?.tokens?.refresh ?? ''),
           sharedPref.saveAuthToken(response.data?.data?.tokens?.access ?? '')
         ]);
+        print('OTP page $gender');
+        Navigator.push(
+          Get.context!,
+          MaterialPageRoute(builder: (context) => VideoSlide(genderType: gender,)),
+        );
 
         /// Open next step info page
-        Get.toNamed(Routes.confirmationInfo, arguments: {
-            'initialIndex': 0,
-          },
-        );
+        // Get.toNamed(Routes.confirmationInfo, arguments: {
+        //     'initialIndex': 0,
+        //   },
+        // );
 
         // Get.toNamed(
         //   Routes.uploadVideoPage,

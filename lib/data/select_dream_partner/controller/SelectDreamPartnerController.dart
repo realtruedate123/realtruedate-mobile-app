@@ -156,7 +156,6 @@ response.statusCode == 200 &&
       controller.selectedCatalogListModel.clear();
       // controller.isSubmitButtonEnable.value = false;
       controller.update();
-      getUserDataApiCall();
       // Get.offAll(() => BottomNavWrapper());
 
       Get.toNamed(Routes.confirmationInfo, arguments: {
@@ -168,41 +167,6 @@ response.statusCode == 200 &&
       InternetDialog.showNoInternetDialog();
     } else {
       Get.snackbar('Failed', response.message ?? 'Submission failed');
-    }
-  }
-
-  Future<void> getUserDataApiCall() async {
-    final authToken = await sharedPref.getAuthToken;
-    final header = {
-      'Content-Type': 'application/json',
-      "Authorization": 'Bearer $authToken',
-    };
-
-    final response = await BaseApiService().getMethod<LoginModel>(
-      endpoint: Endpoints.meApi,
-      headers: header,
-      showLoader: false,
-      fromJson: (json) => LoginModel.fromJson(json),
-    );
-
-    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      print('get me ${response.data?.data?.user?.id}');
-      await Future.wait([
-        sharedPref.saveIsLoggedIn(true),
-        sharedPref.savePersonList(response.data!.data!),
-        sharedPref.saveUserId(response.data!.data?.user?.id ?? '')
-      ]);
-    } else if (response.statusCode == 0) {
-      InternetDialog.showNoInternetDialog();
-    } else {
-      if (response.tokenExpired == true) {
-        final result = await BaseApiService().refreshToken();
-        if (result.isSuccess) {
-          getUserDataApiCall();
-        }
-      } else {
-        // Get.snackbar('Failed', response.message ?? 'failed');
-      }
     }
   }
 }

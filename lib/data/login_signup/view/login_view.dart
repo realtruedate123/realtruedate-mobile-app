@@ -102,42 +102,37 @@ class LoginView extends GetView<AuthController> {
           /// Login button
           SafeArea(
             top: false,
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: 20.h,
-              ),
-              child: Column(
-                children: [
-                  /// Error message
-                  Obx(() => controller.errorMessage.isEmpty
-                      ? const SizedBox()
-                      : Padding(
-                    padding: EdgeInsets.only(top: 12.h, bottom: 20.h),
-                    child: Text(
-                      controller.errorMessage.value,
-                      style: TextStyle(
-                        color: theme.alert,
-                        fontSize: 14.sp,
-                      ),
-                      textAlign: TextAlign.center,
+            child: Column(
+              children: [
+                /// Error message
+                Obx(() => controller.errorMessage.isEmpty
+                    ? const SizedBox()
+                    : Padding(
+                  padding: EdgeInsets.only(top: 12.h, bottom: 20.h),
+                  child: Text(
+                    controller.errorMessage.value,
+                    style: TextStyle(
+                      color: theme.alert,
+                      fontSize: 14.sp,
                     ),
-                  )),
-                  SizedBox(height: 5.h,),
-                  Obx(
-                        () => PrimaryButton(
-                      title: 'Login',
-                      loading: controller.isLoading.value,
-                      fontWeight: FontWeight.w600,
-                      onTap: controller.isLoginEnabled.value
-                          ? () {
-                        if (controller.loginKey.currentState!.validate()) {
-                          controller.login();
-                        }
-                      } : null,
-                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ],
-              ),
+                )),
+                SizedBox(height: 5.h,),
+                Obx(
+                      () => PrimaryButton(
+                    title: 'Login',
+                    loading: controller.isLoading.value,
+                    fontWeight: FontWeight.w600,
+                    onTap: controller.isLoginEnabled.value
+                        ? () {
+                      if (controller.loginKey.currentState!.validate()) {
+                        controller.login();
+                      }
+                    } : null,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

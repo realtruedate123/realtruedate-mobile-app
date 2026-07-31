@@ -29,12 +29,15 @@ class AppCachedImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
+    print('imageUrl.isEmpty ${imageUrl.isEmpty}');
+    print('imageUrl ${imageUrl}');
+    print('borderRadius ${borderRadius}');
 
     if (imageUrl.isEmpty) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius.r),
-        child: errorWidget ??
-            AppIcons.getImagePlaceholder(context, size: height ?? 100),
+        // child: errorWidget ??
+          child: AppIcons.getPlaceHolderGray(context, size: height ?? 100),
       );
     }
 

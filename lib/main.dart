@@ -1,14 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/data/root_tab_controller.dart';
+import 'package:real_true_date/helper/notification_service.dart';
 import 'package:real_true_date/routes/pages.dart';
 import 'package:flutter/material.dart';
 import 'routes/routes.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // 👈 Must be first line
@@ -20,6 +20,9 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp
   ]);
+
+  await Firebase.initializeApp();
+  await NotificationService().setupInteractedMessage();
 
   /*
   // Internet
@@ -54,11 +57,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      builder: EasyLoading.init(),
+      // builder: EasyLoading.init(),
       // builder: (context, child) {
       //   child = EasyLoading.init()(context, child);
       //   return child;
       // },
+      // UPDATED: Wrap child with MediaQuery to fix font size globally
+      builder: EasyLoading.init(
+        builder: (context, child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaler: TextScaler.noScaling, // Forces text scale factor to 1.0 everywhere
+            ),
+            child: child!,
+          );
+        },
+      ),
       debugShowCheckedModeBanner: false,
       initialRoute: Routes.splashScreen,
       getPages: AppPages.pages,

@@ -37,6 +37,7 @@ class TransparentBackAppBar extends StatelessWidget
       )
           : null,
       toolbarHeight: height,
+      automaticallyImplyLeading: false,
       leading: backHide
           ? null
           : IconButton(

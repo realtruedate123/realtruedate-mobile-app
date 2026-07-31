@@ -5,7 +5,15 @@ import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 
 class UserBlockDialog extends StatelessWidget {
-  const UserBlockDialog({super.key});
+  final VoidCallback? onSure;
+  final VoidCallback? onCancel;
+
+  const UserBlockDialog({
+    super.key,
+    this.onSure,
+    this.onCancel,
+  });
+
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +31,14 @@ class UserBlockDialog extends StatelessWidget {
         child: Stack(
           children: [
             /// Close Icon
-            Positioned(
+            /*Positioned(
               top: 0,
               right: 0,
               child: GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: AppIcons.getCloseRedIcon(context),
               ),
-            ),
+            ),*/
 
             Column(
               mainAxisSize: MainAxisSize.min,
@@ -69,6 +77,7 @@ class UserBlockDialog extends StatelessWidget {
                         onTap: () {
                           // TODO: Reject action
                           Navigator.pop(context);
+                          onSure?.call();
                         },
                       ),
                     ),
@@ -77,7 +86,10 @@ class UserBlockDialog extends StatelessWidget {
                       child: _filledButton(
                         text: 'Cancel',
                         color: theme.greenButtonColor,
-                        onTap: () => Navigator.pop(context),
+                        onTap: () {
+                          Navigator.pop(context);
+                          onCancel?.call();
+                        },
                       ),
                     ),
                   ],

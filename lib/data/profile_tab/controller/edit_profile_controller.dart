@@ -1,9 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:real_true_date/core/local/shared_pref.dart';
+import 'package:real_true_date/core/network/InternetDialog.dart';
+import 'package:real_true_date/core/network/api_functions/api_request.dart';
+import 'package:real_true_date/core/network/apis_end_points.dart';
+import 'package:real_true_date/data/login_signup/model/login_model.dart';
 
 class EditProfileController extends GetxController {
   var isEditable = false.obs;
@@ -26,6 +33,7 @@ class EditProfileController extends GetxController {
   final pinCodeCtrl = TextEditingController();
   final birthDateCtrl = TextEditingController();
   final farWilingToDriveCtrl = TextEditingController();
+  final bioController = TextEditingController();
 
 
   final nameError = RxnString();
@@ -38,11 +46,18 @@ class EditProfileController extends GetxController {
   final lookingGender = RxnString();  // Instead of RxString()
 
   RxString selectedGender = 'Male'.obs;
-
+  final prefHelper = SharedPrefHelper();
+  Rx<File?> localImageFile = Rx<File?>(null); // from camera/gallery
+  List<String> selectedInterests = [];
+  final interests = <String>[].obs;
+  var profileUrl = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
+
+    // getUserData();
+    getUserDataApiCall(false);
   }
 
   Future<void> pickImageFromCamera() async {
@@ -111,6 +126,121 @@ class EditProfileController extends GetxController {
   void _validateForm() {
     pinCodeCtrl.text.trim().isNotEmpty &&
         dob.value != null;
+  }
+
+  /// Get saved local user data
+  void getUserData(DataModel userProfile) async {
+    try {
+      // final data = await prefHelper.getPersonList();
+      // final userProfile = data ?? DataModel();
+
+      print('userProfile ${userProfile.user?.profileImage ?? ''}');
+      profileUrl.value = userProfile.user?.profileImage ?? '';
+      nameCtrl.text = userProfile.user?.fullName ?? '';
+      emailCtrl.text = userProfile.user?.email ?? '';
+
+      DateTime date = DateTime.parse(userProfile.user?.dateOfBirth ?? '');
+      dob.value = date;
+
+      interests.value = userProfile.profile?.interests ?? [];
+      bioController.text = userProfile.user?.bio ?? '';
+
+      selectedInterests =  interests;
+      print('controller.interests ${interests.toList()}');
+
+      update();
+
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Update profile data
+  Future<void> updateProfileApiCall() async {
+    final token = await prefHelper.getAuthToken;
+    print('selectedInterests $selectedInterests');
+
+    final dateString = DateFormat('yyyy-MM-dd').format(dob.value!);
+
+    final params = {
+      "full_name": nameCtrl.text,
+      "date_of_birth": dateString,
+      "gender": selectedGender.value.toString()[0],
+      "bio": bioController.text,
+      "interests": jsonEncode(selectedInterests),
+    };
+
+    print('update params $params');
+
+    final response = await BaseApiService().formDataWithFile<LoginModel>(
+      endpoint: Endpoints.updateUserProfile,
+      method: 'PUT',
+      fields: params,
+      // file: localImageFile.value,
+      filePath: avatarPath.value,
+      fileField: 'profile_image',
+      headers: {
+        'Authorization': 'Bearer $token'
+      },
+      fromJson: (json) => LoginModel.fromJson(json),
+    );
+
+    if (response.isSuccess && response.statusCode == 200) {
+        getUserDataApiCall(true);
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      Get.snackbar('Failed', response.message ?? 'Profile update failed');
+    }
+  }
+
+  Future<void> getUserDataApiCall(bool isUpdate) async {
+    final authToken = await prefHelper.getAuthToken;
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    final response = await BaseApiService().getMethod<LoginModel>(
+      endpoint: Endpoints.meApi,
+      headers: header,
+      fromJson: (json) => LoginModel.fromJson(json),
+    );
+
+    print('Get me api $header');
+
+    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
+      print('get me ${response.data?.data?.user?.id}');
+
+      print('response ${response.message}');
+      print('profile dob ${response.data?.data?.user?.dateOfBirth}');
+      print('profile url ${response.data?.data?.user?.profileImage}');
+      print('profile bio ${response.data?.data?.user?.bio}');
+      print('profile interests ${response.data?.data?.profile?.interests}');
+
+      await Future.wait([
+        prefHelper.savePersonList(response.data!.data!),
+      ]);
+
+      if(isUpdate){
+        Future.delayed(const Duration(seconds: 1), () async {
+          Get.back(result: true);
+        });
+      }else{
+        getUserData(response.data?.data ?? DataModel());
+      }
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          getUserDataApiCall(isUpdate);
+        }
+      } else {
+        // Get.snackbar('Failed', response.message ?? 'failed');
+      }
+    }
   }
 
   @override

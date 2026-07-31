@@ -4,6 +4,7 @@ import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/home_tab/controller/user_profile_controller.dart';
 import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
+import 'package:real_true_date/helper/app_cached_image.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/appbar_wrapper/user_profile_appbar_wrapper.dart';
 import 'package:get/get.dart';
@@ -24,15 +25,19 @@ class UserProfileDetailsScreen extends StatelessWidget {
       appBar: UserProfileAppbarWrapper(
         isStarFilled: controller.isFavorite,
         onStarTap: controller.toggleFavorite,
+        showShadow: true,
       ),
       body: Stack(
         children: [
           /// Profile Image
           Positioned.fill(
-            child: Image.asset(
-              AppIcons.dummyProfileDetailsCard,
-              fit: BoxFit.contain,
-              alignment: Alignment.topCenter,
+            // child: Image.asset(
+            //   AppIcons.dummyProfileDetailsCard,
+            //   fit: BoxFit.contain,
+            //   alignment: Alignment.topCenter,
+            // ),
+            child: AppCachedImage(
+              imageUrl: controller.matchData.photoUrl ?? '',
             ),
           ),
 
@@ -59,7 +64,7 @@ class UserProfileDetailsScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             AppTextFont(
-                              'Cylra Cantika, 21',
+                              '${controller.matchData.firstName}, ${controller.matchData.age}',
                               font: AppFontType.urbanist,
                               fontSize: 24,
                               fontWeight: FontWeight.w600,
@@ -68,7 +73,7 @@ class UserProfileDetailsScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 4.h),
                             AppTextFont(
-                              'Peak, Germany',
+                              '${controller.matchData.city}, ${controller.matchData.state}',
                               font: AppFontType.lato,
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
@@ -88,7 +93,7 @@ class UserProfileDetailsScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 8.h),
                       AppTextFont(
-                        'Lorem Ipsum, cursus eu justo et, commodo malesuada lacus. Donec at felis eleifend, commodo urna quis, aliquam lectus.',
+                        '',
                         font: AppFontType.lato,
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -96,7 +101,7 @@ class UserProfileDetailsScreen extends StatelessWidget {
                         maxLines: 4,
                       ),
 
-                      SizedBox(height: 24.h),
+                      /*SizedBox(height: 24.h),
                       AppTextFont(
                         'Interest',
                         font: AppFontType.urbanist,
@@ -114,7 +119,7 @@ class UserProfileDetailsScreen extends StatelessWidget {
                           _interestChip(context, 'Travel'),
                           _interestChip(context, 'Writing'),
                         ],
-                      ),
+                      ),*/
                     ],
                   ),
                 ),
@@ -135,7 +140,11 @@ class UserProfileDetailsScreen extends StatelessWidget {
                             showDialog(
                               context: context,
                               barrierDismissible: false,
-                              builder: (_) => RejectMatchDialog(),
+                              builder: (_) => RejectMatchDialog(
+                                onReject: () {
+                                  controller.swipeCardApiCall('left');
+                                },
+                              ),
                             );
                           },
                           child: AppIcons.getCancelCardIcon(context, size: 60)
@@ -148,7 +157,19 @@ class UserProfileDetailsScreen extends StatelessWidget {
                             showDialog(
                               context: context,
                               barrierDismissible: false,
-                              builder: (_) => const MatchPopup(),
+                              builder: (_) => MatchPopup(
+                                userId: controller.matchData.userId,
+                                name: controller.matchData.firstName,
+                                age: controller.matchData.age,
+                                city: controller.matchData.city ?? '',
+                                state: controller.matchData.state ?? '',
+                                photoUrl: controller.matchData.photoUrl ?? '',
+                                isVerified: controller.matchData.isVerified,
+                                  userProfileUrl: controller.userProfileUrl,
+                                onMessage: () {
+                                  print('message');
+                                },
+                              ),
                             );
                           },
                           child: AppIcons.getLikeCardIcon(context, size: 60)

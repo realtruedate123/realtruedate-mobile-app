@@ -42,7 +42,7 @@ class UploadVideoController extends GetxController {
 
   /// Timer
   final RxInt elapsedSeconds = 0.obs;
-  static const int maxSeconds = 19;
+  static const int maxSeconds = 10;
 
   /// Upload simulation
   final RxDouble uploadProgress = 0.0.obs;
@@ -56,7 +56,7 @@ class UploadVideoController extends GetxController {
   final cancelToken = CancelToken();
   final sharedPref = SharedPrefHelper();
   RxBool compressingProcessDisplay = false.obs;
-
+  String isComing = '';
 
 
   /// formatted mm:ss
@@ -70,6 +70,10 @@ class UploadVideoController extends GetxController {
   void onInit() {
     super.onInit();
     getChallengesListApiCall();
+
+    final String args = Get.arguments ?? '';
+    print('args $args');
+    isComing = args;
   }
 
 
@@ -709,7 +713,7 @@ class UploadVideoController extends GetxController {
               title: '',
               message: response.data['message'],
               onConfirm: () {
-                Get.toNamed(Routes.uploadPhotoPage);
+                Get.toNamed(Routes.uploadPhotoPage, arguments: isComing);
                 Get.back();
               },
             )

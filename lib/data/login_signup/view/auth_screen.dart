@@ -16,48 +16,75 @@ class AuthScreen extends GetView<AuthController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(AppIcons.headerImagePng),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: IntrinsicHeight(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          SizedBox(height: 10.h,),
-                          Obx(() {
-                            final isSignup = controller.currentTab.value == AuthTab.signup;
+      body:
+      // Container(
+      //   width: double.infinity,
+      //   height: double.infinity,
+      //   decoration: BoxDecoration(
+      //     image: DecorationImage(
+      //       image: AssetImage(AppIcons.headerImagePng),
+      //       fit: BoxFit.cover,
+      //     ),
+      //   ),
+      //   child:
+        LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: ClampingScrollPhysics(), // prevents bouncing/overscroll
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                  ),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ///HEADER VIEW
+                        SizedBox(
+                          height: 270.h, // fixed header height
+                          width: double.infinity,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              /// HEADER IMAGE
+                              Image.asset(
+                                AppIcons.headerHalfImagePng,
+                                fit: BoxFit.cover,
+                              ),
 
-                            /// Header Title View
-                            return AuthHeader(
-                              title: isSignup ? 'Join TrueDate\nToday!' : 'Hello,\nWelcome Back!',
-                              subtitle: isSignup ? 'Real people, real connections – powered by AI' : 'Please enter your email and password details to access your account.',
-                              step: isSignup,
-                            );
-                          }),
-                          // SizedBox(height: 20.h),
-                          /// Login and Signup View
-                          Expanded(
+                              /// HEADER TEXT
+                              SafeArea(
+                                // top: false,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 25.w),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Obx(() {
+                                        final isSignup = controller.currentTab.value == AuthTab.signup;
+
+                                        /// Header Title View
+                                        return AuthHeader(
+                                          title: isSignup ? 'Join TrueDate\nToday!' : 'Hello,\nWelcome Back!',
+                                          subtitle: isSignup ? 'Real people, real connections – powered by AI' : 'Please enter your email and password details to access your account.',
+                                          step: isSignup,
+                                        );
+                                      }),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // SizedBox(height: 20.h),
+                        /// Login and Signup View
+                        Expanded(
+                          child: Transform.translate(
+                            offset: Offset(0, -30), // 👈 move up
                             child: Container(
-                                // constraints: BoxConstraints(
-                                //   minHeight: MediaQuery.of(context).size.height * 0.95,
-                                //   // maxHeight: MediaQuery.of(context).size.height * 0.85,
-                                // ),
                               padding: EdgeInsets.only(top: 10.h, left: 20.w, right: 20.w),
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -66,13 +93,11 @@ class AuthScreen extends GetView<AuthController> {
                                 ),
                               ),
                               child: SafeArea(
-                                top: false, // only bottom safe area inside
+                                top: false,
                                 child: Column(
                                   children: [
                                     AuthTabs(controller: controller),
                                     SizedBox(height: 20.h),
-
-                                    /// ANIMATED STEP TRANSITION
                                     Expanded(
                                       child: Obx(() {
                                         return AnimatedSwitcher(
@@ -89,8 +114,7 @@ class AuthScreen extends GetView<AuthController> {
                                               ),
                                             );
                                           },
-                                          child: controller.currentTab.value ==
-                                              AuthTab.signup
+                                          child: controller.currentTab.value == AuthTab.signup
                                               ? _SignupAnimated()
                                               : LoginView(),
                                         );
@@ -101,16 +125,67 @@ class AuthScreen extends GetView<AuthController> {
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        )
+                    /*
+                        Expanded(
+                          child: Container(
+                              // constraints: BoxConstraints(
+                              //   minHeight: MediaQuery.of(context).size.height * 0.95,
+                              //   // maxHeight: MediaQuery.of(context).size.height * 0.85,
+                              // ),
+                            padding: EdgeInsets.only(top: 10.h, left: 20.w, right: 20.w),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(28.r),
+                              ),
+                            ),
+                            child: SafeArea(
+                              top: false, // only bottom safe area inside
+                              child: Column(
+                                children: [
+                                  AuthTabs(controller: controller),
+                                  SizedBox(height: 20.h),
+
+                                  /// ANIMATED STEP TRANSITION
+                                  Expanded(
+                                    child: Obx(() {
+                                      return AnimatedSwitcher(
+                                        duration: const Duration(milliseconds: 350),
+                                        transitionBuilder: (child, anim) {
+                                          return SlideTransition(
+                                            position: Tween(
+                                              begin: const Offset(1, 0),
+                                              end: Offset.zero,
+                                            ).animate(anim),
+                                            child: FadeTransition(
+                                              opacity: anim,
+                                              child: child,
+                                            ),
+                                          );
+                                        },
+                                        child: controller.currentTab.value ==
+                                            AuthTab.signup
+                                            ? _SignupAnimated()
+                                            : LoginView(),
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        */
+                      ],
                     ),
                   ),
-                );
-              }
-          )
+                ),
+              );
+            }
         ),
-      ),
-    );
+      );
+    // );
   }
 }
 
