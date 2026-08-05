@@ -44,7 +44,7 @@ class MatchesData {
 
 class MatchList {
   final String? matchId;
-  final DateTime? matchedAt;
+  final String? matchedAt;
   final double? matchPercentage;
   final User? user;
 
@@ -57,14 +57,14 @@ class MatchList {
 
   factory MatchList.fromJson(Map<String, dynamic> json) => MatchList(
     matchId: json["match_id"],
-    matchedAt: json["matched_at"] == null ? null : DateTime.parse(json["matched_at"]),
+    matchedAt: json["matched_at"],
     matchPercentage: json["match_percentage"]?.toDouble(),
     user: json["user"] == null ? null : User.fromJson(json["user"]),
   );
 
   Map<String, dynamic> toJson() => {
     "match_id": matchId,
-    "matched_at": matchedAt?.toIso8601String(),
+    "matched_at": matchedAt,
     "match_percentage": matchPercentage,
     "user": user?.toJson(),
   };

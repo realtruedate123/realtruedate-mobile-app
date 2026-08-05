@@ -317,7 +317,7 @@ class AuthController extends GetxController {
             arguments: {
               'email': response.data?.data?.email ?? '',
               'otp': response.data?.data?.otp.toString(),
-              'gender': selectedGender.value.toString()[0]
+              'gender': selectedGender.value.toString()[0].toLowerCase()
             }
         );
       }

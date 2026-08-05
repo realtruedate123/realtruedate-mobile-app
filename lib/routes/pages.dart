@@ -20,9 +20,11 @@ import 'package:real_true_date/data/otp_reset_password/view/password_reset_succe
 import 'package:real_true_date/data/otp_reset_password/view/reset_password.dart';
 import 'package:real_true_date/data/profile_tab/controller/change_password_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/edit_profile_controller.dart';
+import 'package:real_true_date/data/profile_tab/controller/save_profile_details_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/saved_profile_controller.dart';
 import 'package:real_true_date/data/profile_tab/view/Change_password_view.dart';
 import 'package:real_true_date/data/profile_tab/view/edit_profile_view.dart';
+import 'package:real_true_date/data/profile_tab/view/save_profile_details_view.dart';
 import 'package:real_true_date/data/profile_tab/view/saved_profile_view.dart';
 import 'package:real_true_date/data/select_dream_partner/controller/SelectDreamPartnerController.dart';
 import 'package:real_true_date/data/select_dream_partner/view/select_dream_partner_view.dart';
@@ -176,6 +178,13 @@ class AppPages {
         page: () => SavedProfileView(),
         binding: BindingsBuilder((){
           Get.lazyPut(() => SavedProfileController());
+        })
+    ),
+    GetPage(
+        name: Routes.savedProfileDetailsView,
+        page: () => SaveProfileDetailsView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => SaveProfileDetailsController());
         })
     ),
     // GetPage(

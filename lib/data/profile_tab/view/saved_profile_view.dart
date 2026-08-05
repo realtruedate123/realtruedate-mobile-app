@@ -44,16 +44,16 @@ class SavedProfileView extends StatelessWidget {
               ,
               child: AppIcons.getBackButtonIcon(context, size: 38),)
         ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 16.w),
-            child: InkWell(
-            onTap: () {
-                Navigator.pop(context);
-                },
-                child: AppIcons.getHomeAppbar(context, size: 38)),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: EdgeInsets.only(right: 16.w),
+        //     child: InkWell(
+        //     onTap: () {
+        //         Navigator.pop(context);
+        //         },
+        //         child: AppIcons.getHomeAppbar(context, size: 38)),
+        //   ),
+        // ],
       ),
       body: SafeArea(
         child: Padding(
@@ -63,10 +63,11 @@ class SavedProfileView extends StatelessWidget {
             children: [
 
               SizedBox(height: 20.h),
+          Obx(() =>
               Expanded(
                   child: GridView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 5.w),
-                    itemCount: controller.matches.length,
+                    itemCount: controller.matchesList.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 16.w,
@@ -75,10 +76,11 @@ class SavedProfileView extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) {
                       return SavedProfileCell(
-                        match: controller.matches[index],
+                        match: controller.matchesList[index],
                         onTap: () {
                           Get.toNamed(
-                            Routes.matchesDetailsView,
+                            Routes.savedProfileDetailsView,
+                            arguments: controller.matchesList[index]
                           );
                         },
                       );
@@ -86,6 +88,7 @@ class SavedProfileView extends StatelessWidget {
                   )
 
               ),
+          )
             ],
           ),
         ),

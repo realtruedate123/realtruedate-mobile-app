@@ -9,6 +9,7 @@ import 'package:real_true_date/data/home_tab/model/profile_match_details_model.d
 import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
 import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
+import 'package:real_true_date/helper/common_model.dart';
 
 class UserProfileController extends GetxController {
 
@@ -35,7 +36,8 @@ class UserProfileController extends GetxController {
   }
 
   void toggleFavorite() {
-    isFavorite.toggle();
+    // isFavorite.toggle();
+    favoritesMatchProfileApiCall();
   }
 
   /// Get saved local user data
@@ -70,6 +72,7 @@ class UserProfileController extends GetxController {
 
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
       profileData.value = response.data?.data ?? ProfileData();
+      isFavorite.value = response.data?.data?.isFavorite ?? false;
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
@@ -136,6 +139,74 @@ class UserProfileController extends GetxController {
     } else {
       // errorMessage.value = response.message ?? 'Login failed';
       // Get.snackbar('Failed', response.message ?? 'Registration failed');
+    }
+  }
+
+  Future<void> createMessageApiCall(String direction) async {
+    final authToken = await sharedPref.getAuthToken;
+
+    final params = {
+      "match_id": matchData.userId,
+    };
+
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    print('token $authToken');
+    print('params $params');
+
+    final response = await BaseApiService().postRawData<CommonModel>(
+        endpoint: Endpoints.conversationsGetOrCreate,
+        fields: params,
+        headers: header,
+        fromJson: (json) => CommonModel.fromJson(json),
+    );
+
+    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
+      print('create message ${response.data?.message}');
+      // if(response.data?.data.matched == true){
+      //
+      // }
+
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      // errorMessage.value = response.message ?? 'Login failed';
+      // Get.snackbar('Failed', response.message ?? 'Registration failed');
+    }
+  }
+
+  Future<void> favoritesMatchProfileApiCall() async {
+    final token = await sharedPref.getAuthToken;
+
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $token',
+    };
+
+    final response = await BaseApiService().postRawData<ProfileFavoritesModel>(
+      endpoint: '${Endpoints.favoritesMatchProfile}/${matchData.userId}/toggle',
+      headers: header,
+      fromJson: (json) => ProfileFavoritesModel.fromJson(json),
+    );
+
+    if (response.isSuccess && response.statusCode == 200) {
+
+      print("Response data: ${response.data?.message}");
+      isFavorite.value = response.data?.data?.isFavorite ?? false;
+      Get.snackbar('Success', response.message ?? 'Profile saved',
+          colorText: Colors.white,
+          backgroundColor: Colors.green
+      );
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      Get.snackbar('Failed', response.message ?? 'Profile not saved',
+        colorText: Colors.white,
+        backgroundColor: Colors.red
+      );
     }
   }
 }

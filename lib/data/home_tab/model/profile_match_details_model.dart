@@ -40,6 +40,7 @@ class ProfileData {
   final String? lastSeen;
   final List<Photo>? photos;
   final Profile? profile;
+  final bool? isFavorite;
 
   ProfileData({
     this.id,
@@ -59,6 +60,7 @@ class ProfileData {
     this.lastSeen,
     this.photos,
     this.profile,
+    this.isFavorite,
   });
 
   factory ProfileData.fromJson(Map<String, dynamic> json) => ProfileData(
@@ -79,6 +81,7 @@ class ProfileData {
     lastSeen: json["last_seen"],
     photos: json["photos"] == null ? [] : List<Photo>.from(json["photos"]!.map((x) => Photo.fromJson(x))),
     profile: json["profile"] == null ? null : Profile.fromJson(json["profile"]),
+    isFavorite: json["is_favorite"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -99,6 +102,7 @@ class ProfileData {
     "last_seen": lastSeen,
     "photos": photos == null ? [] : List<dynamic>.from(photos!.map((x) => x.toJson())),
     "profile": profile?.toJson(),
+    "is_favorite": isFavorite,
   };
 }
 
@@ -175,5 +179,46 @@ class Profile {
     "drinking": drinking,
     "interests": interests == null ? [] : List<dynamic>.from(interests!.map((x) => x)),
     "looking_for": lookingFor,
+  };
+}
+
+/// Profile favorites
+class ProfileFavoritesModel {
+  final bool? success;
+  final String? message;
+  final ProfileFavoritesModelData? data;
+
+  ProfileFavoritesModel({
+    this.success,
+    this.message,
+    this.data,
+  });
+
+  factory ProfileFavoritesModel.fromJson(Map<String, dynamic> json) => ProfileFavoritesModel(
+    success: json["success"],
+    message: json["message"],
+    data: json["data"] == null ? null : ProfileFavoritesModelData.fromJson(json["data"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "message": message,
+    "data": data?.toJson(),
+  };
+}
+
+class ProfileFavoritesModelData {
+  final bool? isFavorite;
+
+  ProfileFavoritesModelData({
+    this.isFavorite,
+  });
+
+  factory ProfileFavoritesModelData.fromJson(Map<String, dynamic> json) => ProfileFavoritesModelData(
+    isFavorite: json["is_favorite"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "is_favorite": isFavorite,
   };
 }

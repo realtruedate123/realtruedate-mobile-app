@@ -54,7 +54,6 @@ class _VideoSlideState extends State<VideoSlide> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false, // Disables the swipe gesture and back button

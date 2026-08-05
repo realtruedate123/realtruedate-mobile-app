@@ -20,6 +20,21 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 @pragma('vm:entry-point') // Required for background execution
 void notificationTapBackground(NotificationResponse notificationResponse) {
   debugPrint('🔔 Notification tapped (background): ${notificationResponse.payload}');
+
+  if ((notificationResponse.payload ?? '').isNotEmpty) {
+    try {
+      final Map<String, dynamic> messagePayload =
+      json.decode(notificationResponse.payload!);
+
+      // Note: Make sure any navigation/state logic used inside redirect
+      // can safely handle execution in background isolates.
+      debugPrint('Payload parsed: $messagePayload');
+      // redirectFromNotification(messagePayload);
+
+    } catch (e) {
+      debugPrint('Failed to parse notification payload: $e');
+    }
+  }
 }
 
 class NotificationService {
@@ -84,14 +99,15 @@ class NotificationService {
           redirectFromNotification(messagePayload);
         }
       },
-      onDidReceiveBackgroundNotificationResponse:
-          (final NotificationResponse details) {
-        if ((details.payload ?? '').isNotEmpty) {
-          final Map<String, dynamic> messagePayload =
-          json.decode(details.payload ?? '');
-          redirectFromNotification(messagePayload);
-        }
-      },
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+      // onDidReceiveBackgroundNotificationResponse:
+      //     (final NotificationResponse details) {
+      //   if ((details.payload ?? '').isNotEmpty) {
+      //     final Map<String, dynamic> messagePayload =
+      //     json.decode(details.payload ?? '');
+      //     redirectFromNotification(messagePayload);
+      //   }
+      // },
     );
 
     FirebaseMessaging.onMessage.listen((final RemoteMessage? message) async {
@@ -148,7 +164,7 @@ class NotificationService {
   void redirectFromNotification(final Map<String, dynamic> payload) async {
     //redirect to any specific screen.
     //if (sharedPref.isLoggedIn) {
-      // final RedirectData redirectData = RedirectData.fromJson(payload);
+    // final RedirectData redirectData = RedirectData.fromJson(payload);
     // }
   }
 }

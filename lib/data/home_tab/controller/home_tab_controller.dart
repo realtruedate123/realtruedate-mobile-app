@@ -8,6 +8,7 @@ import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/data/home_tab/model/feed_response.dart';
+import 'package:real_true_date/data/home_tab/model/profile_match_details_model.dart';
 import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
 import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
@@ -116,6 +117,7 @@ class HomeTabController extends GetxController {
 
   //TODO: Swipe card API Call
   Future<void> swipeCardApiCall(String direction, Candidate item) async {
+    return;
     final authToken = await sharedPref.getAuthToken;
 
     final params = {
@@ -170,4 +172,36 @@ class HomeTabController extends GetxController {
     }
   }
 
+  Future<void> favoritesMatchProfileApiCall(String matchUserID) async {
+    final token = await sharedPref.getAuthToken;
+
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $token',
+    };
+
+    final response = await BaseApiService().postRawData<ProfileFavoritesModel>(
+      endpoint: '${Endpoints.favoritesMatchProfile}/$matchUserID/toggle',
+      // endpoint: '',
+      headers: header,
+      fromJson: (json) => ProfileFavoritesModel.fromJson(json),
+    );
+    print('fav response ${response.statusCode}');
+    if (response.isSuccess && response.statusCode == 200) {
+
+      print("Response data: ${response.data?.message}");
+      // isFavorite.value = response.data?.data?.isFavorite ?? false;
+      Get.snackbar('Success', response.message ?? 'Profile saved',
+          colorText: Colors.white,
+          backgroundColor: Colors.green
+      );
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      Get.snackbar('Failed', response.message ?? 'Profile not saved',
+          colorText: Colors.white,
+          backgroundColor: Colors.red
+      );
+    }
+  }
 }

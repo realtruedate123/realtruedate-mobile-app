@@ -75,7 +75,11 @@ class HomeTabView extends StatelessWidget {
                     // Action handlers
                     onCancel: () => controller.swiperController.swipeLeft(),
                     onLike: () => controller.swiperController.swipeRight(),
-                    onFavorites: () => controller.swiperController.swipeUp(),
+                    // onFavorites: () => controller.swiperController.swipeUp(),
+                    onFavorites: () {
+                      debugPrint('Favorites clicked for index: $index');
+                      controller.favoritesMatchProfileApiCall(item.userId);
+                    },
                     onPhoto: () {
                       debugPrint('Photo clicked for index: $index');
                       Get.toNamed(Routes.userProfileView, arguments: item);

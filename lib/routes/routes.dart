@@ -21,4 +21,5 @@ class Routes {
   static const confirmationInfo = "/confirmationInfo";
   static const changePassword = "/changePassword";
   static const savedProfileView = "/savedProfileView";
+  static const savedProfileDetailsView = "/savedProfileDetailsView";
 }

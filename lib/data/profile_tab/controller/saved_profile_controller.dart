@@ -1,4 +1,8 @@
 import 'package:get/get.dart';
+import 'package:real_true_date/core/local/shared_pref.dart';
+import 'package:real_true_date/core/network/InternetDialog.dart';
+import 'package:real_true_date/core/network/api_functions/api_request.dart';
+import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/data/matches_tab/controller/matches_tab_controller.dart';
 import 'package:real_true_date/data/profile_tab/model/saved_profile_model.dart';
 
@@ -10,48 +14,15 @@ class SavedProfileController extends GetxController{
   /// Button enable state
   final isLoginEnabled = false.obs;
 
-  final List<SavedProfileModel> matches = [
-    SavedProfileModel(
-      name: "Clyra Monica",
-      age: 21,
-      location: "Prague, Czech Republic",
-      imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-      matchPercent: 90,
-      isVerified: true,
-    ),
-    SavedProfileModel(
-      name: "Maria Icabes",
-      age: 22,
-      location: "Panay, Philippines",
-      imageUrl:
-      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
-      matchPercent: 80,
-      isVerified: true,
-    ),
-    SavedProfileModel(
-      name: "Tukiyem Anes",
-      age: 23,
-      location: "Paris, France",
-      imageUrl:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2",
-      matchPercent: 70,
-      isVerified: true,
-    ),
-    SavedProfileModel(
-      name: "Oktavia Caca",
-      age: 24,
-      location: "Wilkesy, Poland",
-      imageUrl:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb",
-      matchPercent: 60,
-      isVerified: true,
-    ),
-  ];
+  final sharedPref = SharedPrefHelper();
+
+  var matchesList = <FavoriteModel>[].obs;
 
   @override
   void onInit() {
     super.onInit();
+
+    getSaveProfileListApiCall();
   }
 
   @override
@@ -59,4 +30,28 @@ class SavedProfileController extends GetxController{
     super.onClose();
   }
 
+  //TODO: Get Save profile List API Call
+  Future<void> getSaveProfileListApiCall() async {
+
+    final authToken = await sharedPref.getAuthToken;
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    final response = await BaseApiService().getMethod<SavedProfileModel>(
+      endpoint: Endpoints.favoritesMatchProfile,
+      headers: header,
+      fromJson: (json) => SavedProfileModel.fromJson(json),
+    );
+
+    if (response.isSuccess && response.statusCode == 200) {
+      matchesList.value = response.data?.data?.favorites ?? [];
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      Get.snackbar('Failed', response.message ?? 'Something went wrong');
+    }
+    update();
+  }
 }

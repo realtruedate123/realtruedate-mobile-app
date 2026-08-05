@@ -9,7 +9,7 @@ import 'package:real_true_date/helper/app_cached_image.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 
 class SavedProfileCell extends StatelessWidget {
-  final SavedProfileModel match;
+  final FavoriteModel match;
   final VoidCallback? onTap;
 
   const SavedProfileCell({
@@ -48,7 +48,7 @@ class SavedProfileCell extends StatelessWidget {
                       aspectRatio: 3 / 4,
                       // child: Image.asset(AppIcons.dummyProfileCard, fit: BoxFit.cover,),
                       child: AppCachedImage(
-                        imageUrl: match.imageUrl,
+                        imageUrl: match.photoUrl ?? '',
                       )
                     // Image.network(
                     //   match.imageUrl,
@@ -66,7 +66,7 @@ class SavedProfileCell extends StatelessWidget {
                   ),
 
                   /// Verified badge (Bottom Left)
-                  if (match.isVerified)
+                  if (match.isVerified ?? false)
                     Positioned(
                       bottom: 2.h,
                       left: 2.w,
@@ -89,7 +89,7 @@ class SavedProfileCell extends StatelessWidget {
               children: [
                 Flexible(
                   child: AppTextFont(
-                    "${match.name}, ${match.age}",
+                    "${match.fullName}, ${match.age}",
                     font: AppFontType.urbanist,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -116,7 +116,7 @@ class SavedProfileCell extends StatelessWidget {
           /// Location
           Center(
             child: AppTextFont(
-              match.location,
+              '',
               font: AppFontType.lato,
               fontSize: 10,
               fontWeight: FontWeight.w400,
