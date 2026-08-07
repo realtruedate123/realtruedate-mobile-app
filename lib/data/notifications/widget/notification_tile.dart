@@ -3,22 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:real_true_date/data/notifications/model/notification_list_model.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:get/get.dart';
+import 'package:real_true_date/helper/date_time.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class NotificationTile extends StatelessWidget {
-  final AppNotification notification;
+  final NotificationObject notification;
+  final VoidCallback? onAccept;
+  final VoidCallback? onDecline;
+  final VoidCallback? onMessage;
 
-  const NotificationTile({super.key, required this.notification});
+  const NotificationTile({
+    super.key,
+    required this.notification,
+    this.onAccept,
+    this.onDecline,
+    this.onMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
 
     final bool isHighlight =
-        notification.type == NotificationType.connectionRequest ||
-            notification.type == NotificationType.uploadVideo;
+        notification.notificationType == 'connect_request' &&
+            notification.conversationStatus == 'pending';
 
     return Container(
       color: isHighlight
@@ -31,7 +42,7 @@ class NotificationTile extends StatelessWidget {
         onTap: () {
           // click event
           print('clicked ${notification.id}');
-          Get.toNamed(Routes.matchesDetailsView,);
+          // Get.toNamed(Routes.matchesDetailsView,);
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,9 +52,9 @@ class NotificationTile extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 26,
-                  backgroundImage: NetworkImage(notification.imageUrl),
+                  backgroundImage: NetworkImage(notification.senderPhoto ?? ''),
                 ),
-                if (notification.isOnline)
+               /* if (notification.isOnline)
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -56,7 +67,7 @@ class NotificationTile extends StatelessWidget {
                         border: Border.all(color: Colors.white, width: 2),
                       ),
                     ),
-                  )
+                  )*/
               ],
             ),
 
@@ -80,7 +91,7 @@ class NotificationTile extends StatelessWidget {
                           ),
                         ),
                         TextSpan(text:
-                        " ${notification.subtitle}",
+                        " ${notification.body}",
                           style: GoogleFonts.manrope(
                               color: theme.blackColor,
                               fontWeight: FontWeight.w400,
@@ -93,7 +104,7 @@ class NotificationTile extends StatelessWidget {
 
                   SizedBox(height: 6.h),
                   AppTextFont(
-                    notification.time,
+                    TimeAgoHelper.format(notification.createdAt),
                     font: AppFontType.urbanist,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -113,23 +124,20 @@ class NotificationTile extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
-    switch (notification.type) {
-      case NotificationType.connectionRequest:
-        return Row(
-          children: [
-            _outlineButton(context, "Decline", () {}),
-            const SizedBox(width: 10),
-            _filledButton(context, "Accept", () {}),
-          ],
-        );
+  Widget _buildActionButtons(BuildContext context){
+    final bool isHighlight =
+        notification.notificationType == 'connect_request' &&
+            notification.conversationStatus == 'pending';
 
-      case NotificationType.uploadVideo:
-        return _outlinePurpleButton(context, "Upload Video", () {});
-
-      case NotificationType.matchAccepted:
-        return _outlinePurpleButton(context, "Message", () {});
-    }
+    return isHighlight ?
+    Row(
+      children: [
+        _outlineButton(context, "Decline", onDecline ?? () {},),
+        const SizedBox(width: 10),
+        _filledButton(context, "Accept", onAccept ?? () {},),
+      ],
+    )
+        : _outlinePurpleButton(context, "Message", onMessage ?? () {},);
   }
 
   Widget _filledButton(BuildContext context, String text, VoidCallback onTap) {
@@ -195,30 +203,4 @@ class NotificationTile extends StatelessWidget {
       ),
     );
   }
-}
-
-enum NotificationType {
-  connectionRequest,
-  uploadVideo,
-  matchAccepted,
-}
-
-class AppNotification {
-  final String id;
-  final String title;
-  final String subtitle;
-  final String time;
-  final String imageUrl;
-  final NotificationType type;
-  final bool isOnline;
-
-  AppNotification({
-    required this.id,
-    required this.title,
-    required this.subtitle,
-    required this.time,
-    required this.imageUrl,
-    required this.type,
-    this.isOnline = false,
-  });
 }

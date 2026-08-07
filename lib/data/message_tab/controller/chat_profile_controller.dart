@@ -4,16 +4,13 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
-import 'package:real_true_date/data/home_tab/model/create_chat_model.dart';
-import 'package:real_true_date/data/home_tab/model/feed_response.dart';
 import 'package:real_true_date/data/home_tab/model/profile_match_details_model.dart';
 import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
-import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
-import 'package:real_true_date/helper/common_model.dart';
-import 'package:real_true_date/routes/routes.dart';
+import 'package:real_true_date/data/message_tab/model/chat_model.dart';
+import 'package:real_true_date/data/message_tab/model/message_model.dart';
 
-class UserProfileController extends GetxController {
+class ChatProfileController extends GetxController {
 
   /// UI State
   final isFavorite = false.obs;
@@ -21,13 +18,17 @@ class UserProfileController extends GetxController {
 
   final sharedPref = SharedPrefHelper();
 
-  final Candidate matchData = Get.arguments;
+  final toUserId = Get.arguments['id'] ?? '';
   final profileData = ProfileData().obs;
+  final recipientData = RecipientMessage().obs;
   late var userProfileUrl = '';
 
   @override
   void onInit() {
     super.onInit();
+
+    recipientData.value = Get.arguments['data'] ?? Recipient();
+
     getUserData();
     getProfileApiCall();
   }
@@ -64,7 +65,7 @@ class UserProfileController extends GetxController {
     };
 
     final response = await BaseApiService().getMethod<ProfileMatchDetailsModel>(
-      endpoint: '${Endpoints.matchProfileUser}/${matchData.userId}/profile',
+      endpoint: '${Endpoints.matchProfileUser}/$toUserId/profile',
       headers: header,
       showLoader: false,
       fromJson: (json) => ProfileMatchDetailsModel.fromJson(json),
@@ -117,62 +118,8 @@ class UserProfileController extends GetxController {
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
       print('swipe card ${response.data?.message}');
       if(response.data?.data.matched == true){
-        showDialog(
-          context: Get.context!,
-          barrierDismissible: false,
-          builder: (_) => MatchPopup(
-              userId: matchData.userId,
-              name: matchData.firstName,
-              age: matchData.age,
-              city: matchData.city ?? '',
-              state: matchData.state ?? '',
-              photoUrl: matchData.photoUrl ?? '',
-              isVerified: matchData.isVerified,
-            userProfileUrl: userProfileUrl,
-            onMessage: () {
-              print('message');
-              createMessageApiCall();
-            }
-          ),
-        );
+
       }
-
-    } else if (response.statusCode == 0) {
-      InternetDialog.showNoInternetDialog();
-    } else {
-      // errorMessage.value = response.message ?? 'Login failed';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
-    }
-  }
-
-  Future<void> createMessageApiCall() async {
-    final authToken = await sharedPref.getAuthToken;
-
-    final params = {
-      "match_id": matchData.userId,
-    };
-
-    final header = {
-      'Content-Type': 'application/json',
-      "Authorization": 'Bearer $authToken',
-    };
-
-    print('token $authToken');
-    print('params $params');
-
-    final response = await BaseApiService().postRawData<CreateChatModel>(
-        endpoint: Endpoints.conversationsGetOrCreate,
-        fields: params,
-        headers: header,
-        fromJson: (json) => CreateChatModel.fromJson(json),
-    );
-
-    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      print('create message ${response.data?.data?.conversationId}');
-
-      Get.toNamed(Routes.chatView, arguments: {
-        'conversation_id': response.data?.data?.conversationId
-      });
 
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
@@ -191,7 +138,7 @@ class UserProfileController extends GetxController {
     };
 
     final response = await BaseApiService().postRawData<ProfileFavoritesModel>(
-      endpoint: '${Endpoints.favoritesMatchProfile}/${matchData.userId}/toggle',
+      endpoint: '${Endpoints.favoritesMatchProfile}/$toUserId/toggle',
       headers: header,
       fromJson: (json) => ProfileFavoritesModel.fromJson(json),
     );

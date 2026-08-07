@@ -82,7 +82,10 @@ class MatchesTabView extends StatelessWidget {
                       onTap: () async {
                         final result = await Get.toNamed(
                           Routes.matchesDetailsView,
-                          arguments: controller.matchesList[index],
+                          arguments: {
+                            'data': controller.matchesList[index],
+                            'id': controller.matchesList[index].matchId
+                          },
                         );
                         if(result == true){
                           controller.getMatchesListApiCall();

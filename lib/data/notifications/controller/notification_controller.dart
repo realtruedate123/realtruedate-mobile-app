@@ -1,50 +1,130 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:real_true_date/data/notifications/widget/notification_tile.dart';
+import 'package:real_true_date/core/local/shared_pref.dart';
+import 'package:real_true_date/core/network/InternetDialog.dart';
+import 'package:real_true_date/core/network/api_functions/api_request.dart';
+import 'package:real_true_date/core/network/apis_end_points.dart';
+import 'package:real_true_date/data/notifications/model/notification_list_model.dart';
+import 'package:real_true_date/helper/common_model.dart';
 
 class NotificationController extends GetxController {
 
   /// UI State
   final isFavorite = false.obs;
+  final sharedPref = SharedPrefHelper();
 
-  final List<AppNotification> notifications = [
-    AppNotification(
-      id: "1",
-      title: "Scott McTominay",
-      subtitle: "want to Connect with you",
-      time: "7 hours ago",
-      imageUrl: "https://i.pravatar.cc/150?img=3",
-      type: NotificationType.connectionRequest,
-      isOnline: true,
-    ),
-    AppNotification(
-      id: "2",
-      title: "Upload Your Latest Video",
-      subtitle: "to Continue Matching on TrueDate",
-      time: "4 hours ago",
-      imageUrl: "https://i.pravatar.cc/150?img=5",
-      type: NotificationType.uploadVideo,
-    ),
-    AppNotification(
-      id: "3",
-      title: "Cylra Cantica Accepted",
-      subtitle:
-      "your match request. Start chatting now to get to know each other!",
-      time: "4 hours ago",
-      imageUrl: "https://i.pravatar.cc/150?img=6",
-      type: NotificationType.matchAccepted,
-      isOnline: true,
-    ),
-  ];
+  var notifications = <NotificationObject>[].obs;
 
+  int page = 1;
+  final int pageLimit = 20;
+
+  bool hasMore = true;
+  bool isLoading = false;
+
+  final ScrollController scrollController = ScrollController();
 
   @override
   void onInit() {
     super.onInit();
+    getNotificationListApiCall();
 
+    scrollController.addListener(_onScroll);
   }
 
   @override
   void onClose() {
     super.onClose();
+  }
+
+  Future<void> _onScroll() async {
+    if (!hasMore || isLoading) return;
+
+    isLoading = true;
+
+    page++;
+    await getNotificationListApiCall();
+
+    isLoading = false;
+  }
+
+  Future<void> refreshNotifications() async {
+    page = 1;
+    hasMore = true;
+    notifications.clear();
+
+    await getNotificationListApiCall();
+  }
+
+  //TODO: Get Notification List API Call
+  Future<void> getNotificationListApiCall() async {
+
+    final authToken = await sharedPref.getAuthToken;
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    final response = await BaseApiService().getMethod<NotificationListModel>(
+      endpoint: '${Endpoints.getNotifications}?page=$page&page_size=$pageLimit',
+      headers: header,
+      fromJson: (json) => NotificationListModel.fromJson(json),
+    );
+
+    if (response.isSuccess && response.statusCode == 200) {
+      // notifications.value = response.data?.data?.notifications ?? [];
+      final newNotifications = response.data?.data?.notifications ?? [];
+
+      if (page == 1) {
+        notifications.value = newNotifications;
+      } else {
+        notifications.addAll(newNotifications);
+      }
+
+      // hasMore = newNotifications.length == pageLimit;
+      // Use API response
+      hasMore = response.data?.data?.hasMore ?? false;
+
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      Get.snackbar('Failed', response.message ?? 'Something went wrong');
+    }
+    update();
+  }
+
+  Future<void> acceptOrDeclineApiCall(String type, String conversationId) async {
+    final token = await sharedPref.getAuthToken;
+
+    final params = {
+      "action": type,
+    };
+
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $token',
+    };
+
+    final response = await BaseApiService().postRawData<CommonModel>(
+      endpoint: '${Endpoints.notificationsAcceptOrDecline}/$conversationId/respond',
+      fields: params,
+      headers: header,
+      fromJson: (json) => CommonModel.fromJson(json),
+    );
+
+    if (response.isSuccess && response.statusCode == 200) {
+      print("Response data: ${response.data?.message}");
+      Get.snackbar('Failed', response.message ?? 'Something want wrong',
+          colorText: Colors.white,
+          backgroundColor: Colors.green
+      );
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      Get.snackbar('Failed', response.message ?? 'Something want wrong',
+        colorText: Colors.white,
+        backgroundColor: Colors.red
+      );
+    }
   }
 }

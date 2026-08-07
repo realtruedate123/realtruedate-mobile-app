@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
+import 'package:real_true_date/core/utils/singleton.dart';
 import 'package:real_true_date/helper/bottom_nav_wrapper.dart';
+import 'package:real_true_date/helper/location_service.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class SplashController extends GetxController with GetTickerProviderStateMixin {
@@ -53,25 +55,25 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// Fetch current location once
-  // Future<void> fetchCurrentLocation() async {
-  //   try {
-  //     final pos = await LocationService.getCurrentLocation();
-  //     if (pos != null) {
-  //       print('Splash page Location $pos');
-  //
-  //       TemporaryValue.userLat = pos.latitude;
-  //       TemporaryValue.userLng = pos.longitude;
-  //
-  //       print('Splash page Location ${TemporaryValue.userLat}');
-  //
-  //       await Future.wait([
-  //         sharedPref.saveUserLocation({'Latitude': pos.latitude.toString(), 'Longitude': pos.longitude.toString()}),
-  //       ]);
-  //     }
-  //   } catch (e) {
-  //     debugPrint('home_tab page location $e.toString()');
-  //   } finally {
-  //     debugPrint('home_tab page location get');
-  //   }
-  // }
+  Future<void> fetchCurrentLocation() async {
+    try {
+      final pos = await LocationService.getCurrentLocation();
+      if (pos != null) {
+        print('Splash page Location $pos');
+
+        AppState.instance.userLat = pos.latitude;
+        AppState.instance.userLong = pos.longitude;
+
+        print('Splash page Location ${AppState.instance.userLat}');
+
+        await Future.wait([
+          sharedPref.saveUserLocation({'Latitude': pos.latitude.toString(), 'Longitude': pos.longitude.toString()}),
+        ]);
+      }
+    } catch (e) {
+      debugPrint('home_tab page location $e.toString()');
+    } finally {
+      debugPrint('home_tab page location get');
+    }
+  }
 }

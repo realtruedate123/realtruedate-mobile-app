@@ -47,7 +47,7 @@ class NotificationsScreen extends StatelessWidget {
           //   onPressed: () => Get.back(),
           // ),
         ),
-        actions: [
+        /*actions: [
           Padding(
             padding: EdgeInsets.only(right: 16.w),
             child: Row(
@@ -85,17 +85,60 @@ class NotificationsScreen extends StatelessWidget {
               ],
             ),
           ),
-        ],
+        ],*/
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.only(top: 10),
-        itemCount: controller.notifications.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
-        itemBuilder: (context, index) {
-          return NotificationTile(
-              notification: controller.notifications[index]
-          );
-        },
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await controller.refreshNotifications();
+          },
+          child: controller.notifications.isEmpty ? Center(
+            child: Text(
+              'There are no notifications to display at the moment.',
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: Colors.grey,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ) : ListView.separated(
+            controller: controller.scrollController,
+            padding: const EdgeInsets.only(top: 10),
+            itemCount: controller.notifications.length +
+                (controller.hasMore ? 1 : 0),
+            separatorBuilder: (_, __) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final data = controller.notifications[index];
+              if (index == controller.notifications.length) {
+                return const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              return NotificationTile(
+                  notification: data,
+                onAccept: () {
+                  print("Accepted ${data.conversationId}");
+                  // call accept API here
+                  controller.acceptOrDeclineApiCall('accept', data.conversationId ?? '');
+                },
+
+                onDecline: () {
+                  print("Declined ${data.conversationId}");
+                  // call decline API here
+                  controller.acceptOrDeclineApiCall('decline', data.conversationId ?? '');
+                },
+
+                onMessage: () {
+                  print("Open chat ${data.conversationId}");
+                },
+              );
+            },
+          ),
+        ),
       ),
     );
   }

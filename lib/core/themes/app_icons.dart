@@ -272,35 +272,59 @@ class AppIcons{
     );
   }
 
-  static Widget getHomeTabIcon(BuildContext context, {double size = 24}) {
+  static Widget getHomeTabIcon(BuildContext context, {double size = 24, bool iconTintColor = false}) {
     return SvgPicture.asset(
         homeTabIcon,
         width: size.w,
-        height: size.h
+        height: size.h,
+      colorFilter: iconTintColor
+          ? ColorFilter.mode(
+        AppTheme.of(context).primaryColor,
+        BlendMode.srcIn,
+      )
+          : null,
     );
   }
 
-  static Widget getMatchesTabIcon(BuildContext context, {double size = 24}) {
+  static Widget getMatchesTabIcon(BuildContext context, {double size = 24, bool iconTintColor = false}) {
     return SvgPicture.asset(
         matchesTabIcon,
         width: size.w,
-        height: size.h
+        height: size.h,
+      colorFilter: iconTintColor
+          ? ColorFilter.mode(
+        AppTheme.of(context).primaryColor,
+        BlendMode.srcIn,
+      )
+          : null,
     );
   }
 
-  static Widget getMessageTabIcon(BuildContext context, {double size = 24}) {
+  static Widget getMessageTabIcon(BuildContext context, {double size = 24, bool iconTintColor = false}) {
     return SvgPicture.asset(
         messageTabIcon,
         width: size.w,
-        height: size.h
+        height: size.h,
+      colorFilter: iconTintColor
+          ? ColorFilter.mode(
+        AppTheme.of(context).primaryColor,
+        BlendMode.srcIn,
+      )
+          : null,
     );
   }
 
-  static Widget getProfileTabIcon(BuildContext context, {double size = 24}) {
+  static Widget getProfileTabIcon(BuildContext context, {double size = 24, bool iconTintColor = false}) {
     return SvgPicture.asset(
         profileTabIcon,
         width: size.w,
-        height: size.h
+        height: size.h,
+      colorFilter: iconTintColor
+          ? ColorFilter.mode(
+        AppTheme.of(context).primaryColor,
+        BlendMode.srcIn,
+      )
+          : null,
     );
   }
 

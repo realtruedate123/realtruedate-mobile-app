@@ -4,7 +4,7 @@ import FirebaseCore
 import Firebase
 import FirebaseMessaging
 import UserNotifications
-import flutter_local_notifications
+//import flutter_local_notifications
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
@@ -12,8 +12,9 @@ import flutter_local_notifications
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-//      FirebaseApp.configure()
-//      
+      // Initialize Firebase
+      FirebaseApp.configure()
+//
 //      FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
 //        GeneratedPluginRegistrant.register(with: registry)
 //      }

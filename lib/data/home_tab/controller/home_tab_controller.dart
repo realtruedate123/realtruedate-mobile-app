@@ -7,12 +7,14 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
+import 'package:real_true_date/data/home_tab/model/create_chat_model.dart';
 import 'package:real_true_date/data/home_tab/model/feed_response.dart';
 import 'package:real_true_date/data/home_tab/model/profile_match_details_model.dart';
 import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
 import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/root_tab_controller.dart';
+import 'package:real_true_date/routes/routes.dart';
 
 class HomeTabController extends GetxController {
 
@@ -117,7 +119,6 @@ class HomeTabController extends GetxController {
 
   //TODO: Swipe card API Call
   Future<void> swipeCardApiCall(String direction, Candidate item) async {
-    return;
     final authToken = await sharedPref.getAuthToken;
 
     final params = {
@@ -145,7 +146,7 @@ class HomeTabController extends GetxController {
       print('swipe card ${response.data?.message}');
       print('swipe card matched ${response.data?.data.matched}');
 
-      // if(response.data?.data.matched == true){
+      if(response.data?.data.matched == true){
         showDialog(
           context: Get.context!,
           barrierDismissible: false,
@@ -160,10 +161,11 @@ class HomeTabController extends GetxController {
               userProfileUrl: userProfileUrl,
             onMessage: () {
               print('message');
+              createMessageApiCall(response.data?.data.matchId ?? item.userId);
             },
           ),
         );
-      // }
+      }
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
@@ -173,6 +175,9 @@ class HomeTabController extends GetxController {
   }
 
   Future<void> favoritesMatchProfileApiCall(String matchUserID) async {
+    createMessageApiCall('');
+    return;
+
     final token = await sharedPref.getAuthToken;
 
     final header = {
@@ -202,6 +207,45 @@ class HomeTabController extends GetxController {
           colorText: Colors.white,
           backgroundColor: Colors.red
       );
+    }
+  }
+
+  Future<void> createMessageApiCall(String matchUserID) async {
+    final authToken = await sharedPref.getAuthToken;
+
+    final params = {
+      "match_id": '7facd8bc-a29b-4fc3-b5af-92d7d457553e',
+    };
+
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    print('url ${Endpoints.conversationsGetOrCreate}');
+    print('token $authToken');
+    print('params $params');
+
+    final response = await BaseApiService().postRawData<CreateChatModel>(
+      endpoint: Endpoints.conversationsGetOrCreate,
+      fields: params,
+      headers: header,
+      fromJson: (json) => CreateChatModel.fromJson(json),
+    );
+
+    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
+      print('create message ${response.data?.data?.conversationId}');
+
+      Get.toNamed(Routes.chatView, arguments: {
+        'conversation_id': response.data?.data?.conversationId
+      });
+
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      print('Failed ${response.message}');
+      // errorMessage.value = response.message ?? 'Login failed';
+      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
 }

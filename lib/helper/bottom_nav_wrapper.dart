@@ -44,7 +44,7 @@ class _BottomNavWrapperState extends State<BottomNavWrapper> {
         icon: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppIcons.getHomeTabIcon(context, size: 17),
+            AppIcons.getHomeTabIcon(context, size: 17, iconTintColor: true),
             SizedBox(height: 5), // reduce or remove gap here
             AppTextFont(
               'Home',
@@ -76,7 +76,7 @@ class _BottomNavWrapperState extends State<BottomNavWrapper> {
         icon: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppIcons.getMatchesTabIcon(context, size: 24),
+            AppIcons.getMatchesTabIcon(context, size: 24, iconTintColor: true),
             SizedBox(height: 5), // 🔹 reduce or remove gap here
             AppTextFont(
               'Matches',
@@ -108,7 +108,7 @@ class _BottomNavWrapperState extends State<BottomNavWrapper> {
         icon: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppIcons.getMessageTabIcon(context, size: 22),
+            AppIcons.getMessageTabIcon(context, size: 22, iconTintColor: true),
             SizedBox(height: 5), // 🔹 reduce or remove gap here
             AppTextFont(
               'Message',
@@ -140,7 +140,7 @@ class _BottomNavWrapperState extends State<BottomNavWrapper> {
         icon: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppIcons.getProfileTabIcon(context, size: 20),
+            AppIcons.getProfileTabIcon(context, size: 20, iconTintColor: true),
             SizedBox(height: 5), // 🔹 reduce or remove gap here
             AppTextFont(
               'Profile',

@@ -65,7 +65,17 @@ class SavedProfileView extends StatelessWidget {
               SizedBox(height: 20.h),
           Obx(() =>
               Expanded(
-                  child: GridView.builder(
+                  child: controller.matchesList.isEmpty
+                      ? Center(
+                    child: Text(
+                      'No saved profiles found',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  )
+                      : GridView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 5.w),
                     itemCount: controller.matchesList.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

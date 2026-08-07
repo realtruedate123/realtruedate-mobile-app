@@ -30,4 +30,6 @@ class Endpoints {
   static const String changePassword = 'change-password';
   static const String favoritesMatchProfile = 'favorites';
   static const String conversationsGetOrCreate = 'conversations/get-or-create';
+  static const String getNotifications = 'notifications';
+  static const String notificationsAcceptOrDecline = 'conversations';
 }

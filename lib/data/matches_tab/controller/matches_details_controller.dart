@@ -13,13 +13,23 @@ class MatchesDetailsController extends GetxController {
   final isFavorite = false.obs;
   final isLoading = false.obs;
 
-  final MatchList matchData = Get.arguments;
+  // final MatchList matchData = Get.arguments['data'];
+  final MatchList? matchData = Get.arguments != null ? Get.arguments['data'] : null;
   final sharedPref = SharedPrefHelper();
   final profileData = ProfileData().obs;
+  late var matchDataId = '';
 
   @override
   void onInit() {
     super.onInit();
+
+    if (matchData == null) {
+      // No data found
+      matchDataId = Get.arguments['id'];
+    }
+    else{
+      matchDataId = matchData?.user?.id ?? '';
+    }
 
     getProfileApiCall();
   }
@@ -42,7 +52,7 @@ class MatchesDetailsController extends GetxController {
     };
 
     final Map<String, String> params = {
-      "user_id": matchData.user?.id ?? '',
+      "user_id": matchDataId,
     };
     print('params $params');
 
@@ -71,7 +81,7 @@ class MatchesDetailsController extends GetxController {
     };
 
     final response = await BaseApiService().getMethod<ProfileMatchDetailsModel>(
-      endpoint: '${Endpoints.matchProfileUser}/${matchData.user?.id}/profile',
+      endpoint: '${Endpoints.matchProfileUser}/$matchDataId/profile',
       headers: header,
       showLoader: false,
       fromJson: (json) => ProfileMatchDetailsModel.fromJson(json),

@@ -24,20 +24,22 @@ class SwipeCardModel {
 
 class SwipeData {
   final bool matched;
-  // final String matchId;
+  final String matchId;
 
   SwipeData({
     required this.matched,
-    // required this.matchId,
+    required this.matchId,
   });
 
   factory SwipeData.fromJson(Map<String, dynamic> json) => SwipeData(
     matched: json["matched"],
-    // matchId: json["match_id"],
+    matchId: json["match_id"] != null
+        ? json["match_id"] as String
+        : '',
   );
 
   Map<String, dynamic> toJson() => {
     "matched": matched,
-    // "match_id": matchId,
+    "match_id": matchId,
   };
 }

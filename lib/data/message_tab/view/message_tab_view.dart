@@ -54,6 +54,7 @@ class MessageTabView extends StatelessWidget {
                   onTap: () {
                     // Fav click event
                     print('clicked');
+                    Get.toNamed(Routes.savedProfileView);
                   },
                   child: AppIcons.getFavouriteIcon(context, size: 38),
                 ),
@@ -63,6 +64,7 @@ class MessageTabView extends StatelessWidget {
                   highlightColor: Colors.transparent, // Hides the click highlight
                   onTap: () {
                     print('clicked');
+                    Get.toNamed(Routes.notificationView);
                   },
                   child: AppIcons.getNotificationIcon(context, size: 38),
                 ),
@@ -77,23 +79,40 @@ class MessageTabView extends StatelessWidget {
           children: [
             _searchBar(context),
             Expanded(
-              child: ListView.separated(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                itemCount: controller.chatList.length,
-                separatorBuilder: (_, __) => Divider(
-                  color: theme.border,
-                  height: 30.h,
-                ),
-                itemBuilder: (context, index) {
-                  final chat = controller.chatList[index];
-                  return MessageListCell(
-                    chatList: chat,
-                    onTap: () {
-                      print('chat ${chat.name}');
-                      Get.toNamed(Routes.chatView);
-                    },
-                  );
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await controller.getUserChatListApiCall(); // Your API method
                 },
+                child: controller.userChatList.isEmpty
+                    ? Center(
+                  child: Text(
+                    'No conversations found',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      color: theme.inactiveTabColor,
+                    ),
+                  ),
+                )
+                    : ListView.separated(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  itemCount: controller.userChatList.length,
+                  separatorBuilder: (_, __) => Divider(
+                    color: theme.border,
+                    height: 30.h,
+                  ),
+                  itemBuilder: (context, index) {
+                    final chat = controller.userChatList[index];
+                    return MessageListCell(
+                      chatList: chat,
+                      onTap: () {
+                        print('chat ${chat.recipient?.fullName}');
+                        Get.toNamed(Routes.chatView, arguments: {
+                          'conversation_id': chat.conversationId ?? ''
+                        });
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ],

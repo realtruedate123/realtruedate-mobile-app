@@ -27,7 +27,7 @@ class AuthHeader extends StatelessWidget {
       width: double.infinity,
       alignment: Alignment.center,
       child: Padding(
-        padding: EdgeInsets.only(top: 20.h, bottom: 20.h, right: 25.w, left: 25.w),
+        padding: EdgeInsets.only(top: 20.h, bottom: 25.h, right: 25.w, left: 25.w),
         child: Column(
           children: [
             Text(

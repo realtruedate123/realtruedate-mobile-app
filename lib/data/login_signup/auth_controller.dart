@@ -5,6 +5,7 @@ import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/core/utils/platform_util.dart';
+import 'package:real_true_date/core/utils/singleton.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/login_signup/model/register_model.dart';
 import 'package:real_true_date/data/select_dream_partner/view/select_dream_partner_view.dart';
@@ -255,6 +256,8 @@ class AuthController extends GetxController {
     final token = await sharedPref.getFirebaseToken;
 
     final dateConvert = DateFormat('yyyy-MM-dd').format(dob.value!);
+    final userLat = AppState.instance.userLat ?? 0.0;
+    final userLong = AppState.instance.userLong ?? 0.0;
 
     final params = {
       "email": singUpEmailCtrl.text,
@@ -266,7 +269,9 @@ class AuthController extends GetxController {
       "zip_code": zipCtrl.text,
       "device_id": deviceId,
       "fcm_token": token,
-      "device_type": PlatformUtil.getPlatformName().toString()
+      "device_type": PlatformUtil.getPlatformName().toString(),
+      "latitude": userLat.toString(),
+      "longitude": userLong.toString()
     };
 
     print('params $params');
@@ -335,12 +340,17 @@ class AuthController extends GetxController {
     final deviceId = await DeviceUtils.getDeviceUDID();
     final token = await sharedPref.getFirebaseToken;
 
+    final userLat = AppState.instance.userLat ?? 0.0;
+    final userLong = AppState.instance.userLong ?? 0.0;
+
     final params = {
       "email": emailCtrl.text,
       "password": passwordCtrl.text,
       "device_id": deviceId,
       "fcm_token": token,
-      "device_type": PlatformUtil.getPlatformName().toString()
+      "device_type": PlatformUtil.getPlatformName().toString(),
+      "latitude": userLat.toString(),
+      "longitude": userLong.toString()
     };
 
     print('params $params');

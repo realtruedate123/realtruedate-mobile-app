@@ -85,6 +85,7 @@ class HomeAppbarWrapper extends StatelessWidget {
                   onTap: () {
                     // Favourite click event
                     print('Favourite clicked');
+                    Get.toNamed(Routes.savedProfileView,);
                   },
                   child: AppIcons.getFavouriteIcon(context, size: 38),
                 ),

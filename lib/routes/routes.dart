@@ -22,4 +22,5 @@ class Routes {
   static const changePassword = "/changePassword";
   static const savedProfileView = "/savedProfileView";
   static const savedProfileDetailsView = "/savedProfileDetailsView";
+  static const chatProfileDetailsView = "/chatProfileDetailsView";
 }

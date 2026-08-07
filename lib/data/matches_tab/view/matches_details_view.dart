@@ -21,7 +21,7 @@ class MatchesDetailsView extends StatelessWidget {
 
       final userInterests = controller.profileData.value.profile?.interests ?? [];
       final availableInterests = ['Nature', 'Travel', 'Writing'];
-      var profileImage = controller.matchData.user?.photoUrl ?? '';
+      var profileImage = controller.matchData?.user?.photoUrl ?? '';
       if(controller.profileData.value.photos?.isNotEmpty ?? false){
         profileImage = controller.profileData.value.photos?.first.photoUrl ?? '';
       }
@@ -31,7 +31,7 @@ class MatchesDetailsView extends StatelessWidget {
         backgroundColor: Colors.black,
         appBar: MatchesDetailsAppbarWrapper(
           showCloseButton: true,
-          verifiedProfile: controller.matchData.user?.isVerified ?? false,
+          verifiedProfile: controller.matchData?.user?.isVerified ?? false,
           showShadow: true,
           controller: controller,
         ),
@@ -72,7 +72,7 @@ class MatchesDetailsView extends StatelessWidget {
                           child: Column(
                             children: [
                               AppTextFont(
-                                '${controller.matchData.user?.firstName}, ${controller.matchData.user?.age}',
+                                '${controller.matchData?.user?.firstName}, ${controller.matchData?.user?.age}',
                                 font: AppFontType.urbanist,
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
@@ -81,7 +81,7 @@ class MatchesDetailsView extends StatelessWidget {
                               ),
                               SizedBox(height: 4.h),
                               AppTextFont(
-                                '${controller.matchData.user?.city}, ${controller.matchData.user?.state}',
+                                '${controller.matchData?.user?.city}, ${controller.matchData?.user?.state}',
                                 font: AppFontType.lato,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
