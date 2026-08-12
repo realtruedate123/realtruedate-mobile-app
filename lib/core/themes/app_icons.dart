@@ -72,6 +72,8 @@ class AppIcons{
   static const String driveEtaIcon = 'assets/svg/ic_drive-eta.svg';
   static const String editProfileIcon = 'assets/svg/ic_edit_profile.svg';
   static const String starProfileIcon = 'assets/svg/ic_star_profile.svg';
+  static const String helpCallIcon = 'assets/svg/ic_help_call.svg';
+  static const String helpMailIcon = 'assets/svg/ic_help_mail.svg';
 
   /// PNG
   static const String splashImagePng = 'assets/png/bg_splash.png';
@@ -610,6 +612,22 @@ class AppIcons{
         starProfileIcon,
         width: size.w,
         height: size.h
+    );
+  }
+
+  static Widget getHelpMailIcon(BuildContext context, {double size = 48}) {
+    return SvgPicture.asset(
+      helpMailIcon,
+      width: size.w,
+      height: size.h,
+    );
+  }
+
+  static Widget getHelpCallIcon(BuildContext context, {double size = 48}) {
+    return SvgPicture.asset(
+      helpCallIcon,
+      width: size.w,
+      height: size.h,
     );
   }
 

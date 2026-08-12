@@ -14,7 +14,9 @@ import 'package:real_true_date/data/message_tab/controller/chat_profile_controll
 import 'package:real_true_date/data/message_tab/view/chat_profile_view.dart';
 import 'package:real_true_date/data/message_tab/view/chat_view.dart';
 import 'package:real_true_date/data/notifications/controller/notification_controller.dart';
+import 'package:real_true_date/data/notifications/controller/user_request_controller.dart';
 import 'package:real_true_date/data/notifications/view/notifications_view.dart';
+import 'package:real_true_date/data/notifications/view/user_request_view.dart';
 import 'package:real_true_date/data/otp_reset_password/controller/otp_controller.dart';
 import 'package:real_true_date/data/otp_reset_password/controller/reset_password_controller.dart';
 import 'package:real_true_date/data/otp_reset_password/view/otp_view.dart';
@@ -22,10 +24,12 @@ import 'package:real_true_date/data/otp_reset_password/view/password_reset_succe
 import 'package:real_true_date/data/otp_reset_password/view/reset_password.dart';
 import 'package:real_true_date/data/profile_tab/controller/change_password_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/edit_profile_controller.dart';
+import 'package:real_true_date/data/profile_tab/controller/help_support_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/save_profile_details_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/saved_profile_controller.dart';
 import 'package:real_true_date/data/profile_tab/view/Change_password_view.dart';
 import 'package:real_true_date/data/profile_tab/view/edit_profile_view.dart';
+import 'package:real_true_date/data/profile_tab/view/help_support_view.dart';
 import 'package:real_true_date/data/profile_tab/view/save_profile_details_view.dart';
 import 'package:real_true_date/data/profile_tab/view/saved_profile_view.dart';
 import 'package:real_true_date/data/select_dream_partner/controller/SelectDreamPartnerController.dart';
@@ -194,6 +198,20 @@ class AppPages {
         page: () => ChatProfileDetailsScreen(),
         binding: BindingsBuilder((){
           Get.lazyPut(() => ChatProfileController());
+        })
+    ),
+    GetPage(
+        name: Routes.userRequestView,
+        page: () => UserRequestView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => UserRequestController());
+        })
+    ),
+    GetPage(
+        name: Routes.helpSupportView,
+        page: () => HelpSupportView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => HelpSupportController());
         })
     ),
     // GetPage(

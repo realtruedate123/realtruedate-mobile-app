@@ -133,7 +133,15 @@ class ChangePasswordController extends GetxController {
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      errorMessage.value =  response.message ??  'Password has not changed failed';
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          changePasswordApiCall();
+        }
+      } else {
+        errorMessage.value =  response.message ??  'Password has not changed failed';
+      }
+
       // Get.snackbar('Failed', response.message ?? 'Password has not changed failed',
       //   colorText: Colors.white,
       //   backgroundColor: Colors.red

@@ -1,7 +1,7 @@
 class NotificationListModel {
   final bool? success;
   final String? message;
-  final DataModel? data;
+  final DataModels? data;
 
   NotificationListModel({
     this.success,
@@ -12,7 +12,7 @@ class NotificationListModel {
   factory NotificationListModel.fromJson(Map<String, dynamic> json) => NotificationListModel(
     success: json["success"],
     message: json["message"],
-    data: json["data"] == null ? null : DataModel.fromJson(json["data"]),
+    data: json["data"] == null ? null : DataModels.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -22,20 +22,20 @@ class NotificationListModel {
   };
 }
 
-class DataModel {
+class DataModels {
   final List<NotificationObject>? notifications;
   final int? unreadCount;
   final int? page;
   final bool? hasMore;
 
-  DataModel({
+  DataModels({
     this.notifications,
     this.unreadCount,
     this.page,
     this.hasMore,
   });
 
-  factory DataModel.fromJson(Map<String, dynamic> json) => DataModel(
+  factory DataModels.fromJson(Map<String, dynamic> json) => DataModels(
     notifications: json["notifications"] == null ? [] : List<NotificationObject>.from(json["notifications"]!.map((x) => NotificationObject.fromJson(x))),
     unreadCount: json["unread_count"],
     page: json["page"],
@@ -61,6 +61,7 @@ class NotificationObject {
   final String? conversationStatus;
   final bool? isRead;
   final String? createdAt;
+  final String? senderId;
 
   NotificationObject({
     this.id,
@@ -73,6 +74,7 @@ class NotificationObject {
     this.conversationStatus,
     this.isRead,
     this.createdAt,
+    this.senderId,
   });
 
   factory NotificationObject.fromJson(Map<String, dynamic> json) => NotificationObject(
@@ -86,6 +88,7 @@ class NotificationObject {
     conversationStatus: json["conversation_status"],
     isRead: json["is_read"],
     createdAt: json["created_at"],
+    senderId: json["sender_id"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -99,5 +102,6 @@ class NotificationObject {
     "conversation_status": conversationStatus,
     "is_read": isRead,
     "created_at": createdAt,
+    "sender_id": senderId,
   };
 }

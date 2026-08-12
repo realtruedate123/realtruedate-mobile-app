@@ -7,6 +7,7 @@ import 'package:real_true_date/helper/app_cached_image.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/helper/appbar_wrapper/matches_details_appbar_wrapper.dart';
+import 'package:real_true_date/helper/string_class.dart';
 
 class MatchesDetailsView extends StatelessWidget {
   final controller = Get.find<MatchesDetailsController>();
@@ -20,7 +21,7 @@ class MatchesDetailsView extends StatelessWidget {
     return Obx(() {
 
       final userInterests = controller.profileData.value.profile?.interests ?? [];
-      final availableInterests = ['Nature', 'Travel', 'Writing'];
+      // final availableInterests = ['Nature', 'Travel', 'Writing'];
       var profileImage = controller.matchData?.user?.photoUrl ?? '';
       if(controller.profileData.value.photos?.isNotEmpty ?? false){
         profileImage = controller.profileData.value.photos?.first.photoUrl ?? '';
@@ -36,6 +37,7 @@ class MatchesDetailsView extends StatelessWidget {
           controller: controller,
         ),
         body: Stack(
+          clipBehavior: Clip.none,
           children: [
             /// Profile Image
             Positioned.fill(
@@ -81,7 +83,7 @@ class MatchesDetailsView extends StatelessWidget {
                               ),
                               SizedBox(height: 4.h),
                               AppTextFont(
-                                '${controller.matchData?.user?.city}, ${controller.matchData?.user?.state}',
+                                '${controller.cityName.value}, ${controller.stateName.value}',
                                 font: AppFontType.lato,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,

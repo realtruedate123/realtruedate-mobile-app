@@ -9,6 +9,7 @@ import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/appbar_wrapper/user_profile_appbar_wrapper.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/helper/custom_dialog/reject_match_dialog.dart';
+import 'package:real_true_date/helper/string_class.dart';
 
 class UserProfileDetailsScreen extends StatelessWidget {
   final controller = Get.find<UserProfileController>();
@@ -18,6 +19,7 @@ class UserProfileDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
+    final userInterests = controller.profileData.value.profile?.interests ?? [];
 
     return Scaffold(
       extendBodyBehindAppBar: true, // This is key to allow the body to go behind the app bar
@@ -48,92 +50,107 @@ class UserProfileDetailsScreen extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 /// White Card
-                Container(
-                  padding: EdgeInsets.fromLTRB(24.w, 64.h, 24.w, 32.h),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(40.r),
+                Padding(
+                  padding: EdgeInsets.only(top: 32.r),
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(24.w, 64.h, 24.w, 32.h),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(40.r),
+                      ),
                     ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Column(
-                          children: [
-                            AppTextFont(
-                              '${controller.matchData.firstName}, ${controller.matchData.age}',
-                              font: AppFontType.urbanist,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                              color: theme.dark,
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 4.h),
-                            AppTextFont(
-                              '${controller.matchData.city}, ${controller.matchData.state}',
-                              font: AppFontType.lato,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              color: theme.inactiveTabColor,
-                            ),
-                          ],
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Column(
+                            children: [
+                              AppTextFont(
+                                '${controller.matchData.firstName}, ${controller.matchData.age}',
+                                font: AppFontType.urbanist,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: theme.dark,
+                                textAlign: TextAlign.center,
+                              ),
+                              SizedBox(height: 4.h),
+                              AppTextFont(
+                                '${controller.cityName.value}, ${controller.stateName.value}',
+                                font: AppFontType.lato,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color: theme.inactiveTabColor,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
 
-                      SizedBox(height: 15.h),
-                      AppTextFont(
-                        'About',
-                        font: AppFontType.urbanist,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: theme.blackColor,
-                      ),
-                      SizedBox(height: 8.h),
-                      AppTextFont(
-                        '',
-                        font: AppFontType.lato,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: theme.inactiveTabColor,
-                        maxLines: 4,
-                      ),
+                        SizedBox(height: 15.h),
+                        AppTextFont(
+                          'About',
+                          font: AppFontType.urbanist,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: theme.blackColor,
+                        ),
+                        SizedBox(height: 8.h),
+                        AppTextFont(
+                          '',
+                          font: AppFontType.lato,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: theme.inactiveTabColor,
+                          maxLines: 4,
+                        ),
 
-                      /*SizedBox(height: 24.h),
-                      AppTextFont(
-                        'Interest',
-                        font: AppFontType.urbanist,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: theme.blackColor,
-                      ),
-                      SizedBox(height: 12.h),
+                        SizedBox(height: 24.h),
+                        AppTextFont(
+                          'Interest',
+                          font: AppFontType.urbanist,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: theme.blackColor,
+                        ),
+                        SizedBox(height: 12.h),
+                        Wrap(
+                          spacing: 12.w,
+                          runSpacing: 12.h,
+                          children: availableInterests.map((interest) {
+                            final isSelected = userInterests.contains(interest);
+                            return _interestChip(
+                              context,
+                              interest,
+                              filled: isSelected,
+                            );
+                          }).toList(),
+                        ),
 
-                      Wrap(
-                        spacing: 12.w,
-                        runSpacing: 12.h,
-                        children: [
-                          _interestChip(context, 'Nature', filled: true),
-                          _interestChip(context, 'Travel'),
-                          _interestChip(context, 'Writing'),
-                        ],
-                      ),*/
-                    ],
+                        /*Wrap(
+                          spacing: 12.w,
+                          runSpacing: 12.h,
+                          children: [
+                            _interestChip(context, 'Nature', filled: true),
+                            _interestChip(context, 'Travel'),
+                            _interestChip(context, 'Writing'),
+                          ],
+                        ),*/
+                      ],
+                    ),
                   ),
                 ),
 
                 /// Floating Buttons (HALF OVER CARD)
                 Positioned(
-                  top: -32.r,
+                  top: 0,
                   left: 0,
                   right: 0,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
-                          behavior: HitTestBehavior.translucent,
+                          behavior: HitTestBehavior.opaque,
                           onTap: () {
                             // TODO: cancel action
                             print('Cancel tapped');

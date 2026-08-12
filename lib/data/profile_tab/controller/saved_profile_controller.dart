@@ -50,7 +50,14 @@ class SavedProfileController extends GetxController{
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      Get.snackbar('Failed', response.message ?? 'Something went wrong');
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          getSaveProfileListApiCall();
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'Something went wrong');
+      }
     }
     update();
   }

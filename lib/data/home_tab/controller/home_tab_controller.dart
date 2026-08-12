@@ -169,14 +169,22 @@ class HomeTabController extends GetxController {
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          swipeCardApiCall(direction, item);
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'Something went wrong');
+      }
       // errorMessage.value = response.message ?? 'Login failed';
       // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
 
   Future<void> favoritesMatchProfileApiCall(String matchUserID) async {
-    createMessageApiCall('');
-    return;
+    // createMessageApiCall('7facd8bc-a29b-4fc3-b5af-92d7d457553e');
+    // return;
 
     final token = await sharedPref.getAuthToken;
 
@@ -203,18 +211,25 @@ class HomeTabController extends GetxController {
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      Get.snackbar('Failed', response.message ?? 'Profile not saved',
-          colorText: Colors.white,
-          backgroundColor: Colors.red
-      );
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          createMessageApiCall(matchUserID);
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'Profile not saved',
+            colorText: Colors.white,
+            backgroundColor: Colors.red
+        );
+      }
     }
   }
 
   Future<void> createMessageApiCall(String matchUserID) async {
     final authToken = await sharedPref.getAuthToken;
-
+    //7facd8bc-a29b-4fc3-b5af-92d7d457553e
     final params = {
-      "match_id": '7facd8bc-a29b-4fc3-b5af-92d7d457553e',
+      "match_id": matchUserID,
     };
 
     final header = {
@@ -244,6 +259,14 @@ class HomeTabController extends GetxController {
       InternetDialog.showNoInternetDialog();
     } else {
       print('Failed ${response.message}');
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          createMessageApiCall(matchUserID);
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'Something went wrong');
+      }
       // errorMessage.value = response.message ?? 'Login failed';
       // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }

@@ -343,6 +343,9 @@ class AuthController extends GetxController {
     final userLat = AppState.instance.userLat ?? 0.0;
     final userLong = AppState.instance.userLong ?? 0.0;
 
+    // "email":"mkrealway2@yopmail.com",
+    // "password":"Mahesh@123",
+
     final params = {
       "email": emailCtrl.text,
       "password": passwordCtrl.text,

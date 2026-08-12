@@ -4,14 +4,16 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
+import 'package:real_true_date/data/home_tab/model/create_chat_model.dart';
 import 'package:real_true_date/data/home_tab/model/profile_match_details_model.dart';
 import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
+import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
-import 'package:real_true_date/data/message_tab/model/chat_model.dart';
-import 'package:real_true_date/data/message_tab/model/message_model.dart';
+import 'package:real_true_date/data/notifications/model/notification_list_model.dart';
 import 'package:real_true_date/helper/address_service_wrapper.dart';
+import 'package:real_true_date/routes/routes.dart';
 
-class ChatProfileController extends GetxController {
+class UserRequestController extends GetxController {
 
   /// UI State
   final isFavorite = false.obs;
@@ -19,19 +21,35 @@ class ChatProfileController extends GetxController {
 
   final sharedPref = SharedPrefHelper();
 
-  final toUserId = Get.arguments['id'] ?? '';
+  late final NotificationObject matchData;
   final profileData = ProfileData().obs;
-  final recipientData = RecipientMessage().obs;
   late var userProfileUrl = '';
   late var cityName = ''.obs;
   late var stateName = ''.obs;
   final locationService = AddressServiceWrapper();
+  RxBool typeStatus = false.obs;
 
   @override
   void onInit() {
     super.onInit();
 
-    recipientData.value = Get.arguments['data'] ?? Recipient();
+    final arguments = Get.arguments ?? {};
+
+    final data = arguments['data'];
+    final id = arguments['id'];
+    final type = arguments['type'];
+
+    if (data != null) {
+      // Open using data
+      matchData = data;
+    } else if (id != null) {
+      // Open using id
+    } else if (type != null) {
+      // Open using id
+      typeStatus = type;
+    } else {
+      // Nothing was passed
+    }
 
     getUserData();
     getProfileApiCall();
@@ -54,7 +72,7 @@ class ChatProfileController extends GetxController {
       final userProfile = data ?? DataModel();
       userProfileUrl = userProfile.user?.profileImage ?? '';
     } finally {
-      isLoading.value = false;
+      // isLoading.value = false;
     }
   }
 
@@ -69,7 +87,7 @@ class ChatProfileController extends GetxController {
     };
 
     final response = await BaseApiService().getMethod<ProfileMatchDetailsModel>(
-      endpoint: '${Endpoints.matchProfileUser}/$toUserId/profile',
+      endpoint: '${Endpoints.matchProfileUser}/${matchData.senderId}/profile',
       headers: header,
       showLoader: false,
       fromJson: (json) => ProfileMatchDetailsModel.fromJson(json),
@@ -130,7 +148,24 @@ class ChatProfileController extends GetxController {
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
       print('swipe card ${response.data?.message}');
       if(response.data?.data.matched == true){
-
+        showDialog(
+          context: Get.context!,
+          barrierDismissible: false,
+          builder: (_) => MatchPopup(
+              userId: matchData.senderId ?? '',
+              name: profileData.value.firstName ?? '',
+              age: profileData.value.age ?? 0,
+              city: profileData.value.city ?? '',
+              state: profileData.value.state ?? '',
+              photoUrl: matchData.senderPhoto ?? '',
+              isVerified: profileData.value.isVerified ?? false,
+            userProfileUrl: userProfileUrl,
+            onMessage: () {
+              print('message');
+              createMessageApiCall();
+            }
+          ),
+        );
       }
 
     } else if (response.statusCode == 0) {
@@ -139,9 +174,55 @@ class ChatProfileController extends GetxController {
       if (response.tokenExpired == true) {
         final result = await BaseApiService().refreshToken();
         if (result.isSuccess) {
-          getProfileApiCall();
+          swipeCardApiCall(direction);
         }
       } else {
+        Get.snackbar('Failed', response.message ?? 'failed');
+      }
+      // errorMessage.value = response.message ?? 'Login failed';
+      // Get.snackbar('Failed', response.message ?? 'Registration failed');
+    }
+  }
+
+  Future<void> createMessageApiCall() async {
+    final authToken = await sharedPref.getAuthToken;
+
+    final params = {
+      "match_id": matchData.senderId,
+    };
+
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    print('token $authToken');
+    print('params $params');
+
+    final response = await BaseApiService().postRawData<CreateChatModel>(
+        endpoint: Endpoints.conversationsGetOrCreate,
+        fields: params,
+        headers: header,
+        fromJson: (json) => CreateChatModel.fromJson(json),
+    );
+
+    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
+      print('create message ${response.data?.data?.conversationId}');
+
+      Get.toNamed(Routes.chatView, arguments: {
+        'conversation_id': response.data?.data?.conversationId
+      });
+
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          createMessageApiCall();
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'failed');
       }
       // errorMessage.value = response.message ?? 'Login failed';
       // Get.snackbar('Failed', response.message ?? 'Registration failed');
@@ -157,7 +238,7 @@ class ChatProfileController extends GetxController {
     };
 
     final response = await BaseApiService().postRawData<ProfileFavoritesModel>(
-      endpoint: '${Endpoints.favoritesMatchProfile}/$toUserId/toggle',
+      endpoint: '${Endpoints.favoritesMatchProfile}/${matchData.senderId}/toggle',
       headers: header,
       fromJson: (json) => ProfileFavoritesModel.fromJson(json),
     );
@@ -176,7 +257,7 @@ class ChatProfileController extends GetxController {
       if (response.tokenExpired == true) {
         final result = await BaseApiService().refreshToken();
         if (result.isSuccess) {
-          getProfileApiCall();
+          favoritesMatchProfileApiCall();
         }
       } else {
         Get.snackbar('Failed', response.message ?? 'Profile not saved',

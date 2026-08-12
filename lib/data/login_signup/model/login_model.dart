@@ -216,8 +216,8 @@ class UserModel {
   String? state;
   String? country;
   String? occupation;
-  String? latitude;
-  String? longitude;
+  double? latitude;
+  double? longitude;
   bool? isPremium;
   int? tokens;
   String? createdAt;
@@ -265,8 +265,8 @@ class UserModel {
     state: json["state"] as String,
     country: json["country"] as String,
     occupation: json["occupation"] as String,
-    latitude: json["latitude"] as String,
-    longitude: json["longitude"] as String,
+    latitude: json["latitude"] as double,
+    longitude: json["longitude"] as double,
     isPremium: json["is_premium"] as bool,
     tokens: json["tokens"] as int,
     createdAt: json["created_at"] as String,

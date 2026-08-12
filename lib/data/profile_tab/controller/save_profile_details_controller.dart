@@ -6,6 +6,7 @@ import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/data/home_tab/model/profile_match_details_model.dart';
 import 'package:real_true_date/data/profile_tab/model/saved_profile_model.dart';
+import 'package:real_true_date/helper/address_service_wrapper.dart';
 
 class SaveProfileDetailsController extends GetxController {
 
@@ -16,6 +17,10 @@ class SaveProfileDetailsController extends GetxController {
   final FavoriteModel matchData = Get.arguments;
   final sharedPref = SharedPrefHelper();
   final profileData = ProfileData().obs;
+
+  late var cityName = ''.obs;
+  late var stateName = ''.obs;
+  final locationService = AddressServiceWrapper();
 
   @override
   void onInit() {
@@ -55,6 +60,14 @@ class SaveProfileDetailsController extends GetxController {
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
       profileData.value = response.data?.data ?? ProfileData();
       isFavorite.value = response.data?.data?.isFavorite ?? false;
+
+      final address = await locationService.getAddressFromLatLng(
+        profileData.value.latitude ?? 0,
+        profileData.value.longitude ?? 0,
+      );
+      cityName.value = address?.cityName ?? '';
+      stateName.value = address?.stateName ?? '';
+
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
@@ -64,7 +77,8 @@ class SaveProfileDetailsController extends GetxController {
           getProfileApiCall();
         }
       } else {
-        Get.snackbar('Failed', response.message ?? 'failed');
+        print(response.message ?? 'failed');
+        // Get.snackbar('Failed', response.message ?? 'failed');
       }
     }
     update();

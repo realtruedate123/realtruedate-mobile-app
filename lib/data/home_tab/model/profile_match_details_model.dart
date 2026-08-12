@@ -41,6 +41,8 @@ class ProfileData {
   final List<Photo>? photos;
   final Profile? profile;
   final bool? isFavorite;
+  final double? latitude;
+  final double? longitude;
 
   ProfileData({
     this.id,
@@ -61,6 +63,8 @@ class ProfileData {
     this.photos,
     this.profile,
     this.isFavorite,
+    this.latitude,
+    this.longitude,
   });
 
   factory ProfileData.fromJson(Map<String, dynamic> json) => ProfileData(
@@ -82,6 +86,10 @@ class ProfileData {
     photos: json["photos"] == null ? [] : List<Photo>.from(json["photos"]!.map((x) => Photo.fromJson(x))),
     profile: json["profile"] == null ? null : Profile.fromJson(json["profile"]),
     isFavorite: json["is_favorite"],
+    // latitude: json["latitude"],
+    // longitude: json["longitude"],
+    latitude: double.tryParse(json["latitude"]?.toString() ?? ""),
+    longitude: double.tryParse(json["longitude"]?.toString() ?? ""),
   );
 
   Map<String, dynamic> toJson() => {
@@ -103,6 +111,8 @@ class ProfileData {
     "photos": photos == null ? [] : List<dynamic>.from(photos!.map((x) => x.toJson())),
     "profile": profile?.toJson(),
     "is_favorite": isFavorite,
+    "latitude": latitude,
+    "longitude": longitude,
   };
 }
 

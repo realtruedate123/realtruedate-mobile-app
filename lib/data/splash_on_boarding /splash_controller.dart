@@ -5,19 +5,23 @@ import 'package:real_true_date/core/utils/singleton.dart';
 import 'package:real_true_date/helper/bottom_nav_wrapper.dart';
 import 'package:real_true_date/helper/location_service.dart';
 import 'package:real_true_date/routes/routes.dart';
+import 'package:video_player/video_player.dart';
 
 class SplashController extends GetxController with GetTickerProviderStateMixin {
   final sharedPref = SharedPrefHelper();
+  late VideoPlayerController controller;
 
   @override
   void onInit() {
     super.onInit();
 
-    // fetchCurrentLocation();
+    initializeVideo();
+
+    fetchCurrentLocation();
 
     /// Navigate after delay
-    Future.delayed(const Duration(seconds: 2), () async {
-      checkLogin();
+    // Future.delayed(const Duration(seconds: 2), () async {
+      // checkLogin();
 
       /*final user = await sharedPref.getPersonList();
 
@@ -31,7 +35,29 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
         // User not logged in -> go to onboarding
         Get.offAllNamed(Routes.onBoarding);
       }*/
+    // });
+  }
+
+  Future<void> initializeVideo() async {
+    controller = VideoPlayerController.asset(
+      'assets/video/splash_video.mp4',
+    );
+
+    await controller.initialize();
+
+    controller.setLooping(false);
+
+    controller.addListener(() {
+      if (controller.value.isInitialized &&
+          controller.value.position >= controller.value.duration) {
+        print("Video finished!");
+        checkLogin();
+      }
     });
+
+    await controller.play();
+
+    update();
   }
 
   Future<void> checkLogin() async {

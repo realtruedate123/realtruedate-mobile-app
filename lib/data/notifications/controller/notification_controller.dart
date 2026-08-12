@@ -7,6 +7,7 @@ import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/data/notifications/model/notification_list_model.dart';
 import 'package:real_true_date/helper/common_model.dart';
+import 'package:real_true_date/routes/routes.dart';
 
 class NotificationController extends GetxController {
 
@@ -88,7 +89,14 @@ class NotificationController extends GetxController {
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      Get.snackbar('Failed', response.message ?? 'Something went wrong');
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          getNotificationListApiCall();
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'Something went wrong');
+      }
     }
     update();
   }
@@ -114,17 +122,31 @@ class NotificationController extends GetxController {
 
     if (response.isSuccess && response.statusCode == 200) {
       print("Response data: ${response.data?.message}");
-      Get.snackbar('Failed', response.message ?? 'Something want wrong',
-          colorText: Colors.white,
-          backgroundColor: Colors.green
-      );
+      if(type.toLowerCase() == 'accept'){
+        Get.toNamed(Routes.chatView, arguments: {
+          'conversation_id': conversationId
+        });
+      }
+      else{
+        Get.snackbar('Success', response.message ?? 'Something want wrong',
+            colorText: Colors.white,
+            backgroundColor: Colors.green
+        );
+      }
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      Get.snackbar('Failed', response.message ?? 'Something want wrong',
-        colorText: Colors.white,
-        backgroundColor: Colors.red
-      );
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          acceptOrDeclineApiCall(type, conversationId);
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'Something want wrong',
+            colorText: Colors.white,
+            backgroundColor: Colors.red
+        );
+      }
     }
   }
 }

@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:real_true_date/data/root_tab_controller.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:real_true_date/routes/routes.dart';
 
 class NotificationsScreen extends StatelessWidget {
   final controller = Get.find<NotificationController>();
@@ -93,50 +94,61 @@ class NotificationsScreen extends StatelessWidget {
           onRefresh: () async {
             await controller.refreshNotifications();
           },
-          child: controller.notifications.isEmpty ? Center(
-            child: Text(
-              'There are no notifications to display at the moment.',
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: Colors.grey,
+          child: Obx(
+                () => controller.notifications.isEmpty
+                ? Center(
+              child: Text(
+                'There are no notifications to display at the moment.',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: Colors.grey,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ) : ListView.separated(
-            controller: controller.scrollController,
-            padding: const EdgeInsets.only(top: 10),
-            itemCount: controller.notifications.length +
-                (controller.hasMore ? 1 : 0),
-            separatorBuilder: (_, __) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              final data = controller.notifications[index];
-              if (index == controller.notifications.length) {
-                return const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-              return NotificationTile(
+            )
+                : ListView.separated(
+              controller: controller.scrollController,
+              padding: const EdgeInsets.only(top: 10),
+              itemCount: controller.notifications.length + (controller.hasMore ? 1 : 0),
+              separatorBuilder: (_, __) => const Divider(height: 1),
+              itemBuilder: (context, index) {
+                // Loading indicator at the bottom
+                if (index == controller.notifications.length) {
+                  return const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+
+                final data = controller.notifications[index];
+
+                return NotificationTile(
                   notification: data,
-                onAccept: () {
-                  print("Accepted ${data.conversationId}");
-                  // call accept API here
-                  controller.acceptOrDeclineApiCall('accept', data.conversationId ?? '');
-                },
-
-                onDecline: () {
-                  print("Declined ${data.conversationId}");
-                  // call decline API here
-                  controller.acceptOrDeclineApiCall('decline', data.conversationId ?? '');
-                },
-
-                onMessage: () {
-                  print("Open chat ${data.conversationId}");
-                },
-              );
-            },
+                  onAccept: () {
+                    print("Accepted ${data.conversationId}");
+                    controller.acceptOrDeclineApiCall(
+                      'accept',
+                      data.conversationId ?? '',
+                    );
+                  },
+                  onDecline: () {
+                    print("Declined ${data.conversationId}");
+                    controller.acceptOrDeclineApiCall(
+                      'decline',
+                      data.conversationId ?? '',
+                    );
+                  },
+                  onMessage: () {
+                    print("Open chat ${data.conversationId}");
+                    Get.toNamed(Routes.chatView, arguments: {
+                      'conversation_id': data.conversationId
+                    });
+                  },
+                );
+              },
+            ),
           ),
         ),
       ),

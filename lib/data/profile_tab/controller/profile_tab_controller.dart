@@ -1,8 +1,12 @@
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
+import 'package:real_true_date/core/network/InternetDialog.dart';
+import 'package:real_true_date/core/network/api_functions/api_request.dart';
+import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/profile_tab/model/profile_model.dart';
+import 'package:real_true_date/helper/common_model.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class ProfileTabController extends GetxController {
@@ -107,5 +111,85 @@ class ProfileTabController extends GetxController {
     // Get.offAll(() => AuthController());
     Get.deleteAll();
     Get.offAllNamed(Routes.authPage);
+  }
+
+  //TODO: Logout API Call
+  Future<void> logoutApiCall() async {
+    final token = await prefHelper.getAuthToken;
+
+    final params = {
+      "refresh_token": token,
+    };
+
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $token',
+    };
+
+    final response = await BaseApiService().postRawData<CommonModel>(
+      endpoint: Endpoints.logout,
+      fields: params,
+      headers: header,
+      fromJson: (json) => CommonModel.fromJson(json),
+    );
+    isLoading.value = false;
+
+    if (response.isSuccess && response.statusCode == 200) {
+      print("Response data: ${response.data?.message}");
+      removePreference();
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          logoutApiCall();
+        }
+      } else {
+        print(response.message ?? 'Logout - Something want wrong');
+      }
+    }
+  }
+
+  Future<void> deleteAccountApiCall() async {
+    final token = await prefHelper.getAuthToken;
+
+    final params = {
+      "refresh_token": token,
+    };
+
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $token',
+    };
+
+    final response = await BaseApiService().postRawData<DeleteUserModel>(
+      endpoint: Endpoints.deleteAccount,
+      fields: params,
+      headers: header,
+      fromJson: (json) => DeleteUserModel.fromJson(json),
+    );
+    isLoading.value = false;
+
+    if (response.isSuccess && response.statusCode == 200) {
+      print("Response data: ${response.data?.message}");
+      if(response.data?.data?.deleted ==  true){
+        removePreference();
+      }
+      else{
+        Get.snackbar('Oops!', response.message ?? 'Your account could not be deleted at this time. Please try again later.');
+      }
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          logoutApiCall();
+        }
+      } else {
+        print(response.message ?? 'Logout - Something want wrong');
+      }
+    }
   }
 }

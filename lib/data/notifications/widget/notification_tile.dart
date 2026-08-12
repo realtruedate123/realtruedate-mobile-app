@@ -31,6 +31,11 @@ class NotificationTile extends StatelessWidget {
         notification.notificationType == 'connect_request' &&
             notification.conversationStatus == 'pending';
 
+    final bool isAcceptOrDecline =
+        notification.notificationType == 'connect_request' &&
+            (notification.conversationStatus == 'accepted' ||
+                notification.conversationStatus == 'declined');
+
     return Container(
       color: isHighlight
           ? theme.notificationBGColor
@@ -41,8 +46,12 @@ class NotificationTile extends StatelessWidget {
         highlightColor: Colors.transparent, // Hides the click highlight
         onTap: () {
           // click event
-          print('clicked ${notification.id}');
-          // Get.toNamed(Routes.matchesDetailsView,);
+          print('$isAcceptOrDecline clicked ${notification.id}');
+          if(isAcceptOrDecline) return;
+          Get.toNamed(Routes.userRequestView, arguments: {
+            'data': notification,
+            'type': notification.conversationStatus
+          });
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,7 +123,7 @@ class NotificationTile extends StatelessWidget {
                   SizedBox(height: 8.h),
 
                   /// Action Buttons based on Type
-                  _buildActionButtons(context),
+                  ?_buildActionButtons(context),
                 ],
               ),
             ),
@@ -124,7 +133,8 @@ class NotificationTile extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context){
+  /*Widget _buildActionButtons(BuildContext context){
+    //connect_accepted
     final bool isHighlight =
         notification.notificationType == 'connect_request' &&
             notification.conversationStatus == 'pending';
@@ -137,8 +147,31 @@ class NotificationTile extends StatelessWidget {
         _filledButton(context, "Accept", onAccept ?? () {},),
       ],
     )
-        : _outlinePurpleButton(context, "Message", onMessage ?? () {},);
+        :  _outlinePurpleButton(context, "Message", onMessage ?? () {});
+  }*/
+
+  Widget? _buildActionButtons(BuildContext context) {
+    final bool isHighlight =
+        notification.notificationType == 'connect_request' &&
+            notification.conversationStatus == 'pending';
+
+    return isHighlight
+        ? Row(
+      children: [
+        _outlineButton(context, "Decline", onDecline ?? () {}),
+        const SizedBox(width: 10),
+        _filledButton(context, "Accept", onAccept ?? () {}),
+      ],
+    )
+        : notification.notificationType == 'connect_accepted'
+        ? _outlinePurpleButton(
+      context,
+      "Message",
+      onMessage ?? () {},
+    )
+        : null;
   }
+
 
   Widget _filledButton(BuildContext context, String text, VoidCallback onTap) {
     final theme = AppTheme.of(context);
@@ -201,6 +234,17 @@ class NotificationTile extends StatelessWidget {
         fontWeight: FontWeight.w400,
         color: theme.primaryColor,
       ),
+    );
+  }
+
+  Widget _normalMessage(BuildContext context, String text) {
+    final theme = AppTheme.of(context);
+    return AppTextFont(
+      text,
+      font: AppFontType.inter,
+      fontSize: 12,
+      fontWeight: FontWeight.w400,
+      color: theme.primaryColor,
     );
   }
 }

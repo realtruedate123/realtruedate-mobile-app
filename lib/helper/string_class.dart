@@ -76,3 +76,9 @@ String shortenFileName(
 
   return '…$right';
 }
+
+const List<String> availableInterests = [
+  'Nature',
+  'Travel',
+  'Writing',
+];

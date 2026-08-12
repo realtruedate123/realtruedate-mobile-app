@@ -7,6 +7,7 @@ import 'package:real_true_date/data/profile_tab/widget/save_profile_app_bar.dart
 import 'package:real_true_date/helper/app_cached_image.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:get/get.dart';
+import 'package:real_true_date/helper/string_class.dart';
 
 class SaveProfileDetailsView extends StatelessWidget {
   final controller = Get.find<SaveProfileDetailsController>();
@@ -20,7 +21,7 @@ class SaveProfileDetailsView extends StatelessWidget {
     return Obx(() {
 
       final userInterests = controller.profileData.value.profile?.interests ?? [];
-      final availableInterests = ['Nature', 'Travel', 'Writing'];
+      // final availableInterests = ['Nature', 'Travel', 'Writing'];
       var profileImage = controller.matchData.photoUrl ?? '';
       if(controller.profileData.value.photos?.isNotEmpty ?? false){
         profileImage = controller.profileData.value.photos?.first.photoUrl ?? '';
@@ -35,6 +36,7 @@ class SaveProfileDetailsView extends StatelessWidget {
           showShadow: true,
         ),
         body: Stack(
+          clipBehavior: Clip.none,
           children: [
             /// Profile Image
             Positioned.fill(
@@ -73,14 +75,14 @@ class SaveProfileDetailsView extends StatelessWidget {
                                 color: theme.dark,
                                 textAlign: TextAlign.center,
                               ),
-                              /*SizedBox(height: 4.h),
+                              SizedBox(height: 4.h),
                               AppTextFont(
-                                '${controller.matchData?.city}, ${controller.matchData.user?.state}',
+                                '${controller.cityName.value}, ${controller.stateName.value}',
                                 font: AppFontType.lato,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 color: theme.inactiveTabColor,
-                              ),*/
+                              ),
                             ],
                           ),
                         ),

@@ -221,6 +221,15 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           .toList();*/
 
       final rawMsgs = conversationData.value.messages ?? [];
+
+      rawMsgs.sort((a, b) {
+        final dateA = DateTime.parse(a.createdAt ?? '');
+        final dateB = DateTime.parse(b.createdAt ?? '');
+
+        // return dateA.compareTo(dateB); // Oldest → Latest
+        return dateB.compareTo(dateA); // Latest → Oldest
+      });
+
       messages.value = rawMsgs;
       // messages.value = rawMsgs
       //     .map((m) => MessageObject.fromJson(m))
@@ -231,7 +240,14 @@ class ChatController extends GetxController with WidgetsBindingObserver {
       InternetDialog.showNoInternetDialog();
     } else {
       isLoading.value = false;
-      Get.snackbar('Failed', response.message ?? 'Something went wrong');
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          getChatConversationsApiCall();
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'Something went wrong');
+      }
     }
     update();
   }

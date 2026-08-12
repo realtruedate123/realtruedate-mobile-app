@@ -4,12 +4,14 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
+import 'package:real_true_date/core/utils/singleton.dart';
 import 'package:real_true_date/data/home_tab/model/create_chat_model.dart';
 import 'package:real_true_date/data/home_tab/model/feed_response.dart';
 import 'package:real_true_date/data/home_tab/model/profile_match_details_model.dart';
 import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
 import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
+import 'package:real_true_date/helper/address_service_wrapper.dart';
 import 'package:real_true_date/helper/common_model.dart';
 import 'package:real_true_date/routes/routes.dart';
 
@@ -24,6 +26,9 @@ class UserProfileController extends GetxController {
   final Candidate matchData = Get.arguments;
   final profileData = ProfileData().obs;
   late var userProfileUrl = '';
+  late var cityName = ''.obs;
+  late var stateName = ''.obs;
+  final locationService = AddressServiceWrapper();
 
   @override
   void onInit() {
@@ -75,6 +80,14 @@ class UserProfileController extends GetxController {
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
       profileData.value = response.data?.data ?? ProfileData();
       isFavorite.value = response.data?.data?.isFavorite ?? false;
+
+      final address = await locationService.getAddressFromLatLng(
+        profileData.value.latitude ?? 0,
+        profileData.value.longitude ?? 0,
+      );
+      cityName.value = address?.cityName ?? '';
+      stateName.value = address?.stateName ?? '';
+
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
@@ -140,6 +153,14 @@ class UserProfileController extends GetxController {
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          swipeCardApiCall(direction);
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'failed');
+      }
       // errorMessage.value = response.message ?? 'Login failed';
       // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
@@ -177,6 +198,14 @@ class UserProfileController extends GetxController {
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          createMessageApiCall();
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'failed');
+      }
       // errorMessage.value = response.message ?? 'Login failed';
       // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
@@ -207,10 +236,17 @@ class UserProfileController extends GetxController {
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      Get.snackbar('Failed', response.message ?? 'Profile not saved',
-        colorText: Colors.white,
-        backgroundColor: Colors.red
-      );
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          favoritesMatchProfileApiCall();
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'Profile not saved',
+            colorText: Colors.white,
+            backgroundColor: Colors.red
+        );
+      }
     }
   }
 }

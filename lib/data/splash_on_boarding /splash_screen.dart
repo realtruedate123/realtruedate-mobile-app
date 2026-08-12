@@ -6,6 +6,7 @@ import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/splash_on_boarding%20/splash_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:video_player/video_player.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -37,7 +38,20 @@ class _SplashScreenState extends State<SplashScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-            child: Center(
+            child:  /// 🔹 Fullscreen Video
+            controller.controller.value.isInitialized
+                ? SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: controller.controller.value.size.width,
+                  height: controller.controller.value.size.height,
+                  child: VideoPlayer(controller.controller),
+                ),
+              ),
+            )
+                : const Center(child: CircularProgressIndicator()),
+            /*Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -72,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   )
                 ],
               ),
-            ),
+            ),*/
           ),
         );
       },

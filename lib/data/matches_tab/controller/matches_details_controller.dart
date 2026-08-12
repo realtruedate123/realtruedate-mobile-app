@@ -5,6 +5,7 @@ import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/data/home_tab/model/profile_match_details_model.dart';
 import 'package:real_true_date/data/matches_tab/model/matches_list_model.dart';
+import 'package:real_true_date/helper/address_service_wrapper.dart';
 import 'package:real_true_date/helper/common_model.dart';
 
 class MatchesDetailsController extends GetxController {
@@ -18,6 +19,9 @@ class MatchesDetailsController extends GetxController {
   final sharedPref = SharedPrefHelper();
   final profileData = ProfileData().obs;
   late var matchDataId = '';
+  late var cityName = ''.obs;
+  late var stateName = ''.obs;
+  final locationService = AddressServiceWrapper();
 
   @override
   void onInit() {
@@ -91,6 +95,14 @@ class MatchesDetailsController extends GetxController {
 
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
       profileData.value = response.data?.data ?? ProfileData();
+
+      final address = await locationService.getAddressFromLatLng(
+        profileData.value.latitude ?? 0,
+        profileData.value.longitude ?? 0,
+      );
+      cityName.value = address?.cityName ?? '';
+      stateName.value = address?.stateName ?? '';
+
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {

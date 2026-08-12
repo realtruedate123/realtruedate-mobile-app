@@ -82,7 +82,10 @@ class HomeTabView extends StatelessWidget {
                     },
                     onPhoto: () {
                       debugPrint('Photo clicked for index: $index');
-                      Get.toNamed(Routes.userProfileView, arguments: item);
+                      Get.toNamed(Routes.userProfileView, arguments: {
+                        'data': item,
+                        'id': ''
+                      });
                     },
                   );
                 },

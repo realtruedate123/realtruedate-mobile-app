@@ -5,8 +5,10 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/data/profile_tab/controller/profile_tab_controller.dart';
 import 'package:real_true_date/data/profile_tab/model/profile_model.dart';
+import 'package:real_true_date/data/profile_tab/view/about_view.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/custom_dialog/confirmation_dialog.dart';
+import 'package:real_true_date/helper/global_setting.dart';
 import 'package:real_true_date/routes/routes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -70,12 +72,29 @@ class ProfileTabView extends StatelessWidget {
                           SizedBox(height: 10.h),
 
                           Center(
-                            child: Text(
-                              "Delete Account",
-                              style: TextStyle(
+                            child: GestureDetector(
+                              onTap: () {
+                                // Your click action here
+                                print("Delete Account clicked");
+                                /*showDialog(
+                                  context: context,
+                                  barrierColor: Colors.black12.withAlpha(204),
+                                  builder: (context) => ConfirmationDialog(
+                                    title: 'Are you sure you want to delete your account?',
+                                    message: 'You will no longer have access to ${AppConfig.appName} with this account.',
+                                    onConfirm: () {
+                                      controller.deleteAccountApiCall();
+                                    },
+                                  ),
+                                );*/
+                              },
+                              child: Text(
+                                "Delete Account",
+                                style: TextStyle(
                                   decoration: TextDecoration.underline,
                                   fontSize: 14,
-                                  fontWeight: FontWeight.w400
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
                           ),
@@ -202,6 +221,15 @@ class ProfileTabView extends StatelessWidget {
       } else if(name == 'Update Video & Photos'){
         Get.toNamed(Routes.uploadVideoPage, arguments: 'update_video');
         // Get.toNamed(Routes.uploadPhotoPage, arguments: 'update_video');
+      } else if(name == 'Help & Support'){
+        Get.toNamed(Routes.helpSupportView);
+      } else if(name == 'About Us'){
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => const AboutUsView(),
+        //   ),
+        // );
       }
       else if(name == 'Log Out'){
         showDialog(
@@ -212,6 +240,7 @@ class ProfileTabView extends StatelessWidget {
             message: 'Are you sure you want to Logout?',
             onConfirm: () {
               controller.removePreference();
+              // controller.logoutApiCall();
             },
           ),
         );

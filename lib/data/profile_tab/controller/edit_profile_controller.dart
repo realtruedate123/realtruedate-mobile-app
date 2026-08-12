@@ -190,7 +190,14 @@ class EditProfileController extends GetxController {
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      Get.snackbar('Failed', response.message ?? 'Profile update failed');
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          updateProfileApiCall();
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'Profile update failed');
+      }
     }
   }
 
