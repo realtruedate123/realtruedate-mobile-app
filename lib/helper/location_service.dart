@@ -1,13 +1,18 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show ElevatedButton, AlertDialog, TextButton, showDialog;
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:real_true_date/core/local/shared_pref.dart';
+import 'package:real_true_date/core/utils/singleton.dart';
 
 /// A reusable location service wrapper class
 /// Handles permission, error cases, and returns current location cleanly.
 class LocationService {
   // static bool _isRequestingPermission = false;
   static Future<Position?>? _activeRequest;
+  static bool _openingSettings = false;
 
   /// Request location permission and get current location.
   static Future<Position?> getCurrentLocation() async {
@@ -39,8 +44,78 @@ class LocationService {
         }
       }
 
+      // if (permission == LocationPermission.deniedForever) {
+      //   await Geolocator.openLocationSettings();
+      //   throw Exception('Location permissions are permanently denied, cannot request.');
+      // }
+
       if (permission == LocationPermission.deniedForever) {
-        throw Exception('Location permissions are permanently denied, cannot request.');
+        final shouldOpenSettings = await showDialog<bool>(
+          context: Get.context!,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Location Permission Required'),
+              content: const Text(
+                'Location permission is permanently denied. '
+                    'Please enable it from app settings.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    _openingSettings = false;
+                    Navigator.pop(context, false);
+                  },
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    _openingSettings = true;
+                    await Geolocator.openLocationSettings();
+                    // Get.back();
+                  },
+                  child: const Text('Settings'),
+                ),
+              ],
+            );
+          },
+        );
+
+        if (shouldOpenSettings == true) {
+          await Geolocator.openAppSettings();
+
+          permission = await Geolocator.checkPermission();
+
+          if (permission != LocationPermission.always &&
+              permission != LocationPermission.whileInUse) {
+            throw Exception('Location permission is still denied.');
+          }
+        } else {
+          print('_openingSettings $_openingSettings');
+          if (_openingSettings) {
+            _openingSettings = false;
+              final position = await Geolocator.getCurrentPosition(
+                  locationSettings: LocationSettings(
+                    accuracy: LocationAccuracy.high,
+                    distanceFilter: 100, // meters to move before update
+                  )
+              );
+            print('Location ${position.longitude}');
+            Get.back();
+              if (position.longitude != 0.0) {
+
+                AppState.instance.userLat = position.latitude;
+                AppState.instance.userLong = position.longitude;
+
+                print('Location ${AppState.instance.userLat}');
+
+                await Future.wait([
+                  SharedPrefHelper().saveUserLocation({'Latitude': position.latitude.toString(), 'Longitude': position.longitude.toString()}),
+                ]);
+              }
+          }
+          throw Exception('Location permission is permanently denied.');
+        }
       }
 
       // ✅ 3. Get current position

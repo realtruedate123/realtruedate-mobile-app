@@ -1,55 +1,76 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:real_true_date/data/root_tab_controller.dart';
-import 'package:real_true_date/helper/notification_service.dart';
-import 'package:real_true_date/routes/pages.dart';
 import 'package:flutter/material.dart';
-import 'routes/routes.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:real_true_date/data/root_tab_controller.dart';
+import 'package:real_true_date/helper/NotificationService.dart';
+import 'package:real_true_date/routes/pages.dart';
+import 'routes/routes.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // 👈 Must be first line
-  // await SharedPrefHelper.init();
-  // Lock orientation to portrait only
+  WidgetsFlutterBinding.ensureInitialized();
 
-  // await SharedPreferences.getInstance(); // Initialize early
-
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp
+  // 1. Set orientation without awaiting if possible
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
   ]);
 
-  await Firebase.initializeApp();
-  await NotificationService().setupInteractedMessage();
+  _initRevenueCat();
 
-  /*
-  // Internet
-  ConnectivityService(); // initialize once
-  // Start listening globally
-  ConnectivityService().stream.listen((status) {
-    if (status.contains(ConnectivityResult.none)) {
-      debugPrint("🔴 No Internet");
-      InternetDialog.showNoInternetDialog();   // 👈 call wrapper
-    } else {
-      debugPrint("🟢 Connected: $status");
-    }
-  });*/
+  // 2. Wrap Firebase init in try-catch so network issues don't freeze boot
+  try {
+    await Firebase.initializeApp();
+    // Use the improved NotificationService
+    await NotificationService().init();
+  } catch (e) {
+    debugPrint("Firebase init error: $e");
+  }
 
-  // Root Controller
+  // 3. Put GetX controller before UI
   Get.put(RootTabController(), permanent: true);
 
+  // 4. Launch UI immediately so Flutter VM handshake completes!
   runApp(
     ScreenUtilInit(
-      designSize: Size(375, 812),
-      // minTextAdapt: true,
-      // splitScreenMode: true,
-      // useInheritedMediaQuery: true,
+      designSize: const Size(375, 812),
       builder: (context, child) => const MyApp(),
     ),
   );
+
+  // 5. Run push notification setup IN BACKGROUND after UI mounts
+  // _initServicesInBackground();
 }
+
+Future<void> _initRevenueCat() async {
+  await Purchases.setLogLevel(LogLevel.debug);
+
+  late PurchasesConfiguration configuration;
+  if (Platform.isAndroid) {
+    configuration = PurchasesConfiguration("goog_YOUR_REVENUECAT_API_KEY");
+  } else if (Platform.isIOS) {
+    configuration = PurchasesConfiguration("appl_bozDPzrSzrkyTvMqOWjKBciScCJ");
+  }
+
+  await Purchases.configure(configuration);
+}
+
+/*Future<void> _initServicesInBackground() async {
+  print('_initServicesInBackground');
+  // Future.microtask(() async {
+    try {
+      await NotificationService().setupInteractedMessage();
+      debugPrint("Notification service initialized successfully");
+    } catch (e) {
+      debugPrint("NotificationService setup error: $e");
+    }
+  // });
+}*/
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -57,17 +78,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      // builder: EasyLoading.init(),
-      // builder: (context, child) {
-      //   child = EasyLoading.init()(context, child);
-      //   return child;
-      // },
-      // UPDATED: Wrap child with MediaQuery to fix font size globally
       builder: EasyLoading.init(
         builder: (context, child) {
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(
-              textScaler: TextScaler.noScaling, // Forces text scale factor to 1.0 everywhere
+              textScaler: TextScaler.noScaling,
             ),
             child: child!,
           );
@@ -76,7 +91,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: Routes.splashScreen,
       getPages: AppPages.pages,
-      // home_tab: BottomNavWrapper(),
     );
   }
 }

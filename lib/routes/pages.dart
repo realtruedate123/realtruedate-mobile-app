@@ -24,14 +24,20 @@ import 'package:real_true_date/data/otp_reset_password/view/password_reset_succe
 import 'package:real_true_date/data/otp_reset_password/view/reset_password.dart';
 import 'package:real_true_date/data/profile_tab/controller/change_password_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/edit_profile_controller.dart';
+import 'package:real_true_date/data/profile_tab/controller/feedback_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/help_support_controller.dart';
+import 'package:real_true_date/data/profile_tab/controller/payment_history_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/save_profile_details_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/saved_profile_controller.dart';
+import 'package:real_true_date/data/profile_tab/controller/subscriptions_controller.dart';
 import 'package:real_true_date/data/profile_tab/view/Change_password_view.dart';
 import 'package:real_true_date/data/profile_tab/view/edit_profile_view.dart';
+import 'package:real_true_date/data/profile_tab/view/feedback_view.dart';
 import 'package:real_true_date/data/profile_tab/view/help_support_view.dart';
+import 'package:real_true_date/data/profile_tab/view/payment_history_view.dart';
 import 'package:real_true_date/data/profile_tab/view/save_profile_details_view.dart';
 import 'package:real_true_date/data/profile_tab/view/saved_profile_view.dart';
+import 'package:real_true_date/data/profile_tab/view/subscriptions_view.dart';
 import 'package:real_true_date/data/select_dream_partner/controller/SelectDreamPartnerController.dart';
 import 'package:real_true_date/data/select_dream_partner/view/select_dream_partner_view.dart';
 import 'package:real_true_date/data/splash_on_boarding%20/on_boarding.dart';
@@ -212,6 +218,27 @@ class AppPages {
         page: () => HelpSupportView(),
         binding: BindingsBuilder((){
           Get.lazyPut(() => HelpSupportController());
+        })
+    ),
+    GetPage(
+        name: Routes.feedbackView,
+        page: () => FeedbackView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => FeedbackController());
+        })
+    ),
+    GetPage(
+        name: Routes.subscriptionView,
+        page: () => SubscriptionsView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => SubscriptionsController());
+        })
+    ),
+    GetPage(
+        name: Routes.paymentHistoryView,
+        page: () => PaymentHistoryView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => PaymentHistoryController());
         })
     ),
     // GetPage(

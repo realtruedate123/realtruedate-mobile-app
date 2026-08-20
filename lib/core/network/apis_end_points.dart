@@ -34,4 +34,5 @@ class Endpoints {
   static const String notificationsAcceptOrDecline = 'conversations';
   static const String faqsList = 'faqs';
   static const String logout = 'logout';
+  static const String feedback = 'feedback';
 }

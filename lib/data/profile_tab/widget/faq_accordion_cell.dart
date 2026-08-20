@@ -27,7 +27,7 @@ class FAQAccordionCell extends StatelessWidget {
         curve: Curves.fastOutSlowIn,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(15.r),
           border: Border.all(color: theme.border, width: 1),
         ),
         child: Column(

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/data/profile_tab/controller/profile_tab_controller.dart';
 import 'package:real_true_date/data/profile_tab/model/profile_model.dart';
 import 'package:real_true_date/data/profile_tab/view/about_view.dart';
+import 'package:real_true_date/data/profile_tab/view/feedback_view.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/custom_dialog/confirmation_dialog.dart';
 import 'package:real_true_date/helper/global_setting.dart';
@@ -76,17 +77,18 @@ class ProfileTabView extends StatelessWidget {
                               onTap: () {
                                 // Your click action here
                                 print("Delete Account clicked");
-                                /*showDialog(
+                                showDialog(
                                   context: context,
                                   barrierColor: Colors.black12.withAlpha(204),
                                   builder: (context) => ConfirmationDialog(
                                     title: 'Are you sure you want to delete your account?',
                                     message: 'You will no longer have access to ${AppConfig.appName} with this account.',
                                     onConfirm: () {
+                                      Get.back();
                                       controller.deleteAccountApiCall();
                                     },
                                   ),
-                                );*/
+                                );
                               },
                               child: Text(
                                 "Delete Account",
@@ -221,15 +223,21 @@ class ProfileTabView extends StatelessWidget {
       } else if(name == 'Update Video & Photos'){
         Get.toNamed(Routes.uploadVideoPage, arguments: 'update_video');
         // Get.toNamed(Routes.uploadPhotoPage, arguments: 'update_video');
+      } else if(name == 'Subscriptions'){
+        Get.toNamed(Routes.subscriptionView);
+      } else if(name == 'Payment History'){
+        Get.toNamed(Routes.paymentHistoryView);
       } else if(name == 'Help & Support'){
         Get.toNamed(Routes.helpSupportView);
+      } else if(name == 'Feedback'){
+        Get.toNamed(Routes.feedbackView);
       } else if(name == 'About Us'){
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => const AboutUsView(),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AboutUsView(),
+          ),
+        );
       }
       else if(name == 'Log Out'){
         showDialog(

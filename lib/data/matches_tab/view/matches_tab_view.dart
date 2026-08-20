@@ -20,82 +20,87 @@ class MatchesTabView extends StatelessWidget {
       backgroundColor: theme.whiteColor,
       appBar: MatchAppbarWrapper(),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 10.h),
-              RichText(
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "Your Matches ",
-                      style: GoogleFonts.urbanist(
-                        color: theme.blackColor,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18
-                      ),
-                    ),
-                    TextSpan(
-                      text: controller.matchesList.length.toString(),
-                      style: GoogleFonts.urbanist(
-                          color: theme.primaryColor,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await controller.getMatchesListApiCall();
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 10.h),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "Your Matches ",
+                        style: GoogleFonts.urbanist(
+                          color: theme.blackColor,
                           fontWeight: FontWeight.w600,
                           fontSize: 18
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20.h),
-              Expanded(
-                child: controller.matchesList.isEmpty
-                    ? const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.person_off, size: 64, color: Colors.grey),
-                      SizedBox(height: 16),
-                      Text(
-                        'No matches profile available',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
+                      TextSpan(
+                        text: controller.matchesList.length.toString(),
+                        style: GoogleFonts.urbanist(
+                            color: theme.primaryColor,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18
                         ),
                       ),
                     ],
                   ),
-                )
-                    : GridView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 5.w),
-                  itemCount: controller.matchesList.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16.w,
-                    mainAxisSpacing: 5.h,
-                    childAspectRatio: 0.58,
-                  ),
-                  itemBuilder: (context, index) {
-                    return MatchCardListCell(
-                      match: controller.matchesList[index],
-                      onTap: () async {
-                        final result = await Get.toNamed(
-                          Routes.matchesDetailsView,
-                          arguments: {
-                            'data': controller.matchesList[index],
-                            'id': controller.matchesList[index].matchId
-                          },
-                        );
-                        if(result == true){
-                          controller.getMatchesListApiCall();
-                        }
-                      },
-                    );
-                  },
                 ),
-              )
-            ],
+                SizedBox(height: 20.h),
+                Expanded(
+                  child: controller.matchesList.isEmpty
+                      ? const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.person_off, size: 64, color: Colors.grey),
+                        SizedBox(height: 16),
+                        Text(
+                          'No matches profile available',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                      : GridView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 5.w),
+                    itemCount: controller.matchesList.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16.w,
+                      mainAxisSpacing: 5.h,
+                      childAspectRatio: 0.58,
+                    ),
+                    itemBuilder: (context, index) {
+                      return MatchCardListCell(
+                        match: controller.matchesList[index],
+                        onTap: () async {
+                          final result = await Get.toNamed(
+                            Routes.matchesDetailsView,
+                            arguments: {
+                              'data': controller.matchesList[index],
+                              'id': controller.matchesList[index].matchId
+                            },
+                          );
+                          if(result == true){
+                            controller.getMatchesListApiCall();
+                          }
+                        },
+                      );
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

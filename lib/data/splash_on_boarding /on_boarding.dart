@@ -6,6 +6,7 @@ import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:real_true_date/data/login_signup/auth_controller.dart';
 import 'package:real_true_date/data/splash_on_boarding%20/intro_video.dart';
+import 'package:real_true_date/data/splash_on_boarding%20/on_boarding_controller.dart';
 import 'package:real_true_date/helper/image_carousel.dart';
 import 'package:real_true_date/routes/routes.dart';
 
@@ -198,6 +199,7 @@ class OnBoardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(OnBoardingController());
     final theme = AppTheme.of(context);
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -297,9 +299,16 @@ class OnBoardingPage extends StatelessWidget {
             /// Image Slider - Fixed height proportion (60% of screen)
             GlobalImageCarousel(
               images: [
-                CarouselImage.assetPng('assets/png/sd_dummy_one.png'),
-                CarouselImage.assetPng('assets/png/sd_dummy_one.png'),
-                CarouselImage.assetPng('assets/png/sd_dummy_one.png'),
+                CarouselImage.assetPng('assets/png/m_slider1.png'),
+                CarouselImage.assetPng('assets/png/w_slider1.png'),
+                CarouselImage.assetPng('assets/png/m_slider2.png'),
+                CarouselImage.assetPng('assets/png/w_slider2.png'),
+                CarouselImage.assetPng('assets/png/m_slider3.png'),
+                CarouselImage.assetPng('assets/png/w_slider3.png'),
+                CarouselImage.assetPng('assets/png/m_slider4.png'),
+                CarouselImage.assetPng('assets/png/w_slider4.png'),
+                CarouselImage.assetPng('assets/png/m_slider5.png'),
+                CarouselImage.assetPng('assets/png/w_slider5.png'),
               ],
               height: screenHeight * 0.57,
               autoPlay: true,

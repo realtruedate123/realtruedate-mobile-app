@@ -265,15 +265,22 @@ class UserModel {
     state: json["state"] as String,
     country: json["country"] as String,
     occupation: json["occupation"] as String,
-    latitude: json["latitude"] as double,
-    longitude: json["longitude"] as double,
+    latitude: _parseDouble(json["latitude"]),
+    longitude: _parseDouble(json["longitude"]),
     isPremium: json["is_premium"] as bool,
     tokens: json["tokens"] as int,
     createdAt: json["created_at"] as String,
     lastLogin: json["last_login"] as String,
     profileImage: json["profile_image"] as String,
   );
-
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toDouble();
+    if (value is String && value.trim().isNotEmpty) {
+      return double.tryParse(value);
+    }
+    return null;
+  }
   Map<String, dynamic> toJson() => {
     "id": id,
     "email": email,

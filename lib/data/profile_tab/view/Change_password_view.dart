@@ -9,6 +9,7 @@ import 'package:real_true_date/data/login_signup/widgets/auth_header.dart';
 import 'package:real_true_date/data/login_signup/widgets/auth_input.dart';
 import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:real_true_date/data/profile_tab/controller/change_password_controller.dart';
+import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/transparent_appbar.dart';
 
 class ChangePasswordView extends GetView<ChangePasswordController> {
@@ -21,7 +22,12 @@ class ChangePasswordView extends GetView<ChangePasswordController> {
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
-      appBar: TransparentBackAppBar(title: 'Change Password',),
+      appBar: TransparentBackAppBar(title: 'Change Password', titleStyle: TextStyle(
+        fontFamily: AppFontType.urbanist.toString(),
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      )),
       body: Container(
         width: double.infinity,
         height: double.infinity,

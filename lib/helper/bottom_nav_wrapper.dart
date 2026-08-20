@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
+import 'package:real_true_date/data/home_tab/controller/home_tab_controller.dart';
 import 'package:real_true_date/data/home_tab/view/home_tab_view.dart';
+import 'package:real_true_date/data/matches_tab/controller/matches_tab_controller.dart';
 import 'package:real_true_date/data/matches_tab/view/matches_tab_view.dart';
 import 'package:real_true_date/data/message_tab/view/message_tab_view.dart';
 import 'package:real_true_date/data/profile_tab/view/profile_tab_view.dart';
@@ -233,12 +235,18 @@ class _BottomNavWrapperState extends State<BottomNavWrapper> {
         setState(() {
           debugPrint('select');
         });
-        // if (index == 2) {
-        //   if (Get.isRegistered<BookingController>()) {
-        //     final controller = Get.find<BookingController>();
-        //     controller.getBookingListApiCall(); // load initial state
-        //   }
-        // }
+        if(index == 0){
+          if (Get.isRegistered<HomeTabController>()) {
+            final controller = Get.find<HomeTabController>();
+            controller.getFeedListApiCall(); // load initial state
+          }
+        }
+        else if (index == 1) {
+          if (Get.isRegistered<MatchesTabController>()) {
+            final controller = Get.find<MatchesTabController>();
+            controller.getMatchesListApiCall(); // load initial state
+          }
+        }
         // else if (index == 3) {
         //   if (Get.isRegistered<ProfileController>()) {
         //     final controller = Get.find<ProfileController>();

@@ -75,6 +75,12 @@ class AppIcons{
   static const String helpCallIcon = 'assets/svg/ic_help_call.svg';
   static const String helpMailIcon = 'assets/svg/ic_help_mail.svg';
 
+  static const String whatsAppIcon = 'assets/svg/ic_whatsapp.svg';
+  static const String webSiteIcon = 'assets/svg/ic_website.svg';
+  static const String facebookIcon = 'assets/svg/ic_facebook.svg';
+  static const String twitterIcon = 'assets/svg/ic_twitter.svg';
+  static const String instagramIcon = 'assets/svg/ic_instagram.svg';
+
   /// PNG
   static const String splashImagePng = 'assets/png/bg_splash.png';
   static const String headerImagePng = 'assets/png/ic_header.png';
@@ -626,6 +632,46 @@ class AppIcons{
   static Widget getHelpCallIcon(BuildContext context, {double size = 48}) {
     return SvgPicture.asset(
       helpCallIcon,
+      width: size.w,
+      height: size.h,
+    );
+  }
+
+  static Widget getWhatsAppIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+      whatsAppIcon,
+      width: size.w,
+      height: size.h,
+    );
+  }
+
+  static Widget getWebSiteIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+      webSiteIcon,
+      width: size.w,
+      height: size.h,
+    );
+  }
+
+  static Widget getFacebookIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+      facebookIcon,
+      width: size.w,
+      height: size.h,
+    );
+  }
+
+  static Widget getTwitterIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+      twitterIcon,
+      width: size.w,
+      height: size.h,
+    );
+  }
+
+  static Widget getInstagramIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+      instagramIcon,
       width: size.w,
       height: size.h,
     );

@@ -45,6 +45,7 @@ class MatchesTabController extends GetxController {
       endpoint: Endpoints.getMatchesList,
       headers: header,
       fromJson: (json) => MatchesListModel.fromJson(json),
+      showLoader: false
     );
     isLoading.value = false;
 

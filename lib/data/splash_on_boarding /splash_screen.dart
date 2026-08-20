@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:gif_view/gif_view.dart';
+import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
-import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/splash_on_boarding%20/splash_controller.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:real_true_date/helper/notification_service.dart';
 import 'package:video_player/video_player.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -19,15 +18,39 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // LocationService.getCurrentLocation();
+    // _initializeAppAndNavigate();
   }
+
+  /*Future<void> _initializeAppAndNavigate() async {
+    // 1. Simulate app loading time (Splash animation, Auth check, API calls)
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    final user = await SharedPrefHelper().getPersonList();
+    if (user?.user?.id?.isNotEmpty ?? false) {
+      // 2. Check if the app was launched via a Killed-state notification tap
+      if (NotificationService.pendingKilledPayload != null) {
+        print('NotificationService pendingKilledPayload');
+        // Process notification redirect
+        NotificationService.processPendingNotification();
+      }
+      else {
+        // Normal app startup flow (go to Home or Login)
+        print('NotificationService Normal app startup flow');
+        // Navigator.pushReplacementNamed(context, '/home');
+      }
+    }
+  }*/
 
   @override
   Widget build(BuildContext context) {
-    final theme = AppTheme.of(context);
-
     return GetBuilder<SplashController>(
-      builder: (controller) {
+      builder: (splashController) {
+        // Extract to local variable to enable Dart type promotion
+        final videoController = splashController.controller;
+        final isInitialized = videoController != null && videoController.value.isInitialized;
+
         return Scaffold(
           body: Container(
             width: double.infinity,
@@ -38,55 +61,20 @@ class _SplashScreenState extends State<SplashScreen> {
                 fit: BoxFit.cover,
               ),
             ),
-            child:  /// 🔹 Fullscreen Video
-            controller.controller.value.isInitialized
+            child: isInitialized
                 ? SizedBox.expand(
               child: FittedBox(
                 fit: BoxFit.cover,
                 child: SizedBox(
-                  width: controller.controller.value.size.width,
-                  height: controller.controller.value.size.height,
-                  child: VideoPlayer(controller.controller),
+                  width: videoController.value.size.width,
+                  height: videoController.value.size.height,
+                  child: VideoPlayer(videoController),
                 ),
               ),
             )
-                : const Center(child: CircularProgressIndicator()),
-            /*Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GifView.asset(
-                    AppIcons.gifLogo,
-                    height: 200,
-                    width: 200,
-                    // loop: false,
-                  ),
-                  Text(
-                    'REAL TRUE DATE',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.manrope(
-                      // textStyle: Theme.of(context).textTheme.displayLarge,
-                      fontSize: MediaQuery.textScalerOf(context).scale(24),
-                      fontWeight: FontWeight.w700,
-                      fontStyle: FontStyle.normal,
-                      color: theme.text
-                    ),
-                  ),
-                  SizedBox(height: 5.h),
-                  Text(
-                    "WORLD'S 1st AI-POWERED\nDATING APP",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.manrope(
-                      // textStyle: Theme.of(context).textTheme.displayLarge,
-                        fontSize: MediaQuery.textScalerOf(context).scale(12),
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.normal,
-                        color: theme.text
-                    ),
-                  )
-                ],
-              ),
-            ),*/
+                : const Center(
+              child: CircularProgressIndicator(),
+            ),
           ),
         );
       },

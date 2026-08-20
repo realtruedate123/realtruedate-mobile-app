@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
@@ -397,13 +399,29 @@ class AuthController extends GetxController {
         print("Response inner data: ${response.data?.data}");
         print("User: ${response.data?.data?.user}");
 
-        await Future.wait([
-          sharedPref.saveIsLoggedIn(true),
-          sharedPref.savePersonList(response.data!.data!),
-          sharedPref.saveUserId(response.data?.data?.user?.id ?? '')
-        ]);
+        // SAFELY unwrap the data to prevent the Null Check Operator crash
+        final responseData = response.data?.data;
 
-        Get.offAll(() => BottomNavWrapper());
+        if (responseData != null) {
+          await Future.wait([
+            sharedPref.saveIsLoggedIn(true),
+            sharedPref.savePersonList(responseData), // No more "!"
+            sharedPref.saveUserId(responseData.user?.id ?? '')
+          ]);
+
+          Get.offAll(() => BottomNavWrapper());
+        } else {
+          errorMessage.value = 'Failed to load user profile data';
+        }
+
+        // await Future.wait([
+        //   sharedPref.saveIsLoggedIn(true),
+        //
+        //   sharedPref.savePersonList(response.data!.data!),
+        //   sharedPref.saveUserId(response.data?.data?.user?.id ?? '')
+        // ]);
+
+        // Get.offAll(() => BottomNavWrapper());
         // Get.toNamed(Routes.uploadPhotoPage);
       }
     } else if (response.statusCode == 0) {

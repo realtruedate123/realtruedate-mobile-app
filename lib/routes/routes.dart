@@ -25,4 +25,7 @@ class Routes {
   static const chatProfileDetailsView = "/chatProfileDetailsView";
   static const userRequestView = "/userRequestView";
   static const helpSupportView = "/helpSupportView";
+  static const feedbackView = "/feedbackView";
+  static const subscriptionView = "/subscriptionView";
+  static const paymentHistoryView = "/paymentHistoryView";
 }

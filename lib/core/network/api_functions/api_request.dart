@@ -317,6 +317,83 @@ class BaseApiService {
     }
   }
 
+  Future<ApiResponse<T>> deleteRawData<T>({
+    required String endpoint,
+    Map<String, String>? headers,
+    bool showLoader = true,
+    required T Function(Map<String, dynamic>) fromJson,
+  }) async {
+    /// Check Internet
+    if (!await checkInternet()) {
+      return ApiResponse<T>(
+        statusCode: 0,
+        message: "Please check your internet connection and try again.",
+        data: null,
+      );
+    }
+
+    if (showLoader) {
+      EasyLoading.show(
+        status: 'Loading...',
+        maskType: EasyLoadingMaskType.black,
+      );
+    }
+
+    try {
+      final url = Uri.parse('${Endpoints.baseUrl}$endpoint');
+
+      final response = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          if (headers != null) ...headers,
+        },
+      );
+
+      final statusCode = response.statusCode;
+      final responseBody = response.body;
+
+      try {
+        final Map<String, dynamic> jsonData = jsonDecode(responseBody);
+
+        debugPrint("Raw DELETE API data: $jsonData");
+
+        if (statusCode >= 200 && statusCode < 300) {
+          return ApiResponse<T>(
+            statusCode: statusCode,
+            data: fromJson(jsonData),
+            message: jsonData['message'] ?? "Success",
+          );
+        } else {
+          return ApiResponse<T>(
+            statusCode: statusCode,
+            message: jsonData['message'] ?? "Something went wrong",
+            data: null,
+            tokenExpired: jsonData['token_expired'] ?? false,
+          );
+        }
+      } catch (e) {
+        debugPrint('URL: $endpoint');
+
+        return ApiResponse<T>(
+          statusCode: statusCode,
+          message: "Invalid JSON: $responseBody",
+          data: null,
+        );
+      }
+    } catch (e) {
+      debugPrint("❌ Raw DELETE API error: $e");
+
+      return ApiResponse<T>(
+        statusCode: 500,
+        message: e.toString(),
+        data: null,
+      );
+    } finally {
+      EasyLoading.dismiss();
+    }
+  }
+
   Future<ApiResponse<T>> sendRequest<T>({
     required String endpoint,
     required HttpMethod method,

@@ -154,18 +154,13 @@ class ProfileTabController extends GetxController {
   Future<void> deleteAccountApiCall() async {
     final token = await prefHelper.getAuthToken;
 
-    final params = {
-      "refresh_token": token,
-    };
-
     final header = {
       'Content-Type': 'application/json',
       "Authorization": 'Bearer $token',
     };
 
-    final response = await BaseApiService().postRawData<DeleteUserModel>(
+    final response = await BaseApiService().deleteRawData<DeleteUserModel>(
       endpoint: Endpoints.deleteAccount,
-      fields: params,
       headers: header,
       fromJson: (json) => DeleteUserModel.fromJson(json),
     );
@@ -185,7 +180,7 @@ class ProfileTabController extends GetxController {
       if (response.tokenExpired == true) {
         final result = await BaseApiService().refreshToken();
         if (result.isSuccess) {
-          logoutApiCall();
+          deleteAccountApiCall();
         }
       } else {
         print(response.message ?? 'Logout - Something want wrong');

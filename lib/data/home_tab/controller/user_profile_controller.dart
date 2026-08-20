@@ -23,7 +23,7 @@ class UserProfileController extends GetxController {
 
   final sharedPref = SharedPrefHelper();
 
-  final Candidate matchData = Get.arguments;
+  final Candidate matchData = Get.arguments['data'];
   final profileData = ProfileData().obs;
   late var userProfileUrl = '';
   late var cityName = ''.obs;

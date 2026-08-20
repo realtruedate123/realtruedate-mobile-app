@@ -52,21 +52,21 @@ class MessageTabView extends StatelessWidget {
                   splashColor: Colors.transparent, // Hides the ripple
                   highlightColor: Colors.transparent, // Hides the click highlight
                   onTap: () {
-                    // Fav click event
                     print('clicked');
-                    Get.toNamed(Routes.savedProfileView);
+                    Get.toNamed(Routes.notificationView);
                   },
-                  child: AppIcons.getFavouriteIcon(context, size: 38),
+                  child: AppIcons.getNotificationIcon(context, size: 38),
                 ),
                 SizedBox(width: 12.w),
                 InkWell(
                   splashColor: Colors.transparent, // Hides the ripple
                   highlightColor: Colors.transparent, // Hides the click highlight
                   onTap: () {
+                    // Fav click event
                     print('clicked');
-                    Get.toNamed(Routes.notificationView);
+                    Get.toNamed(Routes.savedProfileView);
                   },
-                  child: AppIcons.getNotificationIcon(context, size: 38),
+                  child: AppIcons.getFavouriteIcon(context, size: 38),
                 ),
               ],
             ),

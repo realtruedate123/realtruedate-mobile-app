@@ -8,6 +8,7 @@ import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/helper/appbar_wrapper/matches_details_appbar_wrapper.dart';
 import 'package:real_true_date/helper/string_class.dart';
+import 'package:real_true_date/routes/routes.dart';
 
 class MatchesDetailsView extends StatelessWidget {
   final controller = Get.find<MatchesDetailsController>();
@@ -161,7 +162,8 @@ class MatchesDetailsView extends StatelessWidget {
                             behavior: HitTestBehavior.translucent,
                             onTap: () {
                               // TODO: comment action
-                              print('Comment tapped');
+                              print('Comment tapped 1');
+                              controller.createMessageApiCall(controller.matchData?.matchId ?? '');
                               // showDialog(
                               //   context: context,
                               //   barrierDismissible: false,

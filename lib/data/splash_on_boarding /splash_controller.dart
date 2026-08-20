@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/utils/singleton.dart';
@@ -9,73 +9,72 @@ import 'package:video_player/video_player.dart';
 
 class SplashController extends GetxController with GetTickerProviderStateMixin {
   final sharedPref = SharedPrefHelper();
-  late VideoPlayerController controller;
+
+  // 1. Make it nullable instead of late
+  VideoPlayerController? controller;
+  bool _hasNavigated = false;
 
   @override
   void onInit() {
     super.onInit();
-
-    initializeVideo();
-
     fetchCurrentLocation();
-
-    /// Navigate after delay
-    // Future.delayed(const Duration(seconds: 2), () async {
-      // checkLogin();
-
-      /*final user = await sharedPref.getPersonList();
-
-      if (user != null && user.user?.id != null && user.user?.id != '') {
-        print('user ID ${user.user?.id}');
-        // print('user ID ${user.user?.toJson()}');
-
-        // User is logged in
-        Get.offAll(() => BottomNavWrapper());
-      } else {
-        // User not logged in -> go to onboarding
-        Get.offAllNamed(Routes.onBoarding);
-      }*/
-    // });
+    initializeVideo();
   }
 
   Future<void> initializeVideo() async {
-    controller = VideoPlayerController.asset(
-      'assets/video/splash_video.mp4',
-    );
+    try {
+      final videoController = VideoPlayerController.asset('assets/video/splash_video.mp4');
 
-    await controller.initialize();
+      // Initialize local instance first
+      await videoController.initialize();
+      videoController.setLooping(false);
 
-    controller.setLooping(false);
+      // Assign to class field ONLY after initialization finishes
+      controller = videoController;
 
-    controller.addListener(() {
-      if (controller.value.isInitialized &&
-          controller.value.position >= controller.value.duration) {
-        print("Video finished!");
+      controller?.addListener(() {
+        if (!_hasNavigated && (controller?.value.isInitialized ?? false)) {
+          final position = controller!.value.position;
+          final duration = controller!.value.duration;
+
+          if (position >= duration || (duration - position).inMilliseconds < 100) {
+            print("Video finished!");
+            _hasNavigated = true;
+            checkLogin();
+          }
+        }
+      });
+
+      await controller?.play();
+      update(); // Rebuild UI when video is initialized and playing
+
+      // Fallback timer
+      final videoDuration = controller?.value.duration ?? const Duration(seconds: 3);
+      Future.delayed(videoDuration + const Duration(seconds: 1), () {
+        if (!_hasNavigated) {
+          _hasNavigated = true;
+          checkLogin();
+        }
+      });
+
+    } catch (e) {
+      print("Error initializing video: $e");
+      if (!_hasNavigated) {
+        _hasNavigated = true;
         checkLogin();
       }
-    });
-
-    await controller.play();
-
-    update();
+    }
   }
 
   Future<void> checkLogin() async {
     try {
-      print("Checking login...");
-
       final user = await sharedPref.getPersonList();
-
-      print("User fetched: $user");
-
       if (user?.user?.id?.isNotEmpty ?? false) {
-        print('user ID ${user?.user?.id}');
         Get.offAll(() => BottomNavWrapper());
       } else {
         Get.offAllNamed(Routes.onBoarding);
       }
     } catch (e) {
-      print("Splash error: $e");
       Get.offAllNamed(Routes.onBoarding);
     }
   }
@@ -85,21 +84,27 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
     try {
       final pos = await LocationService.getCurrentLocation();
       if (pos != null) {
-        print('Splash page Location $pos');
+        print('Location $pos');
 
         AppState.instance.userLat = pos.latitude;
         AppState.instance.userLong = pos.longitude;
 
-        print('Splash page Location ${AppState.instance.userLat}');
+        print('Location ${AppState.instance.userLat}');
 
         await Future.wait([
           sharedPref.saveUserLocation({'Latitude': pos.latitude.toString(), 'Longitude': pos.longitude.toString()}),
         ]);
       }
     } catch (e) {
-      debugPrint('home_tab page location $e.toString()');
+      debugPrint('location $e.toString()');
     } finally {
-      debugPrint('home_tab page location get');
+      debugPrint('location get');
     }
+  }
+
+  @override
+  void onClose() {
+    // controller?.dispose();
+    super.onClose();
   }
 }

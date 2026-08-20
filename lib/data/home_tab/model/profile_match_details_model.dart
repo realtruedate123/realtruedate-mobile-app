@@ -88,9 +88,20 @@ class ProfileData {
     isFavorite: json["is_favorite"],
     // latitude: json["latitude"],
     // longitude: json["longitude"],
-    latitude: double.tryParse(json["latitude"]?.toString() ?? ""),
-    longitude: double.tryParse(json["longitude"]?.toString() ?? ""),
+    // latitude: double.tryParse(json["latitude"]?.toString() ?? ""),
+    // longitude: double.tryParse(json["longitude"]?.toString() ?? ""),
+    latitude: _parseDouble(json["latitude"]),
+    longitude: _parseDouble(json["longitude"]),
   );
+
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toDouble();
+    if (value is String && value.trim().isNotEmpty) {
+      return double.tryParse(value);
+    }
+    return null;
+  }
 
   Map<String, dynamic> toJson() => {
     "id": id,
