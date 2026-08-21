@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
@@ -26,7 +27,7 @@ class OtpController extends GetxController {
 
   /// Button enable state
   final isLoginEnabled = false.obs;
-  final TextEditingController otpController = TextEditingController();
+  final PinInputController otpController = PinInputController();
   final FocusNode focusNode = FocusNode();
 
   @override

@@ -59,7 +59,7 @@ class OtpView extends GetView<OtpController> {
                         children: [
                           /// Forgot password View
                           SizedBox(height: 15.h,),
-                          PinCodeTextField(
+                          /*PinCodeTextField(
                             appContext: context,
                             length: 4,
                             keyboardType: TextInputType.number,
@@ -99,7 +99,50 @@ class OtpView extends GetView<OtpController> {
                               print('Enter OTP ${value.length}');
                               controller.verifyOtp();
                             },
+                          ),*/
+
+                          MaterialPinField(
+                            length: 4,
+                            pinController: controller.otpController,
+                            autoFocus: true,
+                            keyboardType: TextInputType.number,
+                            theme: MaterialPinTheme(
+                              shape: MaterialPinShape.outlined,
+                              cellSize: Size(50.w, 50.h),
+                              spacing: 15,
+
+                              borderRadius: BorderRadius.circular(10),
+                              borderWidth: 0.5,
+
+                              borderColor: theme.border,
+                              focusedBorderColor: theme.primaryColor,
+
+                              fillColor: Colors.white,
+                              focusedFillColor: Colors.white,
+                              filledFillColor: Colors.white,
+
+                              cursorColor: theme.primaryColor,
+                              cursorWidth: 2,
+
+                              textStyle: TextStyle(
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+
+                              entryAnimation: MaterialPinAnimation.fade,
+                            ),
+
+                            onChanged: (value) {
+                              debugPrint("OTP $value");
+                              controller.onOtpChanged(value);
+                            },
+
+                            onCompleted: (value) {
+                              debugPrint("OTP Complete: $value");
+                              controller.verifyOtp();
+                            },
                           ),
+
                           /*OtpTextField(
                             numberOfFields: 4,
                             borderColor: theme.border,

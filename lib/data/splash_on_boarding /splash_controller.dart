@@ -13,12 +13,24 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
   // 1. Make it nullable instead of late
   VideoPlayerController? controller;
   bool _hasNavigated = false;
+  bool isKillMode = false;
 
   @override
   void onInit() {
     super.onInit();
     fetchCurrentLocation();
-    initializeVideo();
+  }
+
+  void setKillMode(bool value) {
+    isKillMode = value;
+    print('isKillMode $isKillMode');
+    if(isKillMode) {
+      _hasNavigated = true;
+      checkLogin();
+    } else {
+      initializeVideo();
+    }
+    update();
   }
 
   Future<void> initializeVideo() async {

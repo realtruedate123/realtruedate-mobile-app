@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/data/splash_on_boarding%20/splash_controller.dart';
-import 'package:real_true_date/helper/notification_service.dart';
+import 'package:real_true_date/helper/NotificationService.dart';
 import 'package:video_player/video_player.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -18,30 +18,34 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // _initializeAppAndNavigate();
+    _initializeAppAndNavigate();
   }
 
-  /*Future<void> _initializeAppAndNavigate() async {
+  Future<void> _initializeAppAndNavigate() async {
     // 1. Simulate app loading time (Splash animation, Auth check, API calls)
     await Future.delayed(const Duration(seconds: 2));
-
+    print('mounted =====');
     if (!mounted) return;
 
     final user = await SharedPrefHelper().getPersonList();
     if (user?.user?.id?.isNotEmpty ?? false) {
+      final controller = Get.find<SplashController>();
       // 2. Check if the app was launched via a Killed-state notification tap
       if (NotificationService.pendingKilledPayload != null) {
         print('NotificationService pendingKilledPayload');
+        controller.setKillMode(true);
+
         // Process notification redirect
         NotificationService.processPendingNotification();
       }
       else {
         // Normal app startup flow (go to Home or Login)
+        controller.setKillMode(false);
         print('NotificationService Normal app startup flow');
         // Navigator.pushReplacementNamed(context, '/home');
       }
     }
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {

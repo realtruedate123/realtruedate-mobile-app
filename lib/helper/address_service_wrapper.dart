@@ -9,6 +9,7 @@ class AddressServiceWrapper {
   final RxString currentAddress = ''.obs;
 
   UserLocationAddressModel? addressModel;
+  // final Geocoding geocoding = Geocoding();
 
   /// Fetch address details from latitude and longitude
   Future<UserLocationAddressModel?> getAddressFromLatLng(double latitude, double longitude) async {

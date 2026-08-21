@@ -57,7 +57,13 @@ class SubscriptionsController extends GetxController {
       isPurchasing.value = true;
       Package selectedPackage = packages[selectedIndex.value];
 
-      CustomerInfo customerInfo = await Purchases.purchasePackage(selectedPackage);
+      // CustomerInfo customerInfo = await Purchases.purchasePackage(selectedPackage);
+      // CustomerInfo customerInfo = await Purchases.purchasePackage(selectedPackage);
+
+      // ✅ Current purchases_flutter
+      final PurchaseResult result = await Purchases.purchasePackage(selectedPackage);
+
+      final CustomerInfo customerInfo = result.customerInfo;
 
       // Check if user unlocked entitlement (replace 'pro' with your entitlement identifier in RevenueCat)
       if (customerInfo.entitlements.all["pro"]?.isActive == true) {

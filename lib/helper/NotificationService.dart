@@ -4,24 +4,28 @@ import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/data/root_tab_controller.dart';
+import 'package:real_true_date/helper/notification_channel.dart';
 import 'package:real_true_date/routes/routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-bool isExpertAssignedOpened = false;
-
-/// 1️⃣ Background message handler
-@pragma('vm:entry-point')
+// 1️⃣ Firebase Messaging background handler
+@pragma('vm:entry-point') // Required for background execution
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Ensure Firebase is initialized for background work
   await Firebase.initializeApp();
   debugPrint("📩 Background message ID: ${message.messageId}");
+  debugPrint("Data: ${message.data}");
+  // await NotificationService.showLocalNotification(message);
 }
 
-/// 2️⃣ Background notification tap handler
-@pragma('vm:entry-point')
+// 2️⃣ Local Notifications background tap handler
+@pragma('vm:entry-point') // Required for background execution
 void notificationTapBackground(NotificationResponse notificationResponse) {
   debugPrint('🔔 Notification tapped (background): ${notificationResponse.payload}');
 }
@@ -31,115 +35,242 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
-  static Map<String, dynamic>? pendingPayload;
+  // 1️⃣ Global storage for pending killed-state redirect
+  static Map<String, dynamic>? pendingKilledPayload;
 
-  Future<void> init() async {
-    // Request permissions
-    try {
-      NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-      ).timeout(const Duration(seconds: 5));
-      debugPrint('User granted permission: ${settings.authorizationStatus}');
-    } catch (e) {
-      debugPrint('Error requesting permissions: $e');
-    }
-
-    // iOS native foreground presentation options
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+  Future<void> setupInteractedMessage() async {
+    // Request permissions first
+    await FirebaseMessaging.instance.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
 
-    await _initLocalNotifications();
-
-    isExpertAssignedOpened = false;
+    enableIOSNotifications();
+    await registerNotificationListeners();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    // FOREGROUND MESSAGES
-    FirebaseMessaging.onMessage.listen((message) async {
-      debugPrint('📩 Foreground message received: ${message.data}');
-      // Manually show local notification on iOS and Android to ensure banner appears in foreground
-      await showLocalNotification(message);
+    // SAFELY FETCH INITIAL MESSAGE (Non-blocking for iOS)
+    _checkInitialMessageSafely();
+
+    // _listenNotification();
+    // _getInitialNotification();
+    // _checkStoredNotification();
+
+    // Fetch token after permissions are handled
+    await getFCMToken();
+
+    FirebaseMessaging.onMessageOpenedApp.listen((final RemoteMessage message) {
+      debugPrint("📱 App opened from BACKGROUND state");
+      try {
+        redirectFromNotification(message.data);
+      } catch (e) {
+        debugPrint(e.toString());
+      }
     });
-
-    // TAP HANDLER: Background/Terminated FCM Native Banner Taps
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      debugPrint('🔔 FCM Notification tapped: ${message.data}');
-      redirectFromNotification(message.data);
-    });
-
-    // KILLED STATE TAP
-    _checkInitialMessage();
-
-    // Setup Token (Non-blocking)
-    _setupFCMToken();
   }
 
-  Future<void> _checkInitialMessage() async {
+  // NEW: Setup native notification channel
+ /* void _listenNotification() {
+    IOSNotificationChannel.onNotification.listen((payload) {
+      print('LIVE NOTIFICATION: $payload');
+
+      final type = payload['type'];
+      final chatId = payload['chat_id'];
+      final screen = payload['screen'];
+
+      print('type: $type');
+      print('chatId: $chatId');
+      print('screen: $screen');
+    });
+  }
+
+  Future<void> _getInitialNotification() async {
+    final payload = await IOSNotificationChannel.getInitialNotification();
+
+    if (payload != null) {
+      print('INITIAL NOTIFICATION: $payload');
+
+      // App was opened from notification.
+    }
+  }*/
+
+  void _checkInitialMessageSafely() {
+    // Microtask ensures this runs without blocking app initialization/rendering
+    Future.microtask(() async {
+      try {
+        // 1️⃣ KILLED STATE TAP: App opened from completely closed state
+        final RemoteMessage? initialMessage = await FirebaseMessaging.instance
+            .getInitialMessage()
+            .timeout(const Duration(seconds: 3));
+
+        if (initialMessage != null) {
+          debugPrint("🚀 App opened from KILLED state via notification tap");
+          pendingKilledPayload = initialMessage.data;
+        }
+      } catch (e) {
+        debugPrint("getInitialMessage safely ignored error/timeout: $e");
+      }
+    });
+  }
+
+  // Helper function to consume the stored payload when UI is ready
+  static Future<void> processPendingNotification() async {
+    if (pendingKilledPayload != null) {
+      debugPrint("⚡ Processing deferred killed-state notification payload...");
+      final payload = pendingKilledPayload!;
+      pendingKilledPayload = null; // Clear to prevent double navigation
+
+      await Future.delayed(const Duration(seconds: 1));
+      // Execute redirect logic
+      NotificationService().redirectFromNotification(payload);
+    }
+  }
+
+  Future<void> getFCMToken() async {
     try {
-      final initialMessage = await FirebaseMessaging.instance.getInitialMessage().timeout(const Duration(seconds: 3));
-      if (initialMessage != null) {
-        debugPrint('🚀 Initial message found: ${initialMessage.data}');
-        pendingPayload = initialMessage.data;
+      if (Platform.isIOS) {
+        // 1. Check if APNs token is already available
+        String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+
+        // 2. If null, wait briefly for APNs to complete registration
+        int retries = 0;
+        while (apnsToken == null && retries < 5) {
+          await Future.delayed(const Duration(seconds: 2));
+          apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+          retries++;
+        }
+
+        if (apnsToken == null) {
+          debugPrint('⚠️ APNs token is still null after retries. Skipping getToken for now.');
+          return;
+        }
+      }
+
+      // Fetch FCM token once APNs is confirmed (or immediately on Android)
+      final String? fcmToken = await FirebaseMessaging.instance.getToken();
+      debugPrint('FIREBASE TOKEN ==> $fcmToken');
+      if (fcmToken != null) {
+        await sharedPref.saveFirebaseToken(fcmToken);
       }
     } catch (e) {
-      debugPrint('Error getting initial message: $e');
+      debugPrint('Error getting FCM Token: $e');
     }
+
+    // Listen for token refreshes
+    FirebaseMessaging.instance.onTokenRefresh.listen((final String newToken) {
+      debugPrint('FIREBASE TOKEN REFRESH ==> $newToken');
+      sharedPref.saveFirebaseToken(newToken);
+    });
   }
 
-  static void processPendingNotification() {
-    if (pendingPayload != null) {
-      debugPrint('Processing pending notification...');
-      redirectFromNotification(pendingPayload!);
-      pendingPayload = null;
-    }
-  }
+  Future<void> registerNotificationListeners() async {
+    final AndroidNotificationChannel channel = androidNotificationChannel();
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
-  Future<void> _initLocalNotifications() async {
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+
     const AndroidInitializationSettings androidSettings =
     AndroidInitializationSettings('@drawable/ic_notification');
 
-    const DarwinInitializationSettings iOSSettings = DarwinInitializationSettings(
+    const DarwinInitializationSettings iOSSettings =
+    DarwinInitializationSettings(
       requestSoundPermission: true,
-      requestBadgePermission: true,
+      requestBadgePermission: false,
       requestAlertPermission: true,
     );
 
     const InitializationSettings initSettings =
     InitializationSettings(android: androidSettings, iOS: iOSSettings);
 
-    await _localNotificationsPlugin.initialize(
+    flutterLocalNotificationsPlugin.initialize(
       settings: initSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse details) {
-        if ((details.payload ?? '').isNotEmpty) {
+      onDidReceiveNotificationResponse: (final NotificationResponse details) {
+        debugPrint(" Foreground Local Notification Tapped: ${details.payload}");
+        if (details.payload != null && details.payload!.isNotEmpty) {
           try {
-            final payload = json.decode(details.payload!);
-            redirectFromNotification(payload);
+            final Map<String, dynamic> messagePayload = jsonDecode(details.payload!);
+            redirectFromNotification(messagePayload);
           } catch (e) {
-            debugPrint('Error decoding notification payload: $e');
+            debugPrint("Error parsing payload: $e");
           }
         }
       },
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
-    if (Platform.isAndroid) {
-      const AndroidNotificationChannel channel = AndroidNotificationChannel(
-        'high_importance_channel',
-        'High Importance Notifications',
-        description: 'This channel is used for important notifications.',
-        importance: Importance.max,
-      );
-      await _localNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-          ?.createNotificationChannel(channel);
-    }
+    FirebaseMessaging.onMessage.listen((final RemoteMessage? message) async {
+      try {
+        if (message == null) return;
+        debugPrint('Received foreground FCM message: ${message.data}');
+        final RemoteNotification? notification = message.notification;
+        final title = notification?.title ?? message.data['title'];
+        final body = notification?.body ?? message.data['body'];
+
+        if (title != null && body != null) {
+          debugPrint('notification Data${message.data}');
+          debugPrint('notification title${message.notification?.title}');
+          debugPrint('notification body${message.notification?.body}');
+
+          // Trigger local notification show on BOTH Android and iOS
+          if (Platform.isAndroid || (Platform.isIOS && message.notification == null)) {
+            await flutterLocalNotificationsPlugin.show(
+              id: notification.hashCode,
+              title: title,
+              body: body,
+              payload: jsonEncode(message.data),
+              notificationDetails: NotificationDetails(
+                android: AndroidNotificationDetails(
+                  channel.id,
+                  channel.name,
+                  channelDescription: channel.description,
+                  color: const Color(0xFF3E80FA),
+                  icon: '@drawable/ic_notification',
+                  // 🔴 REQUIRED FOR ANDROID FOREGROUND HEADS-UP BANNER
+                  importance: Importance.max,
+                  priority: Priority.high,
+                  playSound: true,
+                ),
+                // 🔴 REQUIRED FOR IOS LOCAL NOTIFICATION FOREGROUND BANNER
+                iOS: const DarwinNotificationDetails(
+                  presentAlert: true,
+                  presentBadge: true,
+                  presentSound: true,
+                  sound: 'default', // 🔑 Fixes missing sound on iOS foreground local notifications
+                ),
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    });
   }
 
+  Future<void> enableIOSNotifications() async {
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true, // Required to display a heads up notification
+      badge: true,
+      sound: true,
+    );
+  }
+
+  AndroidNotificationChannel androidNotificationChannel() =>
+      const AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        description:
+        'This channel is used for important notifications.', // description
+        importance: Importance.max,
+      );
+
+  /// Show local notification (foreground/background)
   static Future<void> showLocalNotification(RemoteMessage message) async {
     final title = message.notification?.title ?? message.data['title'];
     final body = message.notification?.body ?? message.data['body'];
@@ -156,16 +287,17 @@ class NotificationService {
       color: Color(0xFF333333),
     );
 
-    const DarwinNotificationDetails iOSDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
+      final DarwinNotificationDetails iOSDetails = DarwinNotificationDetails(
+        presentAlert: true, // 🔑 show banner in foreground
+        presentBadge: true,
+        presentSound: true,
+        sound: 'default', // 🔑 Fixes missing sound on iOS foreground local notifications
+      );
 
-    const NotificationDetails platformDetails = NotificationDetails(
-      android: androidDetails,
-      iOS: iOSDetails,
-    );
+      final NotificationDetails platformDetails = NotificationDetails(
+        android: androidDetails,
+        iOS: iOSDetails,
+      );
 
     await _localNotificationsPlugin.show(
       id: message.hashCode,
@@ -176,53 +308,29 @@ class NotificationService {
     );
   }
 
-  void _setupFCMToken() {
-    if (Platform.isIOS) {
-       _getAPNSTokenAndThenFCMToken();
-    } else {
-      _fetchAndSaveToken();
-    }
+  Future<void> redirectFromNotification(Map<String, dynamic> payload) async {
+    //redirect to any specific screen.
+    print('payload $payload');
 
-    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-      debugPrint('FIREBASE REFRESH TOKEN: $newToken');
-      sharedPref.saveFirebaseToken(newToken);
-    });
-  }
-
-  void _getAPNSTokenAndThenFCMToken() async {
-    int retries = 0;
-    String? apnsToken;
-    while (apnsToken == null && retries < 5) {
-      apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-      if (apnsToken == null) {
-        await Future.delayed(const Duration(seconds: 2));
-        retries++;
+    try {
+      final user = await sharedPref.getPersonList();
+      if (user?.user?.id?.isNotEmpty ?? false) {
+        if(payload['type'] == 'new_message'){
+          Get.find<RootTabController>().switchTo(2);
+          Get.toNamed(Routes.chatView, arguments: {
+            'conversation_id': payload['conversation_id']
+          });
+          print('new message redirectFromNotification');
+        }
+      } else {
+        print('not logged');
       }
+    } catch (e) {
+      print('not logged');
     }
-    _fetchAndSaveToken();
-  }
 
-  void _fetchAndSaveToken() {
-    FirebaseMessaging.instance.getToken().then((token) {
-      debugPrint('FIREBASE TOKEN: $token');
-      if (token != null) sharedPref.saveFirebaseToken(token);
-    }).catchError((e) {
-      debugPrint('Error getting FCM token: $e');
-    });
-  }
-
-  static void redirectFromNotification(Map<String, dynamic> payload) {
-    debugPrint('🚀 Redirecting from payload: $payload');
-    if (payload['type'] == 'new_message') {
-       try {
-         Get.find<RootTabController>().switchTo(2);
-         Get.toNamed(Routes.chatView, arguments: {
-           'conversation_id': payload['conversation_id']
-         });
-       } catch (e) {
-         debugPrint('Navigation error: $e. Storing as pending.');
-         pendingPayload = payload;
-       }
-    }
+    //if (sharedPref.isLoggedIn) {
+    // final RedirectData redirectData = RedirectData.fromJson(payload);
+    // }
   }
 }

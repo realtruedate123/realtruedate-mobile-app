@@ -64,9 +64,7 @@ class AuthController extends GetxController {
   final signUpPasswordError = RxnString();
 
   final storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(
-      encryptedSharedPreferences: true,
-    ),
+    aOptions: AndroidOptions(),
   );
 
   @override

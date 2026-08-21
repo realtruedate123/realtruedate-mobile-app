@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:real_true_date/data/root_tab_controller.dart';
 import 'package:real_true_date/helper/NotificationService.dart';
+import 'package:real_true_date/helper/notification_channel.dart';
 import 'package:real_true_date/routes/pages.dart';
 import 'routes/routes.dart';
 
@@ -21,13 +22,13 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
   ]);
 
-  _initRevenueCat();
+  // _initRevenueCat();
 
   // 2. Wrap Firebase init in try-catch so network issues don't freeze boot
   try {
     await Firebase.initializeApp();
-    // Use the improved NotificationService
-    await NotificationService().init();
+    await NotificationService().setupInteractedMessage();
+    // IOSNotificationChannel.initialize();
   } catch (e) {
     debugPrint("Firebase init error: $e");
   }
