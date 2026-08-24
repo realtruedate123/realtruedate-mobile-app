@@ -13,6 +13,23 @@ class AddressServiceWrapper {
 
   /// Fetch address details from latitude and longitude
   Future<UserLocationAddressModel?> getAddressFromLatLng(double latitude, double longitude) async {
+    // print('getAddressFromLatLng');
+    // print('$latitude $longitude');
+
+    if(latitude == 0 && longitude == 0){
+      addressModel = UserLocationAddressModel(
+        streetName: '',
+        areName: '',
+        cityName: '',
+        stateName: '',
+        postalCode: '',
+        country: '',
+        latitude: latitude,
+        longitude: longitude,
+      );
+      return addressModel;
+    }
+
     try {
       isLoadingAddress.value = true;
       currentAddress.value = "Fetching address...";

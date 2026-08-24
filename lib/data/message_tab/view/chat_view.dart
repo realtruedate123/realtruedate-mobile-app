@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
+import 'package:real_true_date/core/utils/DateHelper.dart';
 import 'package:real_true_date/data/message_tab/controller/chat_controller.dart';
 import 'package:real_true_date/data/message_tab/model/message_model.dart';
 import 'package:real_true_date/helper/app_cached_image.dart';
@@ -41,12 +43,21 @@ class ChatView extends StatelessWidget {
               );
             }),
 
-            SizedBox(height: 10.h),
+            /*SizedBox(height: 10.h),
             const Text(
               "Today",
               style: TextStyle(color: Colors.grey, fontSize: 16),
             ),
-            SizedBox(height: 10.h),
+            SizedBox(height: 10.h),*/
+
+            /// Sticky Date
+            /*Obx(() {
+              if (controller.messages.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              final message = controller.messages.first;
+              return _chatDateSeparator(message.createdAt);
+            }),*/
 
             /// Messages List
             Expanded(
@@ -59,18 +70,33 @@ class ChatView extends StatelessWidget {
                     );
                   }
 
-                  if (controller.messages.isEmpty) {
-                    return const Center(
-                      child: Text("No messages found"),
-                    );
-                  }
+                  // if (controller.messages.isEmpty) {
+                  //   return const Center(
+                  //     child: Text("No messages found"),
+                  //   );
+                  // }
 
                   return  ListView.builder(
                     reverse: true, // Show newest messages at bottom
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     itemCount: controller.messages.length,
                     itemBuilder: (context, index) {
-                      return _messageBubble(context, controller.messages[index], controller);
+                      final message = controller.messages[index];
+
+                      String? nextDate;
+                      if (index < controller.messages.length - 1) {
+                        nextDate = controller.messages[index + 1].createdAt;
+                      }
+                      final showDateSeparator = nextDate == null || !isSameDay(message.createdAt, nextDate);
+
+                      return Column(
+                        children: [
+                          if (showDateSeparator)
+                            _chatDateSeparator(message.createdAt, context),
+
+                          _messageBubble(context, controller.messages[index], controller),
+                        ],
+                      );
                     },
                   );
                 }),
@@ -276,6 +302,71 @@ Widget _messageInput(
   });
 }
 
+Widget _chatDateSeparator(String? dateString, BuildContext context) {
+  final theme = AppTheme.of(context);
+
+  if (dateString == null || dateString.trim().isEmpty) {
+    return const SizedBox.shrink();
+  }
+
+  DateTime date;
+
+  try {
+    date = DateTime.parse(dateString).toLocal();
+  } catch (_) {
+    return const SizedBox.shrink();
+  }
+
+  final now = DateTime.now();
+
+  final today = DateTime(
+    now.year,
+    now.month,
+    now.day,
+  );
+
+  final messageDate = DateTime(
+    date.year,
+    date.month,
+    date.day,
+  );
+
+  final difference = today.difference(messageDate).inDays;
+
+  String label;
+
+  if (difference == 0) {
+    label = 'Today';
+  } else if (difference == 1) {
+    label = 'Yesterday';
+  } else {
+    label = DateFormat('dd MMM yyyy').format(date);
+  }
+
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 10.h),
+    child: Center(
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 12.w,
+          vertical: 5.h,
+        ),
+        decoration: BoxDecoration(
+          color: theme.lightPurpleColor.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    ),
+  );
+}
 
 
 

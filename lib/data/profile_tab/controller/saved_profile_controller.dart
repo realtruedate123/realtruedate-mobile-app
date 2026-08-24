@@ -3,7 +3,6 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
-import 'package:real_true_date/data/matches_tab/controller/matches_tab_controller.dart';
 import 'package:real_true_date/data/profile_tab/model/saved_profile_model.dart';
 
 class SavedProfileController extends GetxController{

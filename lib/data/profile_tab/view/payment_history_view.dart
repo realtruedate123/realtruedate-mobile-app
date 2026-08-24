@@ -3,10 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
-import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:real_true_date/data/profile_tab/controller/payment_history_controller.dart';
 import 'package:real_true_date/data/profile_tab/widget/payment_history_cell.dart';
-import 'package:real_true_date/data/profile_tab/widget/subscription_card.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/transparent_appbar.dart';
 

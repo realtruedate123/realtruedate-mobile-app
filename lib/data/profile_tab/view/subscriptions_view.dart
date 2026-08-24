@@ -102,7 +102,7 @@ class SubscriptionsView extends GetView<SubscriptionsController> {
                                     padding: EdgeInsets.only(bottom: 16.r),
                                     child: SubscriptionCard(
                                       title: product.title,
-                                      price: '${product.priceString}/${product.subscriptionPeriod ?? "month"}',
+                                      price: '${product.pricePerMonthString}/Per month',
                                       featureText: product.description,
                                       isSelected: isSelected,
                                       onTap: () {
@@ -136,7 +136,7 @@ class SubscriptionsView extends GetView<SubscriptionsController> {
                                     child: Text(
                                       "Restore Purchases",
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: Colors.black,
                                         fontSize: 14.sp,
                                       ),
                                     ),

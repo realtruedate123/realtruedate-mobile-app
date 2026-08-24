@@ -49,6 +49,8 @@ class FavoriteModel {
   final int? age;
   final String? photoUrl;
   final bool? isVerified;
+  final String? latitude;
+  final String? longitude;
 
   FavoriteModel({
     this.userId,
@@ -56,6 +58,8 @@ class FavoriteModel {
     this.age,
     this.photoUrl,
     this.isVerified,
+    this.latitude,
+    this.longitude,
   });
 
   factory FavoriteModel.fromJson(Map<String, dynamic> json) => FavoriteModel(
@@ -64,6 +68,8 @@ class FavoriteModel {
     age: json["age"],
     photoUrl: json["photo_url"],
     isVerified: json["is_verified"],
+    latitude: json["latitude"],
+    longitude: json["longitude"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -72,5 +78,7 @@ class FavoriteModel {
     "age": age,
     "photo_url": photoUrl,
     "is_verified": isVerified,
+    "latitude": latitude,
+    "longitude": longitude,
   };
 }

@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/data/profile_tab/controller/profile_tab_controller.dart';
 import 'package:real_true_date/data/profile_tab/model/profile_model.dart';
 import 'package:real_true_date/data/profile_tab/view/about_view.dart';
-import 'package:real_true_date/data/profile_tab/view/feedback_view.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/custom_dialog/confirmation_dialog.dart';
 import 'package:real_true_date/helper/global_setting.dart';
@@ -110,16 +109,6 @@ class ProfileTabView extends StatelessWidget {
                       offset: Offset(0, -70.h),
                       child: Column(
                         children: [
-                          // CircleAvatar(
-                          //   radius: 50.r,
-                          //   backgroundColor: Colors.transparent,
-                          //   child: AppIcons.getUserPlaceHolder(context, size: 150),
-                          //   // child: CircleAvatar(
-                          //   //   radius: 50.r,
-                          //   //   backgroundImage: const NetworkImage(
-                          //   //       'https://i.pravatar.cc/150?img=12'),
-                          //   // ),
-                          // ),
                           SizedBox(
                             height: 125.h, // Increased height to fit the text
                             width: 125.w,

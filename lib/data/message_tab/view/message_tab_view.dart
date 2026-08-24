@@ -77,7 +77,14 @@ class MessageTabView extends StatelessWidget {
         bottom: false,
         child: Column(
           children: [
-            _searchBar(context),
+            _searchBar(
+              context,
+              onSearch: (query) {
+                print('Search: $query');
+                // Filter your list here
+                // controller.searchChats(query);
+              },
+            ),
             Expanded(
               child: Obx(() =>
                   RefreshIndicator(
@@ -124,7 +131,7 @@ class MessageTabView extends StatelessWidget {
   }
 }
 
-Widget _searchBar(BuildContext context) {
+/*Widget _searchBar(BuildContext context) {
   final theme = AppTheme.of(context);
 
   return Padding(
@@ -151,5 +158,46 @@ Widget _searchBar(BuildContext context) {
       ),
     ),
   );
-}
+}*/
 
+Widget _searchBar(
+    BuildContext context, {
+      required ValueChanged<String> onSearch,
+    }) {
+  final theme = AppTheme.of(context);
+
+  return Padding(
+    padding: EdgeInsets.all(20.r),
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.w),
+      height: 52.h,
+      decoration: BoxDecoration(
+        color: theme.whiteColor,
+        borderRadius: BorderRadius.circular(30.r),
+      ),
+      child: Row(
+        children: [
+          AppIcons.getSearchIcon(context),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: TextField(
+              onChanged: onSearch,
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                hintText: 'Search',
+                hintStyle: TextStyle(
+                  fontFamily: 'NunitoSans',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: theme.inactiveTabColor,
+                ),
+                border: InputBorder.none,
+                isDense: true,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}

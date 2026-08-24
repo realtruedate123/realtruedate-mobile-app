@@ -15,6 +15,7 @@ class MessageTabController extends GetxController {
   final sharedPref = SharedPrefHelper();
 
   var userChatList = <ConversationModel>[].obs;
+  var searchChatList = <ConversationModel>[].obs;
 
 
   @override
@@ -45,6 +46,7 @@ class MessageTabController extends GetxController {
 
     if (response.isSuccess && response.statusCode == 200) {
       userChatList.value = response.data?.data?.conversations ?? [];
+      searchChatList.value = response.data?.data?.conversations ?? [];
       print('userChatList ${userChatList.length}');
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
@@ -59,5 +61,21 @@ class MessageTabController extends GetxController {
       }
     }
     update();
+  }
+
+  void searchChats(String query) {
+    final searchQuery = query.trim().toLowerCase();
+
+    if (searchQuery.isEmpty) {
+      userChatList.assignAll(searchChatList);
+      return;
+    }
+
+    final filtered = searchChatList.where((item) {
+      final name = item.recipient?.fullName?.trim().toLowerCase() ?? '';
+      return name.contains(searchQuery);
+    }).toList();
+
+    userChatList.assignAll(filtered);
   }
 }

@@ -28,4 +28,5 @@ class Routes {
   static const feedbackView = "/feedbackView";
   static const subscriptionView = "/subscriptionView";
   static const paymentHistoryView = "/paymentHistoryView";
+  static const someOneViewProfile = "/someOneViewProfile";
 }

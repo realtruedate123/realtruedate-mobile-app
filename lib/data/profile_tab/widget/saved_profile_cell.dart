@@ -5,8 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/profile_tab/model/saved_profile_model.dart';
+import 'package:real_true_date/helper/address_service_wrapper.dart';
 import 'package:real_true_date/helper/app_cached_image.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
+import 'package:real_true_date/helper/common_model.dart';
 
 class SavedProfileCell extends StatelessWidget {
   final FavoriteModel match;
@@ -98,7 +100,7 @@ class SavedProfileCell extends StatelessWidget {
                     overflow: TextOverflow.ellipsis, // truncates with "..."
                   ),
                 ),
-                SizedBox(width: 5.w),
+                /*SizedBox(width: 5.w),
                 Container(
                   width: 5.w,
                   height: 5.h,
@@ -106,7 +108,7 @@ class SavedProfileCell extends StatelessWidget {
                     color: Color(0xff13E398),
                     shape: BoxShape.circle,
                   ),
-                ),
+                ),*/
               ],
             ),
           ),
@@ -114,15 +116,42 @@ class SavedProfileCell extends StatelessWidget {
           // SizedBox(height: 6.h),
 
           /// Location
-          Center(
-            child: AppTextFont(
-              '',
-              font: AppFontType.lato,
-              fontSize: 10,
-              fontWeight: FontWeight.w400,
-              color: theme.inactiveTabColor,
+          if(match.latitude != '' && match.longitude != '')...[
+            FutureBuilder<UserLocationAddressModel?>(
+              future: AddressServiceWrapper().getAddressFromLatLng(
+                double.parse(match.latitude ?? "0"),
+                double.parse(match.longitude ?? "0"),
+              ),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: AppTextFont(
+                      'Loading...',
+                      font: AppFontType.lato,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w400,
+                      color: theme.inactiveTabColor,
+                    ),
+                  );
+                }
+
+                final address = snapshot.data;
+
+                final cityName = address?.cityName ?? '';
+                final stateName = address?.stateName ?? '';
+
+                return Center(
+                  child: AppTextFont(
+                    '$cityName, $stateName',
+                    font: AppFontType.lato,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w400,
+                    color: theme.inactiveTabColor,
+                  ),
+                );
+              },
             ),
-          ),
+          ]
         ],
       ),
     );

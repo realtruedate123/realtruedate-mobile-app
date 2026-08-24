@@ -109,3 +109,56 @@ String formatTime(Duration time) {
 
   return '0 seconds left';
 }
+
+String getDateLabel(String? dateString) {
+  if (dateString == null || dateString.trim().isEmpty) {
+    return '';
+  }
+
+  final messageDate = DateTime.parse(dateString).toLocal();
+  final now = DateTime.now();
+
+  final today = DateTime(
+    now.year,
+    now.month,
+    now.day,
+  );
+
+  final date = DateTime(
+    messageDate.year,
+    messageDate.month,
+    messageDate.day,
+  );
+
+  final difference = today.difference(date).inDays;
+
+  if (difference == 0) {
+    return 'Today';
+  }
+
+  if (difference == 1) {
+    return 'Yesterday';
+  }
+
+  return DateFormat('dd MMM yyyy').format(messageDate);
+}
+
+bool isSameDay(String? first, String? second) {
+  if (first == null ||
+      first.trim().isEmpty ||
+      second == null ||
+      second.trim().isEmpty) {
+    return false;
+  }
+
+  try {
+    final firstDate = DateTime.parse(first).toLocal();
+    final secondDate = DateTime.parse(second).toLocal();
+
+    return firstDate.year == secondDate.year &&
+        firstDate.month == secondDate.month &&
+        firstDate.day == secondDate.day;
+  } catch (_) {
+    return false;
+  }
+}

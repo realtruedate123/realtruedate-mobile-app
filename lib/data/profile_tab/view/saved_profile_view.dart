@@ -1,17 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
-import 'package:real_true_date/data/matches_tab/widget/match_card_list.dart';
 import 'package:real_true_date/data/profile_tab/controller/saved_profile_controller.dart';
 import 'package:real_true_date/data/profile_tab/widget/saved_profile_cell.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
-import 'package:real_true_date/helper/appbar_wrapper/match_appbar_wrapper.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/routes/routes.dart';
-
 
 class SavedProfileView extends StatelessWidget {
   final controller = Get.put(SavedProfileController());

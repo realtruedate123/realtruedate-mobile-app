@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/profile_tab/controller/save_profile_details_controller.dart';
 import 'package:real_true_date/data/profile_tab/widget/save_profile_app_bar.dart';
@@ -128,18 +127,7 @@ class SaveProfileDetailsView extends StatelessWidget {
                               );
                             }).toList(),
                           )
-
-                          // Wrap(
-                          //   spacing: 12.w,
-                          //   runSpacing: 12.h,
-                          //   children: [
-                          //     _interestChip(context, 'Nature', filled: true),
-                          //     _interestChip(context, 'Travel'),
-                          //     _interestChip(context, 'Writing'),
-                          //   ],
-                          // ),
                         ]
-
                       ],
                     ),
                   ),

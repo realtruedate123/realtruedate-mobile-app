@@ -22,7 +22,7 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
   ]);
 
-  // _initRevenueCat();
+  _initRevenueCat();
 
   // 2. Wrap Firebase init in try-catch so network issues don't freeze boot
   try {

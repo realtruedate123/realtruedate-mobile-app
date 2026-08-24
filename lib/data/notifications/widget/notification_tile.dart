@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:real_true_date/data/notifications/model/notification_list_model.dart';
+import 'package:real_true_date/helper/app_cached_image.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/helper/date_time.dart';
@@ -48,10 +49,18 @@ class NotificationTile extends StatelessWidget {
           // click event
           print('$isAcceptOrDecline clicked ${notification.id}');
           if(isAcceptOrDecline) return;
-          Get.toNamed(Routes.userRequestView, arguments: {
-            'data': notification,
-            'type': notification.conversationStatus
-          });
+          if(notification.notificationType == 'unread_reminder' || notification.notificationType == 'weekend_login_tip' || notification.notificationType == 'weekend_kickoff') return;
+
+          if(notification.notificationType == 'profile_view'){
+            Get.toNamed(Routes.someOneViewProfile, arguments: {
+              'id': notification.senderId ?? ''
+            });
+          } else {
+            Get.toNamed(Routes.userRequestView, arguments: {
+              'data': notification,
+              'type': notification.conversationStatus
+            });
+          }
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,10 +68,17 @@ class NotificationTile extends StatelessWidget {
             /// Profile Image
             Stack(
               children: [
-                CircleAvatar(
-                  radius: 26,
-                  backgroundImage: NetworkImage(notification.senderPhoto ?? ''),
+                // CircleAvatar(
+                //   radius: 26,
+                //   backgroundImage: NetworkImage(notification.senderPhoto ?? ''),
+                // ),
+                AppCachedImage(
+                  imageUrl: notification.senderPhoto ?? '',
+                  height: 40,
+                  width: 40,
+                  borderRadius: 40,
                 ),
+
                /* if (notification.isOnline)
                   Positioned(
                     bottom: 0,

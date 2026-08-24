@@ -14,8 +14,10 @@ import 'package:real_true_date/data/message_tab/controller/chat_profile_controll
 import 'package:real_true_date/data/message_tab/view/chat_profile_view.dart';
 import 'package:real_true_date/data/message_tab/view/chat_view.dart';
 import 'package:real_true_date/data/notifications/controller/notification_controller.dart';
+import 'package:real_true_date/data/notifications/controller/someone_view_profile_controller.dart';
 import 'package:real_true_date/data/notifications/controller/user_request_controller.dart';
 import 'package:real_true_date/data/notifications/view/notifications_view.dart';
+import 'package:real_true_date/data/notifications/view/someone_view_profile_view.dart';
 import 'package:real_true_date/data/notifications/view/user_request_view.dart';
 import 'package:real_true_date/data/otp_reset_password/controller/otp_controller.dart';
 import 'package:real_true_date/data/otp_reset_password/controller/reset_password_controller.dart';
@@ -241,77 +243,12 @@ class AppPages {
           Get.lazyPut(() => PaymentHistoryController());
         })
     ),
-    // GetPage(
-    //   name: Routes.account,
-    //   page: () => ProfilePage(),
-    // ),
-    // GetPage(
-    //   name: Routes.wallet,
-    //   page: () => WalletPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.certification,
-    //   page: () => CertificationPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.earning,
-    //   page: () => EarningPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.rating,
-    //   page: () => RatingsPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.notification,
-    //   page: () => NotificationPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.history,
-    //   page: () => BookingHistoryPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.withdraw,
-    //   page: () => WithdrawPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.termCondition,
-    //   page: () => TermConditionPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.sos,
-    //   page: () => SosPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.serviceCompleted,
-    //   page: () => ServiceCompletedPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.appointmentAccept,
-    //   page: () => AppointmentAcceptPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.selectCategory,
-    //   page: () => SelectCategoryPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.upcomingBooking,
-    //   page: () => UpComingBookingPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.appointment,
-    //   page: () => AppointmentRequestPage(),
-    // ),
-    // GetPage(
-    //   name: Routes.uploadCertificate,
-    //   page: () => UploadCertificatePage(),
-    // ),
-    // GetPage(
-    //   name: Routes.editProfile,
-    //   page: () => EditProfilePage(),
-    // ),
-    // GetPage(
-    //   name: Routes.allTransaction,
-    //   page: () => AllTransactionsPage(),
-    // ),
+    GetPage(
+        name: Routes.someOneViewProfile,
+        page: () => SomeoneViewProfileView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => SomeoneViewProfileController());
+        })
+    ),
   ];
 }

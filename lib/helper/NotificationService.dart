@@ -322,6 +322,12 @@ class NotificationService {
           });
           print('new message redirectFromNotification');
         }
+        else if(payload['type'] == 'profile_view'){
+          Get.toNamed(Routes.someOneViewProfile, arguments: {
+            'id': payload['sender_id']
+          });
+          print('new message redirectFromNotification');
+        }
       } else {
         print('not logged');
       }
