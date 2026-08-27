@@ -624,7 +624,7 @@ class UploadVideoController extends GetxController {
     isMessage.value = false;
 
     uploadFileWithProgress(
-        baseUrl: 'http://airealconnect.com/api/v1/auth/',
+        baseUrl: Endpoints.baseUrl,
         endpoint: Endpoints.uploadVerificationVideo,
         file: videoFile.value!,
         token: authToken,

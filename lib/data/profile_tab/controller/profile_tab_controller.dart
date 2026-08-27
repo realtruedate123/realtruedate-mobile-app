@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
@@ -106,6 +107,7 @@ class ProfileTabController extends GetxController {
 
   /// Removed local data saved
   void removePreference() {
+    Purchases.logOut();
     prefHelper.clearAllPreferences();
     // Get.offNamed(Routes.authPage);
     // Get.offAll(() => AuthController());

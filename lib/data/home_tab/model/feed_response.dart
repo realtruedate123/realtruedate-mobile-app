@@ -59,6 +59,8 @@ class Candidate {
   final String? state;
   final String? photoUrl;
   final bool isVerified;
+  final double? latitude;
+  final double? longitude;
 
   Candidate({
     required this.userId,
@@ -68,6 +70,8 @@ class Candidate {
     this.state,
     this.photoUrl,
     required this.isVerified,
+    this.latitude,
+    this.longitude,
   });
 
   factory Candidate.fromJson(Map<String, dynamic> json) => Candidate(
@@ -78,8 +82,17 @@ class Candidate {
     state: json['state'],
     photoUrl: json['photo_url'],
     isVerified: json['is_verified'] ?? false,
+    latitude: _parseDouble(json["latitude"]),
+    longitude: _parseDouble(json["longitude"]),
   );
-
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is num) return value.toDouble();
+    if (value is String && value.trim().isNotEmpty) {
+      return double.tryParse(value);
+    }
+    return null;
+  }
   Map<String, dynamic> toJson() => {
     'user_id': userId,
     'first_name': firstName,
@@ -88,5 +101,7 @@ class Candidate {
     'state': state,
     'photo_url': photoUrl,
     'is_verified': isVerified,
+    "latitude": latitude,
+    "longitude": longitude,
   };
 }

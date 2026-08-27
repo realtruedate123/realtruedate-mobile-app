@@ -223,6 +223,7 @@ class UserModel {
   String? createdAt;
   String? lastLogin;
   String? profileImage;
+  final UserSubscriptionModel? subscription;
 
   UserModel({
     this.id,
@@ -247,6 +248,7 @@ class UserModel {
     this.createdAt,
     this.lastLogin,
     this.profileImage,
+    this.subscription,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
@@ -272,6 +274,7 @@ class UserModel {
     createdAt: json["created_at"] as String,
     lastLogin: json["last_login"] as String,
     profileImage: json["profile_image"] as String,
+    subscription: json["subscription"] == null ? null : UserSubscriptionModel.fromJson(json["subscription"]),
   );
   static double? _parseDouble(dynamic value) {
     if (value == null) return null;
@@ -304,6 +307,7 @@ class UserModel {
     "created_at": createdAt,
     "last_login": lastLogin,
     "profile_image": profileImage,
+    "subscription": subscription?.toJson(),
   };
 }
 
@@ -356,5 +360,41 @@ class VerificationStatus {
     "needs_photo_update": needsPhotoUpdate,
     "last_photo_update": lastPhotoUpdate,
     "has_dream_date_profile": hasDreamDateProfile,
+  };
+}
+
+class UserSubscriptionModel {
+  final bool? isPremium;
+  final String? premiumExpiresAt;
+  final int? freeSwipesUsed;
+  final int? freeSwipesLimit;
+  final String? freeSwipesResetAt;
+  final bool? isExpired;
+
+  UserSubscriptionModel({
+    this.isPremium,
+    this.premiumExpiresAt,
+    this.freeSwipesUsed,
+    this.freeSwipesLimit,
+    this.freeSwipesResetAt,
+    this.isExpired,
+  });
+
+  factory UserSubscriptionModel.fromJson(Map<String, dynamic> json) => UserSubscriptionModel(
+    isPremium: json["is_premium"],
+    premiumExpiresAt: json["premium_expires_at"],
+    freeSwipesUsed: json["free_swipes_used"],
+    freeSwipesLimit: json["free_swipes_limit"],
+    freeSwipesResetAt: json["free_swipes_reset_at"],
+    isExpired: json["is_expired"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "is_premium": isPremium,
+    "premium_expires_at": premiumExpiresAt,
+    "free_swipes_used": freeSwipesUsed,
+    "free_swipes_limit": freeSwipesLimit,
+    "free_swipes_reset_at": freeSwipesResetAt,
+    "is_expired": isExpired,
   };
 }

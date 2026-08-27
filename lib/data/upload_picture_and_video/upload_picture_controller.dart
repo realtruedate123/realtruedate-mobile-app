@@ -5,6 +5,7 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
+import 'package:real_true_date/core/utils/singleton.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/upload_picture_and_video/custom_camera/camera_screen.dart';
 import 'package:real_true_date/data/upload_picture_and_video/model/photo_list_model.dart';
@@ -300,6 +301,7 @@ class UploadPhotoController extends GetxController {
         sharedPref.savePersonList(response.data!.data!),
         sharedPref.saveUserId(response.data!.data?.user?.id ?? '')
       ]);
+      AppState.instance.loginUserID = response.data!.data?.user?.id ?? '';
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {

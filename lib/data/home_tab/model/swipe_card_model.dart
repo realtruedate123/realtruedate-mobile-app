@@ -1,7 +1,7 @@
 class SwipeCardModel {
-  final bool success;
-  final String message;
-  final SwipeData data;
+  final bool? success;
+  final String? message;
+  final SwipeData? data;
 
   SwipeCardModel({
     required this.success,
@@ -12,23 +12,26 @@ class SwipeCardModel {
   factory SwipeCardModel.fromJson(Map<String, dynamic> json) => SwipeCardModel(
     success: json["success"],
     message: json["message"],
-    data: SwipeData.fromJson(json["data"]),
+    // data: SwipeData.fromJson(json["data"]),
+    data: json["data"] == null ? null : SwipeData.fromJson(json["data"]),
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "data": data.toJson(),
+    "data": data?.toJson(),
   };
 }
 
 class SwipeData {
-  final bool matched;
-  final String matchId;
+  final bool? matched;
+  final String? matchId;
+  final bool? subscriptionRequired;
 
   SwipeData({
-    required this.matched,
-    required this.matchId,
+    this.matched,
+    this.matchId,
+    this.subscriptionRequired,
   });
 
   factory SwipeData.fromJson(Map<String, dynamic> json) => SwipeData(
@@ -36,10 +39,12 @@ class SwipeData {
     matchId: json["match_id"] != null
         ? json["match_id"] as String
         : '',
+    subscriptionRequired: json["subscription_required"],
   );
 
   Map<String, dynamic> toJson() => {
     "matched": matched,
     "match_id": matchId,
+    "subscription_required": subscriptionRequired,
   };
 }

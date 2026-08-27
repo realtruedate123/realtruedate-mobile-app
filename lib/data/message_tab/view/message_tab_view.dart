@@ -79,10 +79,11 @@ class MessageTabView extends StatelessWidget {
           children: [
             _searchBar(
               context,
+              controller,
               onSearch: (query) {
                 print('Search: $query');
                 // Filter your list here
-                // controller.searchChats(query);
+                controller.searchChats(query);
               },
             ),
             Expanded(
@@ -160,10 +161,7 @@ class MessageTabView extends StatelessWidget {
   );
 }*/
 
-Widget _searchBar(
-    BuildContext context, {
-      required ValueChanged<String> onSearch,
-    }) {
+Widget _searchBar(BuildContext context, MessageTabController controller, {required ValueChanged<String> onSearch,}) {
   final theme = AppTheme.of(context);
 
   return Padding(
@@ -180,20 +178,37 @@ Widget _searchBar(
           AppIcons.getSearchIcon(context),
           SizedBox(width: 10.w),
           Expanded(
-            child: TextField(
-              onChanged: onSearch,
-              textInputAction: TextInputAction.search,
-              decoration: InputDecoration(
-                hintText: 'Search',
-                hintStyle: TextStyle(
-                  fontFamily: 'NunitoSans',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: theme.inactiveTabColor,
-                ),
-                border: InputBorder.none,
-                isDense: true,
-              ),
+            child: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: controller.searchTextController,
+              builder: (context, value, child) {
+                return TextField(
+                  controller: controller.searchTextController,
+                  onChanged: onSearch,
+                  textInputAction: TextInputAction.search,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    hintStyle: TextStyle(
+                      fontFamily: 'NunitoSans',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: theme.inactiveTabColor,
+                    ),
+                    suffixIcon: value.text.isNotEmpty
+                        ? IconButton(
+                      onPressed: () {
+                        controller.searchTextController.clear();
+                        onSearch('');
+                      },
+                      icon: Icon(Icons.highlight_off_rounded, color: theme.primaryColor,),
+                    )
+                        : null,
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                );
+              },
             ),
           ),
         ],

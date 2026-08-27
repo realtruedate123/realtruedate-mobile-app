@@ -114,3 +114,52 @@ class VerificationStatus {
     "has_dream_date_profile": hasDreamDateProfile,
   };
 }
+
+/// Refresh token model
+class RefreshTokenModel {
+  final bool? success;
+  final String? message;
+  final RefreshTokenData? data;
+  final bool? tokenExpired;
+
+  RefreshTokenModel({
+    this.success,
+    this.message,
+    this.data,
+    this.tokenExpired,
+  });
+
+  factory RefreshTokenModel.fromJson(Map<String, dynamic> json) => RefreshTokenModel(
+    success: json["success"],
+    message: json["message"],
+    data: json["data"] == null ? null : RefreshTokenData.fromJson(json["data"]),
+    tokenExpired: json["token_expired"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "message": message,
+    "data": data?.toJson(),
+    "token_expired": tokenExpired,
+  };
+}
+
+class RefreshTokenData {
+  final String? access;
+  final String? refresh;
+
+  RefreshTokenData({
+    this.access,
+    this.refresh,
+  });
+
+  factory RefreshTokenData.fromJson(Map<String, dynamic> json) => RefreshTokenData(
+    access: json["access"],
+    refresh: json["refresh"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "access": access,
+    "refresh": refresh,
+  };
+}

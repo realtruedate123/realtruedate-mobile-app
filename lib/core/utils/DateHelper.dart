@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class DateHelper {
   // ------------------------------------------------------------
@@ -161,4 +162,21 @@ bool isSameDay(String? first, String? second) {
   } catch (_) {
     return false;
   }
+}
+
+/// Payment history date time
+String getTimeAgo(String timestamp) {
+  final dateTime = DateTime.parse(timestamp).toLocal();
+
+  return timeago.format(dateTime);
+}
+
+String getFormattedDateTime(String timestamp) {
+  final dateTime = DateTime.parse(timestamp).toLocal();
+
+  return '${dateTime.year.toString().padLeft(2, '0')}/'
+      '${dateTime.month.toString().padLeft(2, '0')}/'
+      '${dateTime.day} '
+      '${dateTime.hour.toString().padLeft(2, '0')}:'
+      '${dateTime.minute.toString().padLeft(2, '0')}';
 }

@@ -90,7 +90,7 @@ class OtpController extends GetxController {
       "otp_type": Get.arguments['page_type'] == 'forgot_screen' ? 'password_reset': 'email_verification',
       "otp": otpCode.value.toString()
     };
-    print('params $params');
+    // print('params $params');
     isLoading.value = true;
     final response = await BaseApiService().postRawData<VerifyOtpModel>(
       endpoint: Endpoints.verifyOtp,
@@ -99,7 +99,7 @@ class OtpController extends GetxController {
     );
     isLoading.value = false;
     if (response.isSuccess && response.statusCode == 200) {
-      print('otp valid sucess ${response.data?.message}');
+      // print('otp valid sucess ${response.data?.message}');
 
       if(Get.arguments['page_type'] == 'forgot_screen'){
         Get.toNamed(
@@ -115,7 +115,7 @@ class OtpController extends GetxController {
           sharedPref.saveRefreshAuthToken(response.data?.data?.tokens?.refresh ?? ''),
           sharedPref.saveAuthToken(response.data?.data?.tokens?.access ?? '')
         ]);
-        print('OTP page $gender');
+        // print('OTP page $gender');
         Navigator.push(
           Get.context!,
           MaterialPageRoute(builder: (context) => VideoSlide(genderType: gender,)),

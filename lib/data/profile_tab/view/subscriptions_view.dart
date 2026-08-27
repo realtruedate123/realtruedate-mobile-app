@@ -28,130 +28,171 @@ class SubscriptionsView extends GetView<SubscriptionsController> {
       ),
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
-      body: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(AppIcons.headerImagePng),
-              fit: BoxFit.cover,
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(AppIcons.headerImagePng),
+            fit: BoxFit.cover,
           ),
-          child: SafeArea(
-            bottom: false,
-            child: Column(
-              children: [
-                SizedBox(height: 50.h),
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: theme.containerBG,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(28.r),
-                      ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(28.r),
-                      ),
-                      child: Obx(() {
-                        if (controller.isLoading.value) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        if (controller.packages.isEmpty) {
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text("No plans available right now."),
-                                SizedBox(height: 12.h),
-                                TextButton(
-                                  onPressed: controller.fetchOfferings,
-                                  child: const Text("Retry"),
-                                )
-                              ],
-                            ),
-                          );
-                        }
-                        return Column(
-                          children: [
-                            Expanded(
-                              child: ListView.builder(
-                                padding: EdgeInsets.only(
-                                  top: 50.r,
-                                  bottom: 24.r,
-                                  left: 20.r,
-                                  right: 20.r,
-                                ),
-                                itemCount: controller.packages.length,
-                                itemBuilder: (context, index) {
-                                  final package = controller.packages[index];
-                                  final product = package.storeProduct;
-                                  final isSelected =
-                                      controller.selectedIndex.value == index;
-
-                                  return Padding(
-                                    padding: EdgeInsets.only(bottom: 16.r),
-                                    child: SubscriptionCard(
-                                      title: product.title,
-                                      price: '${product.pricePerMonthString}/Per month',
-                                      featureText: product.description,
-                                      isSelected: isSelected,
-                                      onTap: () {
-                                        controller.selectedIndex.value = index;
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-
-                            // Bottom Action Area
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20.w,
-                                vertical: 16.h,
-                              ),
-                              child: Column(
-                                children: [
-                                  Obx(() => PrimaryButton(
-                                    title: controller.isPurchasing.value
-                                        ? 'Processing...'
-                                        : 'Subscribe',
-                                    onTap: controller.isPurchasing.value
-                                        ? null
-                                        : () => controller.makePurchase(),
-                                  )),
-                                  SizedBox(height: 8.h),
-                                  TextButton(
-                                    onPressed: controller.restorePurchases,
-                                    child: Text(
-                                      "Restore Purchases",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14.sp,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                      })
+        ),
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              SizedBox(height: 50.h),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: theme.containerBG,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(28.r),
                     ),
                   ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(28.r),
+                    ),
+                    child: Obx(() {
+                      if (controller.isLoading.value) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (controller.packages.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("No plans available right now."),
+                              SizedBox(height: 12.h),
+                              TextButton(
+                                onPressed: controller.fetchOfferings,
+                                child: const Text("Retry"),
+                              )
+                            ],
+                          ),
+                        );
+                      }
+
+                      final selectedIndex = controller.selectedIndex.value;
+                      final isPurchasing = controller.isPurchasing.value;
+                      final isPurchased = controller.isAlreadyPurchased.value;
+
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              padding: EdgeInsets.only(
+                                top: 50.r,
+                                bottom: 24.r,
+                                left: 20.r,
+                                right: 20.r,
+                              ),
+                              itemCount: controller.packages.length,
+                              itemBuilder: (context, index) {
+                                print('${controller.selectedIndex.value} index $index');
+                                final package = controller.packages[index];
+                                final product = package.storeProduct;
+                                final isSelected = selectedIndex == index;
+                                // Check whether THIS package is the active subscription
+                                final isActivated = isPurchased &&
+                                    controller.activePackageIdentifier.value == product.identifier;
+
+                                return Padding(
+                                  padding: EdgeInsets.only(bottom: 16.r),
+                                  child: SubscriptionCard(
+                                    title: product.title,
+                                    price: '${product.pricePerMonthString}/month',
+                                    featureText: product.description,
+                                    isSelected: isSelected,
+                                    isActivated: isActivated,
+                                    onTap: () {
+                                      print('index $index');
+                                      controller.selectedPackages(index);
+                                    },
+                                  ),
+                                );
+                              },
+                            )
+                          ),
+
+                          // Bottom Action Area
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 16.h,
+                            ),
+                            child: Column(
+                              children: [
+                                PrimaryButton(
+                                  title: isPurchased
+                                      ? 'Already Subscribed'
+                                      : isPurchasing
+                                      ? 'Processing...'
+                                      : 'Subscribe',
+                                  onTap: (
+                                      selectedIndex == -1 ||
+                                          isPurchasing ||
+                                          isPurchased
+                                  )
+                                      ? null
+                                      : controller.makePurchase,
+                                ),
+
+                                SizedBox(height: 8.h),
+
+                                TextButton(
+                                  onPressed: controller.restorePurchases,
+                                  child: Text(
+                                    "Restore Purchases",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          /*Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20.w,
+                              vertical: 16.h,
+                            ),
+                            child: Column(
+                              children: [
+                                Obx(() => PrimaryButton(
+                                  title: controller.isPurchasing.value
+                                      ? 'Processing...'
+                                      : 'Subscribe',
+                                  onTap: controller.isPurchasing.value
+                                      ? null
+                                      : () => controller.makePurchase(),
+                                )),
+                                SizedBox(height: 8.h),
+                                TextButton(
+                                  onPressed: controller.restorePurchases,
+                                  child: Text(
+                                    "Restore Purchases",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),*/
+                        ],
+                      );
+                    })
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

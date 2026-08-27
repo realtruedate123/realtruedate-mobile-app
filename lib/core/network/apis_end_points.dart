@@ -1,5 +1,5 @@
 class Endpoints {
-  static const String baseUrl = 'http://airealconnect.com/api/v1/auth/';
+  static const String baseUrl = 'https://airealconnect.com/api/v1/auth/';
   // static const String baseUrl = 'http://192.168.1.6:8000/api/v1/auth/';
 
   static const String userRegister = 'register';
@@ -35,4 +35,7 @@ class Endpoints {
   static const String faqsList = 'faqs';
   static const String logout = 'logout';
   static const String feedback = 'feedback';
+  static const String subscriptionSave = 'subscription/save';
+  static const String subscriptionStatus = 'subscription/status';
+  static const String subscriptionHistory = 'subscription/history';
 }

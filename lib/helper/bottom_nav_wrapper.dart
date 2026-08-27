@@ -238,6 +238,7 @@ class _BottomNavWrapperState extends State<BottomNavWrapper> {
         if(index == 0){
           if (Get.isRegistered<HomeTabController>()) {
             final controller = Get.find<HomeTabController>();
+            controller.getApiData();
             controller.getFeedListApiCall(); // load initial state
           }
         }

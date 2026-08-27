@@ -4,6 +4,7 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
+import 'package:real_true_date/core/services/subscription_service.dart';
 import 'package:real_true_date/core/utils/singleton.dart';
 import 'package:real_true_date/data/home_tab/model/create_chat_model.dart';
 import 'package:real_true_date/data/home_tab/model/feed_response.dart';
@@ -129,7 +130,7 @@ class UserProfileController extends GetxController {
 
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
       print('swipe card ${response.data?.message}');
-      if(response.data?.data.matched == true){
+      if(response.data?.data?.matched == true){
         showDialog(
           context: Get.context!,
           barrierDismissible: false,
@@ -157,6 +158,18 @@ class UserProfileController extends GetxController {
         final result = await BaseApiService().refreshToken();
         if (result.isSuccess) {
           swipeCardApiCall(direction);
+        }
+      } else if(response.data?.success == false){
+        if(response.data?.data?.subscriptionRequired == true){
+          SubscriptionService().checkSubscription(
+            isExpired: AppState.instance.isExpired,
+            isPremium: AppState.instance.isPremium,
+            freeSwipesUsed: AppState.instance.freeSwipesUsed,
+            freeSwipesLimit: AppState.instance.freeSwipesLimit,
+          );
+        }
+        else{
+          Get.snackbar('Failed', response.message ?? 'Something went wrong');
         }
       } else {
         Get.snackbar('Failed', response.message ?? 'failed');

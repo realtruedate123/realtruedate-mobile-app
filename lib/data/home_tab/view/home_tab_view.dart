@@ -1,7 +1,6 @@
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:real_true_date/core/utils/GlobalSkeletonWrapper.dart';
 import 'package:real_true_date/data/home_tab/controller/home_tab_controller.dart';
 import 'package:real_true_date/data/home_tab/swipe_card/profile_swipe_card.dart';
 import 'package:get/get.dart';
@@ -62,13 +61,13 @@ class HomeTabView extends StatelessWidget {
 
                 cardBuilder: (context, index) {
                   final item = controller.feedListModel[index];
-
                   return ProfileSwipeCard(
                     name: item.firstName,
                     age: item.age,
-                    city: [item.city, item.state]
-                        .where((e) => e != null && e.isNotEmpty)
-                        .join(' '),
+                    city: '',
+                    // city: [item.city, item.state]
+                    //     .where((e) => e != null && e.isNotEmpty)
+                    //     .join(' '),
                     imageUrl: item.photoUrl ?? '',
                     isVerified: item.isVerified,
 

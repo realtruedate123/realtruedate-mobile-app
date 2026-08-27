@@ -97,7 +97,7 @@ class UserProfileDetailsScreen extends StatelessWidget {
                         ),
                         SizedBox(height: 8.h),
                         AppTextFont(
-                          '',
+                          controller.profileData.value.bio ?? '',
                           font: AppFontType.lato,
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
@@ -171,7 +171,8 @@ class UserProfileDetailsScreen extends StatelessWidget {
                           onTap: () {
                             // TODO: liked action
                             print('Liked tapped');
-                            showDialog(
+                            controller.swipeCardApiCall('right');
+                            /*showDialog(
                               context: context,
                               barrierDismissible: false,
                               builder: (_) => MatchPopup(
@@ -187,7 +188,7 @@ class UserProfileDetailsScreen extends StatelessWidget {
                                   print('message');
                                 },
                               ),
-                            );
+                            );*/
                           },
                           child: AppIcons.getLikeCardIcon(context, size: 60)
                       ),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
@@ -17,16 +18,12 @@ class MessageTabController extends GetxController {
   var userChatList = <ConversationModel>[].obs;
   var searchChatList = <ConversationModel>[].obs;
 
+  final TextEditingController searchTextController = TextEditingController();
 
   @override
   void onInit() {
     super.onInit();
     getUserChatListApiCall();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 
   //TODO: Get User chat List API Call
@@ -46,8 +43,8 @@ class MessageTabController extends GetxController {
 
     if (response.isSuccess && response.statusCode == 200) {
       userChatList.value = response.data?.data?.conversations ?? [];
-      searchChatList.value = response.data?.data?.conversations ?? [];
-      print('userChatList ${userChatList.length}');
+      // searchChatList.value = response.data?.data?.conversations ?? [];
+      searchChatList.assignAll(response.data?.data?.conversations ?? []);
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {

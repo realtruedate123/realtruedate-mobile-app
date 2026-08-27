@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
@@ -10,10 +8,7 @@ import 'package:real_true_date/core/utils/platform_util.dart';
 import 'package:real_true_date/core/utils/singleton.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/login_signup/model/register_model.dart';
-import 'package:real_true_date/data/select_dream_partner/view/select_dream_partner_view.dart';
-import 'package:real_true_date/data/video_slide/video_slide.dart';
 import 'package:real_true_date/helper/bottom_nav_wrapper.dart';
-import 'package:real_true_date/helper/custom_dialog/authenticating_dialog.dart';
 import 'package:real_true_date/helper/string_class.dart';
 import 'package:real_true_date/routes/routes.dart';
 import 'package:intl/intl.dart';
@@ -312,9 +307,9 @@ class AuthController extends GetxController {
         else if(response.data?.data?.verificationStatus?.photoVerified == false){
           Get.toNamed(Routes.uploadPhotoPage);
         }
-        else {
+        // else {
           // Get.toNamed(Routes.profileUnderReviewScreen);
-        }
+        // }
       } else { /// New user register
         print('signup page ${selectedGender.value.toString()[0]}');
         Get.toNamed(
@@ -342,9 +337,6 @@ class AuthController extends GetxController {
 
     final userLat = AppState.instance.userLat ?? 0.0;
     final userLong = AppState.instance.userLong ?? 0.0;
-
-    // "email":"mkrealway2@yopmail.com",
-    // "password":"Mahesh@123",
 
     final params = {
       "email": emailCtrl.text,
@@ -406,7 +398,7 @@ class AuthController extends GetxController {
             sharedPref.savePersonList(responseData), // No more "!"
             sharedPref.saveUserId(responseData.user?.id ?? '')
           ]);
-
+          AppState.instance.loginUserID = responseData.user?.id ?? '';
           Get.offAll(() => BottomNavWrapper());
         } else {
           errorMessage.value = 'Failed to load user profile data';

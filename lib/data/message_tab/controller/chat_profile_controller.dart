@@ -103,7 +103,7 @@ class ChatProfileController extends GetxController {
     update();
   }
 
-  Future<void> swipeCardApiCall(String direction) async {
+  /*Future<void> swipeCardApiCall(String direction) async {
     final authToken = await sharedPref.getAuthToken;
 
     final params = {
@@ -129,7 +129,7 @@ class ChatProfileController extends GetxController {
 
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
       print('swipe card ${response.data?.message}');
-      if(response.data?.data.matched == true){
+      if(response.data?.data?.matched == true){
 
       }
 
@@ -146,7 +146,7 @@ class ChatProfileController extends GetxController {
       // errorMessage.value = response.message ?? 'Login failed';
       // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
-  }
+  }*/
 
   Future<void> favoritesMatchProfileApiCall() async {
     final token = await sharedPref.getAuthToken;

@@ -290,10 +290,11 @@ class BaseApiService {
             message: jsonData['message'] ?? "Success",
           );
         } else {
+          debugPrint("$statusCode Raw API data: ${jsonData['data']}");
           return ApiResponse<T>(
             statusCode: statusCode,
             message: jsonData['message'] ?? "Something went wrong",
-            data: null,
+            data: fromJson(jsonData),
               tokenExpired: jsonData['token_expired'] ?? false
           );
         }
@@ -653,64 +654,48 @@ class BaseApiService {
   }
 
   // Refresh token api
-  Future<ApiResponse> refreshToken({
+  Future<ApiResponse<RefreshTokenModel>> refreshToken<T>({
     bool showLoader = true,
   }) async {
-    /// Check Internet
-    if (!await checkInternet()) {
-      return ApiResponse(
-        statusCode: 0,
-        message: "Please check your internet connection and try again.",
-        data: null,
-      );
-    }
-
     final refreshToken = await SharedPrefHelper().getRefreshAuthToken;
+    final authToken = await SharedPrefHelper().getAuthToken;
+    print('authToken $authToken');
 
-    try {
-      final params = {"refresh": refreshToken};
-      print('refresh token params $params');
-      if (showLoader) {
-        EasyLoading.show(
-          status: 'Loading...',
-          maskType: EasyLoadingMaskType.black,
-        );
-      }
+    final params = {"refresh": refreshToken};
+    print('refresh token params $params');
 
-      final response = await BaseApiService().formData<Tokens>(
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    // final response = await BaseApiService().formData<Tokens>(
+    //   endpoint: Endpoints.refreshToken,
+    //   fields: params,
+    //   fromJson: (json) => Tokens.fromJson(json),
+    // );
+
+    final response = await BaseApiService().postRawData<RefreshTokenModel>(
         endpoint: Endpoints.refreshToken,
         fields: params,
-        fromJson: (json) => Tokens.fromJson(json),
-      );
+        headers: header,
+        fromJson: (json) => RefreshTokenModel.fromJson(json),
+        showLoader: false
+    );
 
-      if (showLoader) EasyLoading.dismiss();
+    if (showLoader) EasyLoading.dismiss();
 
-      if (response.isSuccess) {
-        await Future.wait([
-          // sharedPref.saveIsLoggedIn(true),
-          SharedPrefHelper().saveRefreshAuthToken(response.data?.refresh ?? ''),
-          SharedPrefHelper().saveAuthToken(response.data?.access ?? '')
-        ]);
+    if (response.data?.success == true) {
+      await Future.wait([
+        // sharedPref.saveIsLoggedIn(true),
+        SharedPrefHelper().saveRefreshAuthToken(response.data?.data?.refresh ?? ''),
+        SharedPrefHelper().saveAuthToken(response.data?.data?.access ?? '')
+      ]);
 
-        return ApiResponse(
-          statusCode: response.statusCode,
-          data: response,
-          message:response.message ?? "token",
-        );
-      } else {
-        return ApiResponse(
-          statusCode: response.statusCode,
-          data: null,
-          message:response.message ?? "Failed",
-        );
-      }
-    } catch (e) {
-      if (showLoader) EasyLoading.dismiss();
-      return ApiResponse(
-        statusCode: 500,
-        data: null,
-        message: e.toString(),
-      );
+      return response;
+    } else {
+      print('else condition');
+      return response;
     }
   }
 

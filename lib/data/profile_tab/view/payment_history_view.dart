@@ -73,7 +73,7 @@ class PaymentHistoryView extends GetView<PaymentHistoryController> {
                                 const Text("No payment history available right now."),
                                 SizedBox(height: 12.h),
                                 TextButton(
-                                  onPressed: controller.getPaymentHistory,
+                                  onPressed: controller.getPaymentHistoryApiCall,
                                   child: const Text("Retry"),
                                 )
                               ],

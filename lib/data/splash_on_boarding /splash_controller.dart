@@ -82,6 +82,7 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
     try {
       final user = await sharedPref.getPersonList();
       if (user?.user?.id?.isNotEmpty ?? false) {
+        AppState.instance.loginUserID = user?.user?.id;
         Get.offAll(() => BottomNavWrapper());
       } else {
         Get.offAllNamed(Routes.onBoarding);

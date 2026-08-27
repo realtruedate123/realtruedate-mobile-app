@@ -7,13 +7,18 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
+import 'package:real_true_date/core/services/subscription_service.dart';
+import 'package:real_true_date/core/utils/singleton.dart';
 import 'package:real_true_date/data/home_tab/model/create_chat_model.dart';
 import 'package:real_true_date/data/home_tab/model/feed_response.dart';
 import 'package:real_true_date/data/home_tab/model/profile_match_details_model.dart';
 import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
 import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
+import 'package:real_true_date/data/profile_tab/model/subscription_plan_model.dart';
 import 'package:real_true_date/data/root_tab_controller.dart';
+import 'package:real_true_date/helper/address_service_wrapper.dart';
+import 'package:real_true_date/helper/custom_dialog/upgrade_plan_dialog_view.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class HomeTabController extends GetxController {
@@ -24,6 +29,7 @@ class HomeTabController extends GetxController {
   late var userProfileUrl = '';
 
   final sharedPref = SharedPrefHelper();
+  final locationService = AddressServiceWrapper();
 
   /// CONTROLLERS
 
@@ -34,20 +40,16 @@ class HomeTabController extends GetxController {
 
   final feedListModel = <Candidate>[].obs;
   var userID = '';
+  late var userProfile = DataModel();
 
   @override
   void onInit() {
     super.onInit();
     Get.find<RootTabController>().switchTo(0); // always reset to home
     isLoading.value = true;
-    getUserData();
+    getApiData();
     getFeedListApiCall();
     swiperController = AppinioSwiperController();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 
   @override
@@ -56,14 +58,20 @@ class HomeTabController extends GetxController {
     super.dispose();
   }
 
+  void getApiData(){
+    getUserData();
+    getSubscriptionStatusApiCall();
+  }
+
   /// Get saved local user data
   void getUserData() async {
     try {
       // Fetch from API or storage
       userID = await sharedPref.getUserId;
+      AppState.instance.loginUserID = userID;
 
       final data = await sharedPref.getPersonList();
-      final userProfile = data ?? DataModel();
+      userProfile = data ?? DataModel();
 
       userProfileUrl = userProfile.user?.profileImage ?? '';
       if(userProfile.user?.profileImage?.isEmpty ?? false){
@@ -82,6 +90,7 @@ class HomeTabController extends GetxController {
   Future<void> getFeedListApiCall() async {
     isLoading.value = true;
     final authToken = await sharedPref.getAuthToken;
+
     errorMessage.value = '';
     final header = {
       'Content-Type': 'application/json',
@@ -97,15 +106,14 @@ class HomeTabController extends GetxController {
 
     isLoading.value = false;
 
-    if (response.isSuccess &&
-        response.statusCode == 200 &&
-        response.data?.success == true) {
-      feedListModel.value =
-          response.data?.data.candidates.reversed.toList() ?? [];
+    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
+      feedListModel.value = response.data?.data.candidates.reversed.toList() ?? [];
+      print('feedListModel ${feedListModel.length}');
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
       if (response.tokenExpired == true) {
+        print('response.tokenExpired ${response.tokenExpired}');
         final result = await BaseApiService().refreshToken();
         if (result.isSuccess) {
           getFeedListApiCall();
@@ -115,6 +123,19 @@ class HomeTabController extends GetxController {
       }
     }
     update();
+  }
+
+  Future<String> getAddress(double latitude, double longitude) {
+    return getLocation(latitude, longitude);
+  }
+
+  Future<String> getLocation(double latitude, double longitude) async {
+    final address = await locationService.getAddressFromLatLng(
+      latitude,
+      longitude,
+    );
+
+    return '${address?.cityName}, ${address?.stateName}';
   }
 
   //TODO: Swipe card API Call
@@ -141,12 +162,10 @@ class HomeTabController extends GetxController {
       fromJson: (json) => SwipeCardModel.fromJson(json),
       showLoader: false
     );
-    print('swipe card matched ${response.data?.data.matched}');
-    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      print('swipe card ${response.data?.message}');
-      print('swipe card matched ${response.data?.data.matched}');
+    print('swipe card matched ${response.data?.data?.matched}');
 
-      if(response.data?.data.matched == true){
+    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
+      if(response.data?.data?.matched == true){
         showDialog(
           context: Get.context!,
           barrierDismissible: false,
@@ -161,7 +180,7 @@ class HomeTabController extends GetxController {
               userProfileUrl: userProfileUrl,
             onMessage: () {
               print('message');
-              createMessageApiCall(response.data?.data.matchId ?? item.userId);
+              createMessageApiCall(response.data?.data?.matchId ?? item.userId);
             },
           ),
         );
@@ -170,15 +189,35 @@ class HomeTabController extends GetxController {
       InternetDialog.showNoInternetDialog();
     } else {
       if (response.tokenExpired == true) {
+        print('response.tokenExpired ${response.tokenExpired}');
         final result = await BaseApiService().refreshToken();
-        if (result.isSuccess) {
+        if (result.data?.success == true) {
           swipeCardApiCall(direction, item);
+        } else if (result.data?.success == false && result.data?.tokenExpired == true){
+          SharedPrefHelper().clearAllPreferences();
+          Get.deleteAll();
+          Get.offAllNamed(Routes.authPage);
         }
+      } else if(response.data?.success == false){
+          if(response.data?.data?.subscriptionRequired == true){
+            final bool isBlocked = SubscriptionService().checkSubscription(
+              isExpired: AppState.instance.isExpired,
+              isPremium: AppState.instance.isPremium,
+              freeSwipesUsed: AppState.instance.freeSwipesUsed,
+              freeSwipesLimit: AppState.instance.freeSwipesLimit,
+            );
+
+            if (isBlocked) {
+              await Future.delayed(const Duration(seconds: 3));
+              getFeedListApiCall();
+            }
+          }
+          else{
+            Get.snackbar('Failed', response.message ?? 'Something went wrong');
+          }
       } else {
         Get.snackbar('Failed', response.message ?? 'Something went wrong');
       }
-      // errorMessage.value = response.message ?? 'Login failed';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
 
@@ -214,7 +253,7 @@ class HomeTabController extends GetxController {
       if (response.tokenExpired == true) {
         final result = await BaseApiService().refreshToken();
         if (result.isSuccess) {
-          createMessageApiCall(matchUserID);
+          favoritesMatchProfileApiCall(matchUserID);
         }
       } else {
         Get.snackbar('Failed', response.message ?? 'Profile not saved',
@@ -267,8 +306,94 @@ class HomeTabController extends GetxController {
       } else {
         Get.snackbar('Failed', response.message ?? 'Something went wrong');
       }
-      // errorMessage.value = response.message ?? 'Login failed';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
+
+  /// Get subscription status API call
+  Future<void> getSubscriptionStatusApiCall() async {
+    final token = await sharedPref.getAuthToken;
+
+    final response = await BaseApiService().getMethod<SubscriptionStatusModel>(
+      endpoint: Endpoints.subscriptionStatus,
+      headers: {
+        'Authorization': 'Bearer $token'
+      },
+      showLoader: false,
+      fromJson: (json) => SubscriptionStatusModel.fromJson(json),
+    );
+
+    if (response.isSuccess && response.statusCode == 200) {
+        AppState.instance.isPremium = response.data?.data?.isPremium;
+        AppState.instance.isExpired = response.data?.data?.isExpired;
+        AppState.instance.freeSwipesUsed = response.data?.data?.freeSwipesUsed;
+        AppState.instance.freeSwipesLimit = response.data?.data?.freeSwipesLimit;
+        print('${AppState.instance.isPremium} isPremium ${response.data?.data?.isPremium}');
+
+        final bool isBlocked = SubscriptionService().checkSubscription(
+          isExpired: response.data?.data?.isExpired,
+          isPremium: response.data?.data?.isPremium,
+          freeSwipesUsed: response.data?.data?.freeSwipesUsed,
+          freeSwipesLimit: response.data?.data?.freeSwipesLimit,
+        );
+        print('isBlocked $isBlocked');
+
+      /*if(response.data?.data?.isExpired == true){
+          subscriptionAlert(
+              StringMessage.subscriptionExpiredTitle,
+            StringMessage.subscriptionExpiredMessage,
+          );
+        } else if(response.data?.data?.isPremium == false &&
+            (response.data?.data?.freeSwipesUsed ?? 0) >= (response.data?.data?.freeSwipesLimit ?? 0)){
+          subscriptionAlert(
+              StringMessage.freeSwapeTitle,
+            StringMessage.freeSwapeMessage,
+          );
+        } else{
+          print('no message');
+        }*/
+
+        /*if(response.data?.data?.isPremium == false &&
+            (response.data?.data?.freeSwipesUsed ?? 0) >= (response.data?.data?.freeSwipesLimit ?? 0)){
+
+          subscriptionAlert(
+              'You’ve Used All 3 Free Swaps',
+              'You’ve reached your free swap limit. Upgrade to a monthly plan to enjoy unlimited swaps and full access.'
+          );
+        } else if (response.data?.data?.isExpired == true){
+          subscriptionAlert(
+              'Your Subscription Has Expired',
+              'Your subscription has expired. Renew your monthly plan to continue enjoying unlimited swaps and full access.'
+          );
+        }*/
+
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          getSubscriptionStatusApiCall();
+        }
+      } else {
+        Get.snackbar('Failed', response.message ?? 'Something went wrong');
+      }
+    }
+  }
+
+  /*void subscriptionAlert(String title, String message){
+    showDialog(
+      context: Get.context!,
+      barrierDismissible: false,
+      builder: (_) => UpgradePlanDialogView(
+        title: title,
+        message: message,
+        confirmText: 'Upgrade Plan',
+        onConfirm: () {
+          print('Upgrade Plan');
+          Get.back();
+          Get.toNamed(Routes.subscriptionView);
+        },
+      ),
+    );
+  }*/
 }
