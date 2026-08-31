@@ -13,6 +13,7 @@ import 'package:real_true_date/helper/string_class.dart';
 import 'package:real_true_date/routes/routes.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 enum AuthTab { signup, login }
 enum SignupStep { step1, step2 }
@@ -65,9 +66,6 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
-    // emailCtrl.text = 'm7@yopmail.com';
-    // passwordCtrl.text = 'J@123456';
 
     emailCtrl.addListener(_checkLoginEnable);
     passwordCtrl.addListener(_checkLoginEnable);
@@ -127,6 +125,15 @@ class AuthController extends GetxController {
     if (passwordError.value != null) {
       passwordError.value = null;
     }
+  }
+
+  Future<void> openTermPolicy(String type) async {
+    final stringUrl = type == 'terms' ? 'https://realtruedate.com/pages/terms-and-conditions' : 'https://realtruedate.com/policies/privacy-policy';
+    final Uri url = Uri.parse(stringUrl);
+    await launchUrl(
+    url,
+    mode: LaunchMode.externalApplication,
+    );
   }
 
   /// ======================== END ==========================
@@ -384,10 +391,10 @@ class AuthController extends GetxController {
         Get.toNamed(Routes.uploadPhotoPage);
       }
       else { /// Login User
-
-        print("Response data: ${response.data}");
-        print("Response inner data: ${response.data?.data}");
-        print("User: ${response.data?.data?.user}");
+        //
+        // print("Response data: ${response.data}");
+        // print("Response inner data: ${response.data?.data}");
+        // print("User: ${response.data?.data?.user}");
 
         // SAFELY unwrap the data to prevent the Null Check Operator crash
         final responseData = response.data?.data;

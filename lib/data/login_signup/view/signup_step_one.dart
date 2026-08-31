@@ -10,8 +10,6 @@ import 'package:real_true_date/data/login_signup/widgets/input_container.dart';
 import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:real_true_date/helper/app_text_font.dart';
-import 'package:real_true_date/helper/gender_toggle.dart';
 import 'package:real_true_date/helper/icon_checkbox.dart';
 
 class SignupStepOne extends GetView<AuthController> {
@@ -216,11 +214,21 @@ class SignupStepOne extends GetView<AuthController> {
                       TextSpan(
                         text: 'Terms of Service',
                         style: TextStyle(decoration: TextDecoration.underline),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            // Navigate to Terms of Service
+                            controller.openTermPolicy('terms');
+                          },
                       ),
                       TextSpan(text: ' and ', style: TextStyle(color: theme.dark)),
                       TextSpan(
                         text: 'Privacy Policy',
                         style: TextStyle(decoration: TextDecoration.underline),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            // Navigate to Terms of Service
+                            controller.openTermPolicy('policy');
+                          },
                       ),
                     ],
                   ),

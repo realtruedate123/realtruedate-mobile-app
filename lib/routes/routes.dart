@@ -29,4 +29,5 @@ class Routes {
   static const subscriptionView = "/subscriptionView";
   static const paymentHistoryView = "/paymentHistoryView";
   static const someOneViewProfile = "/someOneViewProfile";
+  static const aboutScreen = "/aboutScreen";
 }

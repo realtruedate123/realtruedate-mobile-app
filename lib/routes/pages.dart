@@ -24,6 +24,7 @@ import 'package:real_true_date/data/otp_reset_password/controller/reset_password
 import 'package:real_true_date/data/otp_reset_password/view/otp_view.dart';
 import 'package:real_true_date/data/otp_reset_password/view/password_reset_success.dart';
 import 'package:real_true_date/data/otp_reset_password/view/reset_password.dart';
+import 'package:real_true_date/data/profile_tab/controller/about_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/change_password_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/edit_profile_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/feedback_controller.dart';
@@ -33,6 +34,7 @@ import 'package:real_true_date/data/profile_tab/controller/save_profile_details_
 import 'package:real_true_date/data/profile_tab/controller/saved_profile_controller.dart';
 import 'package:real_true_date/data/profile_tab/controller/subscriptions_controller.dart';
 import 'package:real_true_date/data/profile_tab/view/Change_password_view.dart';
+import 'package:real_true_date/data/profile_tab/view/about_view.dart';
 import 'package:real_true_date/data/profile_tab/view/edit_profile_view.dart';
 import 'package:real_true_date/data/profile_tab/view/feedback_view.dart';
 import 'package:real_true_date/data/profile_tab/view/help_support_view.dart';
@@ -248,6 +250,13 @@ class AppPages {
         page: () => SomeoneViewProfileView(),
         binding: BindingsBuilder((){
           Get.lazyPut(() => SomeoneViewProfileController());
+        })
+    ),
+    GetPage(
+        name: Routes.aboutScreen,
+        page: () => AboutUsView(),
+        binding: BindingsBuilder((){
+          Get.lazyPut(() => AboutController());
         })
     ),
   ];

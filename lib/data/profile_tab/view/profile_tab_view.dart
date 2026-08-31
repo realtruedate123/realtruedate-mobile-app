@@ -221,12 +221,7 @@ class ProfileTabView extends StatelessWidget {
       } else if(name == 'Feedback'){
         Get.toNamed(Routes.feedbackView);
       } else if(name == 'About Us'){
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const AboutUsView(),
-          ),
-        );
+        Get.toNamed(Routes.aboutScreen);
       }
       else if(name == 'Log Out'){
         showDialog(
