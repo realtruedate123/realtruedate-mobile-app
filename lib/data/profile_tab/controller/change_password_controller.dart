@@ -76,14 +76,7 @@ class ChangePasswordController extends GetxController {
     if (!isFormValid.value) return;
 
     isLoading.value = true;
-    // Get.back();
-
     changePasswordApiCall();
-
-    // Call API to update password
-    // After API response:
-    // isLoading.value = false;
-    // handle errorMessage if any
   }
 
   //TODO: Change password API Call
@@ -116,7 +109,7 @@ class ChangePasswordController extends GetxController {
       newPasswordCtrl.text = '';
       confirmPasswordCtrl.text = '';
 
-      print("Response data: ${response.data?.message}");
+      // print("Response data: ${response.data?.message}");
       Get.dialog(
           CommonDialogView(
             title: 'Success',
@@ -141,11 +134,6 @@ class ChangePasswordController extends GetxController {
       } else {
         errorMessage.value =  response.message ??  'Password has not changed failed';
       }
-
-      // Get.snackbar('Failed', response.message ?? 'Password has not changed failed',
-      //   colorText: Colors.white,
-      //   backgroundColor: Colors.red
-      // );
     }
   }
 

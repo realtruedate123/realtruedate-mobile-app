@@ -20,3 +20,9 @@ class StringMessage {
   static const freeSwapeTitle = 'You’ve Used All 3 Free Swaps';
   static const freeSwapeMessage = 'You’ve reached your free swap limit. Upgrade to a monthly plan to enjoy unlimited swaps and full access.';
 }
+
+class AppURL {
+  static const termUrl = 'https://realtruedate.netlify.app/terms';
+  static const policyUrl = 'https://realtruedate.netlify.app/privacy';
+  static const aboutUsUrl = 'https://realtruedate.netlify.app/about';
+}

@@ -6,7 +6,7 @@ class IOSNotificationChannel {
   IOSNotificationChannel._();
 
   static const MethodChannel _channel =
-  MethodChannel('com.truedate/notification');
+  MethodChannel('com.truedates/notification');
 
   static final StreamController<Map<String, dynamic>>
   _notificationController =

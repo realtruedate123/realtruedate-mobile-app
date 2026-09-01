@@ -75,6 +75,7 @@ dependencies:
   web_socket_channel: ^3.0.3
   url_launcher: ^6.3.1
   purchases_flutter: ^10.9.1 # RevenueCat SDK
+  webview_flutter: ^4.13.0
 
 dev_dependencies:
   flutter_test:

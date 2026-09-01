@@ -6,7 +6,6 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
-import 'package:real_true_date/data/login_signup/model/register_model.dart';
 import 'package:real_true_date/data/otp_reset_password/model/verify_otp_model.dart';
 import 'package:real_true_date/data/video_slide/video_slide.dart';
 import 'package:real_true_date/routes/routes.dart';

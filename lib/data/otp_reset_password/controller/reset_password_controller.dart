@@ -75,7 +75,7 @@ class ResetPasswordController extends GetxController {
       "new_password": passwordCtrl.text,
       "confirm_password": reTypePasswordCtrl.text
     };
-    print('params $params');
+    // print('params $params');
     isLoading.value = true;
     final response = await BaseApiService().postRawData<VerifyOtpModel>(
       endpoint: Endpoints.resetPassword,
@@ -84,7 +84,7 @@ class ResetPasswordController extends GetxController {
     );
     isLoading.value = false;
     if (response.isSuccess && response.statusCode == 200) {
-      print('reset password success ${response.data?.message}');
+      // print('reset password success ${response.data?.message}');
       // Get.snackbar('Success', response.message ?? 'Your password has been updated');
 
       Get.toNamed(

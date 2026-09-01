@@ -55,8 +55,6 @@ class EditProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
-    // getUserData();
     getUserDataApiCall(false);
   }
 
@@ -131,10 +129,6 @@ class EditProfileController extends GetxController {
   /// Get saved local user data
   void getUserData(DataModel userProfile) async {
     try {
-      // final data = await prefHelper.getPersonList();
-      // final userProfile = data ?? DataModel();
-
-      print('userProfile ${userProfile.user?.profileImage ?? ''}');
       profileUrl.value = userProfile.user?.profileImage ?? '';
       nameCtrl.text = userProfile.user?.fullName ?? '';
       emailCtrl.text = userProfile.user?.email ?? '';
@@ -146,7 +140,6 @@ class EditProfileController extends GetxController {
       bioController.text = userProfile.user?.bio ?? '';
 
       selectedInterests =  interests;
-      print('controller.interests ${interests.toList()}');
 
       update();
 
@@ -158,8 +151,6 @@ class EditProfileController extends GetxController {
   /// Update profile data
   Future<void> updateProfileApiCall() async {
     final token = await prefHelper.getAuthToken;
-    print('selectedInterests $selectedInterests');
-
     final dateString = DateFormat('yyyy-MM-dd').format(dob.value!);
 
     final params = {
@@ -169,8 +160,6 @@ class EditProfileController extends GetxController {
       "bio": bioController.text,
       "interests": jsonEncode(selectedInterests),
     };
-
-    print('update params $params');
 
     final response = await BaseApiService().formDataWithFile<LoginModel>(
       endpoint: Endpoints.updateUserProfile,

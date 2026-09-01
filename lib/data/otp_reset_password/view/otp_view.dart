@@ -8,8 +8,6 @@ import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:real_true_date/data/otp_reset_password/controller/otp_controller.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/string_class.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-import 'package:flutter_screenutil/src/size_extension.dart';
 import 'package:real_true_date/helper/transparent_appbar.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -59,48 +57,6 @@ class OtpView extends GetView<OtpController> {
                         children: [
                           /// Forgot password View
                           SizedBox(height: 15.h,),
-                          /*PinCodeTextField(
-                            appContext: context,
-                            length: 4,
-                            keyboardType: TextInputType.number,
-                            autoFocus: true,
-                            animationType: AnimationType.fade,
-                            controller: controller.otpController,
-                            // ✅ Cursor color
-                            cursorColor: Theme.of(context).primaryColor,
-                            cursorWidth: 2,
-
-                            // ✅ Reduce space between boxes
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            separatorBuilder: (context, index) => SizedBox(width: 15.w), // 🔥 spacing control
-                            pinTheme: PinTheme(
-                              shape: PinCodeFieldShape.box,
-                              borderRadius: BorderRadius.circular(14),
-                              borderWidth: 0.5,
-                              fieldHeight: 56.h,
-                              fieldWidth: 56.w,
-                              activeFillColor: Colors.white,
-                              selectedFillColor: theme.border.withOpacity(0.1),
-                              inactiveFillColor: Colors.white,
-                              activeColor: theme.border,
-                              selectedColor: theme.primaryColor,
-                              inactiveColor: theme.border,
-                            ),
-                            enableActiveFill: true,
-                            textStyle: TextStyle(
-                              fontSize: 20.sp, // 🔥 THIS controls box height visually
-                              fontWeight: FontWeight.w500,
-                            ),
-                            onChanged: (value) {
-                              print('OTP $value');
-                              controller.onOtpChanged(value);
-                            },
-                            onCompleted: (value) {
-                              print('Enter OTP ${value.length}');
-                              controller.verifyOtp();
-                            },
-                          ),*/
-
                           MaterialPinField(
                             length: 4,
                             pinController: controller.otpController,
@@ -142,35 +98,6 @@ class OtpView extends GetView<OtpController> {
                               controller.verifyOtp();
                             },
                           ),
-
-                          /*OtpTextField(
-                            numberOfFields: 4,
-                            borderColor: theme.border,
-                            fillColor: theme.primaryColor,
-                            borderRadius: BorderRadius.all(Radius.circular(14.r)),
-                            fieldHeight: 56.h,
-                            fieldWidth: 56.w,
-                            margin: EdgeInsets.only(right: 15.w),
-                            borderWidth: 1.w,
-                            contentPadding: EdgeInsetsGeometry.all(15),
-                            //set to true to show as box or false to show as dash
-                            showFieldAsBox: true,
-                            //runs when a code is typed in
-                            onCodeChanged: (String code) {
-                              //handle validation or checks here
-                              print('Enter OTP ${code.length}');
-                              controller.onOtpChanged(code);
-                            },
-                            textStyle: TextStyle(
-                              fontSize: 20.sp, // 🔥 THIS controls box height visually
-                              fontWeight: FontWeight.w500,
-                            ),
-                            //runs when every textfield is filled
-                            onSubmit: (String verificationCode){
-                              print('OTP $verificationCode');
-                              controller.onOtpChanged(verificationCode);
-                            }, // end onSubmit
-                          ),*/
                           SizedBox(height: 20.h,),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -191,7 +118,7 @@ class OtpView extends GetView<OtpController> {
                                 ),
                                 onPressed: () {
                                   // Code to execute when the button is pressed
-                                  print('Text button pressed');
+                                  // print('Text button pressed');
                                   controller.reSendOTP();
                                 },
                                 child: AppTextFont(
@@ -231,7 +158,7 @@ class OtpView extends GetView<OtpController> {
                                 // if (controller.loginKey.currentState!.validate()) {
                                 // controller.login();
                                 // }
-                                print('click ${controller.verifyOtp}');
+                                // print('click ${controller.verifyOtp}');
                                 controller.verifyOtp();
 
                               } : null,

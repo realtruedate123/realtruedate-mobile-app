@@ -49,7 +49,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Enable location access to help us find and show relevant matches near your current location. Your location is used to provide a more personalized nearby experience.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app requires microphone access to record audio in video.</string>
+	<string>This app needs access to your microphone to record audio while recording videos.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app uses your camera to take profile photos and record intro videos. Camera access is only used when you choose to capture or record content.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

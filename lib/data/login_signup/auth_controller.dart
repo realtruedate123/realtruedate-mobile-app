@@ -128,7 +128,7 @@ class AuthController extends GetxController {
   }
 
   Future<void> openTermPolicy(String type) async {
-    final stringUrl = type == 'terms' ? 'https://realtruedate.com/pages/terms-and-conditions' : 'https://realtruedate.com/policies/privacy-policy';
+    final stringUrl = type == 'terms' ? AppURL.termUrl : AppURL.policyUrl;
     final Uri url = Uri.parse(stringUrl);
     await launchUrl(
     url,

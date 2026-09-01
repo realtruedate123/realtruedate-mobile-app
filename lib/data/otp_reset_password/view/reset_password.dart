@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/data/login_signup/widgets/auth_input.dart';
 import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:real_true_date/data/otp_reset_password/controller/reset_password_controller.dart';
-import 'package:flutter_screenutil/src/size_extension.dart';
 import 'package:real_true_date/helper/transparent_appbar.dart';
 
 class ResetPassword extends GetView<ResetPasswordController> {
@@ -122,7 +121,7 @@ class ResetPassword extends GetView<ResetPasswordController> {
                                     // controller.login();
                                     // }
                                     controller.resetPassword();
-                                    print('click reset password');
+                                    // print('click reset password');
 
                                   } : null,
                                 ),
