@@ -109,7 +109,6 @@ class ChangePasswordController extends GetxController {
       newPasswordCtrl.text = '';
       confirmPasswordCtrl.text = '';
 
-      // print("Response data: ${response.data?.message}");
       Get.dialog(
           CommonDialogView(
             title: 'Success',

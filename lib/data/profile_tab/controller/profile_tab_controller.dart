@@ -88,11 +88,6 @@ class ProfileTabController extends GetxController {
     getUserData();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
   /// Get saved local user data
   void getUserData() async {
     try {
@@ -109,8 +104,6 @@ class ProfileTabController extends GetxController {
   void removePreference() {
     Purchases.logOut();
     prefHelper.clearAllPreferences();
-    // Get.offNamed(Routes.authPage);
-    // Get.offAll(() => AuthController());
     Get.deleteAll();
     Get.offAllNamed(Routes.authPage);
   }
@@ -137,7 +130,6 @@ class ProfileTabController extends GetxController {
     isLoading.value = false;
 
     if (response.isSuccess && response.statusCode == 200) {
-      print("Response data: ${response.data?.message}");
       removePreference();
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
@@ -169,7 +161,6 @@ class ProfileTabController extends GetxController {
     isLoading.value = false;
 
     if (response.isSuccess && response.statusCode == 200) {
-      print("Response data: ${response.data?.message}");
       if(response.data?.data?.deleted ==  true){
         removePreference();
       }

@@ -16,7 +16,6 @@ class MatchesDetailsController extends GetxController {
   final isFavorite = false.obs;
   final isLoading = false.obs;
 
-  // final MatchList matchData = Get.arguments['data'];
   final MatchList? matchData = Get.arguments != null ? Get.arguments['data'] : null;
   final sharedPref = SharedPrefHelper();
   final profileData = ProfileData().obs;
@@ -40,11 +39,6 @@ class MatchesDetailsController extends GetxController {
     getProfileApiCall();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
   void toggleFavorite() {
     isFavorite.toggle();
   }
@@ -60,7 +54,6 @@ class MatchesDetailsController extends GetxController {
     final Map<String, String> params = {
       "user_id": matchDataId,
     };
-    print('params $params');
 
     final response = await BaseApiService().postRawData<CommonModel>(
       endpoint: Endpoints.blockUser,
@@ -122,7 +115,6 @@ class MatchesDetailsController extends GetxController {
 
   Future<void> createMessageApiCall(String matchUserID) async {
     final authToken = await sharedPref.getAuthToken;
-    //7facd8bc-a29b-4fc3-b5af-92d7d457553e
     final params = {
       "match_id": matchUserID,
     };
@@ -132,10 +124,6 @@ class MatchesDetailsController extends GetxController {
       "Authorization": 'Bearer $authToken',
     };
 
-    print('url ${Endpoints.conversationsGetOrCreate}');
-    print('token $authToken');
-    print('params $params');
-
     final response = await BaseApiService().postRawData<CreateChatModel>(
       endpoint: Endpoints.conversationsGetOrCreate,
       fields: params,
@@ -144,8 +132,6 @@ class MatchesDetailsController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      print('create message ${response.data?.data?.conversationId}');
-
       Get.toNamed(Routes.chatView, arguments: {
         'conversation_id': response.data?.data?.conversationId
       });
@@ -153,7 +139,6 @@ class MatchesDetailsController extends GetxController {
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      print('Failed ${response.message}');
       if (response.tokenExpired == true) {
         final result = await BaseApiService().refreshToken();
         if (result.isSuccess) {
@@ -162,8 +147,6 @@ class MatchesDetailsController extends GetxController {
       } else {
         Get.snackbar('Failed', response.message ?? 'Something went wrong');
       }
-      // errorMessage.value = response.message ?? 'Login failed';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
 }

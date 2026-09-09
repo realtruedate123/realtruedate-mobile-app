@@ -5,7 +5,6 @@ import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/data/home_tab/model/profile_match_details_model.dart';
-import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
 import 'package:real_true_date/helper/address_service_wrapper.dart';
 
 class SomeoneViewProfileController extends GetxController {
@@ -26,29 +25,14 @@ class SomeoneViewProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
-    // getUserData();
     getProfileApiCall();
   }
 
   void toggleFavorite() {
-    // isFavorite.toggle();
     favoritesMatchProfileApiCall();
   }
 
-  /// Get saved local user data
-  /*void getUserData() async {
-    try {
-      final data = await sharedPref.getPersonList();
-      final userProfile = data ?? DataModel();
-      userProfileUrl = userProfile.user?.profileImage ?? '';
-    } finally {
-      isLoading.value = false;
-    }
-  }*/
-
   //TODO: Get profile API Call
-
   Future<void> getProfileApiCall() async {
     isLoading.value = true;
     final authToken = await sharedPref.getAuthToken;
@@ -152,8 +136,6 @@ class SomeoneViewProfileController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200) {
-
-      print("Response data: ${response.data?.message}");
       isFavorite.value = response.data?.data?.isFavorite ?? false;
       Get.snackbar('Success', response.message ?? 'Profile saved',
           colorText: Colors.white,

@@ -1,6 +1,4 @@
 import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -9,160 +7,14 @@ import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:real_true_date/data/upload_picture_and_video/upload_picture_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:real_true_date/helper/app_cached_image.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
-import 'package:real_true_date/helper/gif_loader_view.dart';
 import 'package:real_true_date/helper/transparent_appbar.dart';
-import 'package:real_true_date/routes/routes.dart';
 
 class UploadPictureScreen extends StatelessWidget {
   UploadPictureScreen({super.key});
   final UploadPhotoController controller = Get.put(UploadPhotoController());
-
-  /*
-  @override
-  Widget build(BuildContext context) {
-    final theme = AppTheme.of(context);
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      extendBodyBehindAppBar: true,
-      appBar: TransparentBackAppBar(backHide: true),
-
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints.maxHeight,
-              ),
-              child: IntrinsicHeight( // 👈 Important
-                child: Column(
-                  children: [
-
-                    /// STACK (Header + Overlapping Card)
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-
-                        /// HEADER
-                        SizedBox(
-                          height: 260.h,
-                          width: double.infinity,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              Image.asset(
-                                AppIcons.headerHalfImagePng,
-                                fit: BoxFit.cover,
-                              ),
-                              SafeArea(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 2.w),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      AppTextFont(
-                                        'Upload Picture',
-                                        font: AppFontType.manrope,
-                                        fontSize: 32,
-                                        fontWeight: FontWeight.w700,
-                                        color: theme.headerTitleColor,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      AppTextFont(
-                                        'Real people, real connections – powered by AI',
-                                        font: AppFontType.manrope,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                        color: theme.headerTitleColor,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      SizedBox(height: 10.h),
-                                      AppTextFont(
-                                        'Step 2 of 4 – Live Photo Verification',
-                                        font: AppFontType.manrope,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: theme.headerTitleColor,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        /// WHITE CARD (OVERLAP)
-                        Positioned(
-                          top: 220.h,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(28.r),
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-
-                                // SizedBox(height: 40.h),
-
-                                /// PHOTO GRID
-                                Obx(() => _photoGrid(context)),
-
-                                SizedBox(height: 30.h),
-
-                                /// ERROR MESSAGE
-                                Obx(() => controller.errorMessage.isEmpty
-                                    ? const SizedBox()
-                                    : Padding(
-                                  padding: EdgeInsets.only(top: 12.h),
-                                  child: Text(
-                                    controller.errorMessage.value,
-                                    style: TextStyle(
-                                      color: theme.alert,
-                                      fontSize: 14.sp,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                )),
-
-                                SizedBox(height: 40.h),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    /// Spacer to allow scroll after overlap
-                    SizedBox(height: 600.h),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-
-      /// BOTTOM BUTTON
-      bottomNavigationBar: SafeArea(
-        minimum: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
-        child: Obx(() => _uploadButton()),
-      ),
-    );
-    }
-    */
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +50,6 @@ class UploadPictureScreen extends StatelessWidget {
 
                         /// HEADER TEXT
                         SafeArea(
-                          // bottom: false,
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20.w),
                             child: Column(
@@ -273,31 +124,10 @@ class UploadPictureScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                         ),
                       )),
-
-                      // SizedBox(height: 20.h),
-                      // Obx(() => SafeArea(child: _uploadButton())),
-                      // SizedBox(height: 32.h),
                     ],
                   ),
                 ),
               ),
-
-                  /// Loader Overlay
-                  // Obx(() {
-                  //   return controller.isLoading.value
-                  //       ? Container(
-                  //     color: Colors.black.withOpacity(0.4),
-                  //     child: Center(
-                  //       child: Stack(
-                  //         children: [
-                  //           GifLoaderView(isLoading: controller.isLoading.value),
-                  //         ],
-                  //       )
-                  //     ),
-                  //   )
-                  //       : const SizedBox();
-                  // }),
-
                 ],
               ),
             ),
@@ -337,13 +167,11 @@ class UploadPictureScreen extends StatelessWidget {
   }
 
   Widget _addTile(BuildContext context) {
-    // final controller = Get.find<UploadPhotoController>();
     final theme = AppTheme.of(context);
 
     return InkWell(
       splashColor: Colors.transparent, // Hides the ripple
       highlightColor: Colors.transparent, // Hides the click highlight
-      // onTap: controller.captureImage,
       onTap: controller.openCameraAndUpload,
       child: DottedBorder(
         options: RoundedRectDottedBorderOptions(
@@ -390,33 +218,7 @@ class UploadPictureScreen extends StatelessWidget {
               height: double.infinity,
               width: double.infinity,
             )
-            // Image.network(
-            //   controller.photoListModel[index],
-            //   width: double.infinity,
-            //   height: double.infinity,
-            //   fit: BoxFit.cover,
-            //   errorBuilder: (context, error, stackTrace) {
-            //     return Icon(Icons.broken_image);
-            //   },
-            //   loadingBuilder: (context, child, loadingProgress) {
-            //     if (loadingProgress == null) return child;
-            //     return Center(child: CircularProgressIndicator());
-            //   },
-            // ),
           ),
-          // child: ClipRRect(
-          //   borderRadius: BorderRadius.circular(10.r),
-          //   child: Container(
-          //     width: double.infinity,
-          //     height: double.infinity,
-          //     decoration: BoxDecoration(
-          //       image: DecorationImage(
-          //         image: FileImage(controller.photos[index]),
-          //         fit: BoxFit.cover,
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ),
 
         /// BLUR + GREEN CHECK OVERLAY (CENTER)
@@ -466,55 +268,15 @@ class UploadPictureScreen extends StatelessWidget {
   }
 
   Widget _uploadButton() {
-    // final controller = Get.find<UploadPhotoController>();
-
-    /*String buttonText;
-
-    if (controller.isButtonEnabled) {
-      buttonText = 'Submit';//controller.isVideoVerify ? 'Submit' : 'Upload Video';
-    } else if (controller.isVideoVerify) {
-      // buttonText = 'Back to Login';
-      buttonText = 'Submit';
-    } else {
-      buttonText = 'View Singles';
-    }*/
-
     return PrimaryButton(
-      // title: controller.isButtonEnabled ? 'Upload Video' : 'View Singles',
       title: 'Submit',
       loading: controller.isLoading.value,
       fontWeight: FontWeight.w600,
       onTap: controller.isButtonEnabled
           ? () {
-        // if (controller.loginKey.currentState!.validate()) {
-        // controller.login();
-        // }
-        print('click ${controller.isButtonEnabled}');
         controller.redirectVideoPage();
 
       } : null,
     );
-
-    //   SizedBox(
-    //   width: double.infinity,
-    //   height: 52,
-    //   child: ElevatedButton(
-    //     onPressed: controller.isButtonEnabled ? () {
-    //       print('Selected images: ${controller.photos.length}');
-    //     } : null,
-    //     style: ElevatedButton.styleFrom(
-    //       backgroundColor: controller.isButtonEnabled
-    //           ? const Color(0xFF6B63A8)
-    //           : Colors.grey.shade300,
-    //       shape: RoundedRectangleBorder(
-    //         borderRadius: BorderRadius.circular(30),
-    //       ),
-    //     ),
-    //     child: Text(
-    //       'View Singles',
-    //       style: TextStyle(fontSize: 16),
-    //     ),
-    //   ),
-    // );
   }
 }

@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:real_true_date/data/login_signup/widgets/auth_input.dart';
 import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/gender_toggle.dart';
 
 class SignupStepTwo extends GetView<AuthController> {

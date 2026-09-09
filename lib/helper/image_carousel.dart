@@ -1,7 +1,5 @@
-import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:flutter_screenutil/src/size_extension.dart';
@@ -22,10 +20,6 @@ class CarouselImage {
   const CarouselImage.assetSvg(this.path)
       : type = CarouselImageType.assetSvg;
 }
-
-//CarouselImage.assetPng('assets/images/onboarding_1.png'),
-//CarouselImage.assetSvg('assets/icons/heart.svg'),
-//CarouselImage.network('https://example.com/image.jpg'),
 
 class GlobalImageCarousel extends StatefulWidget {
   final List<CarouselImage> images;
@@ -81,7 +75,6 @@ class _GlobalImageCarouselState extends State<GlobalImageCarousel> {
               enlargeCenterPage: widget.enlargeCenterPage,
               viewportFraction: widget.viewportFraction,
               initialPage: widget.initialPage,
-              // onPageChanged: widget.onPageChanged,
               onPageChanged: (index, reason) {
                 setState(() => _currentIndex = index);
               },
@@ -171,7 +164,6 @@ class _CarouselDots extends StatelessWidget {
         return AnimatedContainer(
           duration: Duration(milliseconds: 250),
           margin: EdgeInsets.symmetric(horizontal: 4.w),
-          // width: isActive ? 18 : 6,
           width: 21.w,
           height: 4.h,
           decoration: BoxDecoration(

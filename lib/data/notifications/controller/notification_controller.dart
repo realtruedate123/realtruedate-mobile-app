@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
@@ -31,11 +30,6 @@ class NotificationController extends GetxController {
     getNotificationListApiCall();
 
     scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 
   Future<void> _onScroll() async {
@@ -73,7 +67,6 @@ class NotificationController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200) {
-      // notifications.value = response.data?.data?.notifications ?? [];
       final newNotifications = response.data?.data?.notifications ?? [];
 
       if (page == 1) {
@@ -121,7 +114,6 @@ class NotificationController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200) {
-      print("Response data: ${response.data?.message}");
       if(type.toLowerCase() == 'accept'){
         Get.toNamed(Routes.chatView, arguments: {
           'conversation_id': conversationId

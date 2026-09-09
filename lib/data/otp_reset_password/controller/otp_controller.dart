@@ -46,13 +46,6 @@ class OtpController extends GetxController {
   }
 
   void verifyOtp() {
-    print('OTP Verified: ${otpCode.value}');
-    /*if(apiOTP != otpCode.value.toString()){
-      errorMessage.value = 'Please enter a valid OTP.';
-    } else {
-      errorMessage.value = '';
-      validateOTPApiCall();
-    }*/
     errorMessage.value = '';
     validateOTPApiCall();
   }
@@ -63,7 +56,6 @@ class OtpController extends GetxController {
       "email": Get.arguments['email'],
       "otp_type": Get.arguments['page_type'] == 'forgot_screen' ? 'password_reset': 'email_verification',
     };
-    print('params $params');
     isLoading.value = true;
     final response = await BaseApiService().postRawData<VerifyOtpModel>(
       endpoint: Endpoints.resendOtp,
@@ -72,13 +64,11 @@ class OtpController extends GetxController {
     );
     isLoading.value = false;
     if (response.isSuccess && response.statusCode == 200) {
-      print('otp valid sucess ${response.data?.data}');
       Get.snackbar('Success', response.message ?? 'OTP sent your email address');
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
       errorMessage.value = response.message ?? 'Something went wrong';
-      // Get.snackbar('Failed', response.message ?? 'OTP validate failed');
     }
   }
 
@@ -89,7 +79,6 @@ class OtpController extends GetxController {
       "otp_type": Get.arguments['page_type'] == 'forgot_screen' ? 'password_reset': 'email_verification',
       "otp": otpCode.value.toString()
     };
-    // print('params $params');
     isLoading.value = true;
     final response = await BaseApiService().postRawData<VerifyOtpModel>(
       endpoint: Endpoints.verifyOtp,
@@ -98,8 +87,6 @@ class OtpController extends GetxController {
     );
     isLoading.value = false;
     if (response.isSuccess && response.statusCode == 200) {
-      // print('otp valid sucess ${response.data?.message}');
-
       if(Get.arguments['page_type'] == 'forgot_screen'){
         Get.toNamed(
           Routes.resetPassword,
@@ -110,31 +97,18 @@ class OtpController extends GetxController {
         );
       } else {
         await Future.wait([
-          // sharedPref.saveIsLoggedIn(true),
           sharedPref.saveRefreshAuthToken(response.data?.data?.tokens?.refresh ?? ''),
           sharedPref.saveAuthToken(response.data?.data?.tokens?.access ?? '')
         ]);
-        // print('OTP page $gender');
         Navigator.push(
           Get.context!,
           MaterialPageRoute(builder: (context) => VideoSlide(genderType: gender,)),
         );
-
-        /// Open next step info page
-        // Get.toNamed(Routes.confirmationInfo, arguments: {
-        //     'initialIndex': 0,
-        //   },
-        // );
-
-        // Get.toNamed(
-        //   Routes.uploadVideoPage,
-        // );
       }
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
       errorMessage.value = response.message ?? 'OTP validate failed';
-      // Get.snackbar('Failed', response.message ?? 'OTP validate failed');
     }
   }
 }

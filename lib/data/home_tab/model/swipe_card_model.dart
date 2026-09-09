@@ -12,7 +12,6 @@ class SwipeCardModel {
   factory SwipeCardModel.fromJson(Map<String, dynamic> json) => SwipeCardModel(
     success: json["success"],
     message: json["message"],
-    // data: SwipeData.fromJson(json["data"]),
     data: json["data"] == null ? null : SwipeData.fromJson(json["data"]),
   );
 

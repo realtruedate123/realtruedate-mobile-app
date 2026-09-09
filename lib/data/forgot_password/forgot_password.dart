@@ -7,10 +7,7 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/data/login_signup/widgets/auth_input.dart';
 import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
-import 'package:real_true_date/helper/app_text_font.dart';
-import 'package:real_true_date/helper/string_class.dart';
 import 'package:real_true_date/helper/transparent_appbar.dart';
-import 'package:real_true_date/routes/routes.dart';
 
 class ForgotPassword extends GetView<ForgotPasswordController> {
   const ForgotPassword({super.key});
@@ -97,12 +94,7 @@ class ForgotPassword extends GetView<ForgotPasswordController> {
                                 fontWeight: FontWeight.w600,
                             onTap: controller.isLoginEnabled.value
                                 ? () {
-                              // if (controller.loginKey.currentState!.validate()) {
-                              // controller.login();
-                              // }
-                              print('click ${controller.emailCtrl.text}');
                               controller.forgotPassword();
-
                             } : null,
                           ),
                         ),

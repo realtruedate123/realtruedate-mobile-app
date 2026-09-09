@@ -24,7 +24,6 @@ class MessageTabView extends StatelessWidget {
         backgroundColor: theme.offWhiteBGColor,
         elevation: 0,
         centerTitle: true,
-        // leadingWidth: 63,
         title: AppTextFont(
           'Messages',
           font: AppFontType.urbanist,
@@ -32,17 +31,6 @@ class MessageTabView extends StatelessWidget {
           fontWeight: FontWeight.w600,
           color: theme.blackColor,
         ),
-        // leading: Padding(
-        //   padding: EdgeInsets.only(left: 16.w),
-        //   child: InkWell(
-        //     splashColor: Colors.transparent, // Hides the ripple
-        //     highlightColor: Colors.transparent, // Hides the click highlight
-        //     onTap: () {
-        //       Get.back();
-        //     },
-        //     child: AppIcons.getBackButtonIcon(context, size: 38),
-        //   ),
-        // ),
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 16.w),
@@ -63,7 +51,6 @@ class MessageTabView extends StatelessWidget {
                   highlightColor: Colors.transparent, // Hides the click highlight
                   onTap: () {
                     // Fav click event
-                    print('clicked');
                     Get.toNamed(Routes.savedProfileView);
                   },
                   child: AppIcons.getFavouriteIcon(context, size: 38),
@@ -81,7 +68,6 @@ class MessageTabView extends StatelessWidget {
               context,
               controller,
               onSearch: (query) {
-                print('Search: $query');
                 // Filter your list here
                 controller.searchChats(query);
               },
@@ -114,7 +100,6 @@ class MessageTabView extends StatelessWidget {
                         return MessageListCell(
                           chatList: chat,
                           onTap: () {
-                            print('chat ${chat.recipient?.fullName}');
                             Get.toNamed(Routes.chatView, arguments: {
                               'conversation_id': chat.conversationId ?? ''
                             });
@@ -131,35 +116,6 @@ class MessageTabView extends StatelessWidget {
     );
   }
 }
-
-/*Widget _searchBar(BuildContext context) {
-  final theme = AppTheme.of(context);
-
-  return Padding(
-    padding: EdgeInsets.all(20.r),
-    child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 15.w),
-      height: 52.h,
-      decoration: BoxDecoration(
-        color: theme.whiteColor,
-        borderRadius: BorderRadius.circular(30.r),
-      ),
-      child: Row(
-        children: [
-          AppIcons.getSearchIcon(context),
-          SizedBox(width: 10.h),
-          AppTextFont(
-            'Search',
-            font: AppFontType.nunitoSans,
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: theme.inactiveTabColor,
-          )
-        ],
-      ),
-    ),
-  );
-}*/
 
 Widget _searchBar(BuildContext context, MessageTabController controller, {required ValueChanged<String> onSearch,}) {
   final theme = AppTheme.of(context);

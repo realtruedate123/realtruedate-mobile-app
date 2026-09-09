@@ -10,7 +10,6 @@ import 'package:real_true_date/core/utils/singleton.dart';
 /// A reusable location service wrapper class
 /// Handles permission, error cases, and returns current location cleanly.
 class LocationService {
-  // static bool _isRequestingPermission = false;
   static Future<Position?>? _activeRequest;
   static bool _openingSettings = false;
 
@@ -25,7 +24,6 @@ class LocationService {
     final completer = Completer<Position?>();
     _activeRequest = completer.future;
 
-    // _isRequestingPermission = true;
     try {
 
       // ✅ 1. Check if location service is enabled
@@ -43,11 +41,6 @@ class LocationService {
           throw Exception('Location permissions are denied');
         }
       }
-
-      // if (permission == LocationPermission.deniedForever) {
-      //   await Geolocator.openLocationSettings();
-      //   throw Exception('Location permissions are permanently denied, cannot request.');
-      // }
 
       if (permission == LocationPermission.deniedForever) {
         final shouldOpenSettings = await showDialog<bool>(
@@ -72,7 +65,6 @@ class LocationService {
                   onPressed: () async {
                     _openingSettings = true;
                     await Geolocator.openLocationSettings();
-                    // Get.back();
                   },
                   child: const Text('Settings'),
                 ),
@@ -85,13 +77,11 @@ class LocationService {
           await Geolocator.openAppSettings();
 
           permission = await Geolocator.checkPermission();
-
           if (permission != LocationPermission.always &&
               permission != LocationPermission.whileInUse) {
             throw Exception('Location permission is still denied.');
           }
         } else {
-          print('_openingSettings $_openingSettings');
           if (_openingSettings) {
             _openingSettings = false;
               final position = await Geolocator.getCurrentPosition(
@@ -100,15 +90,10 @@ class LocationService {
                     distanceFilter: 100, // meters to move before update
                   )
               );
-            print('Location ${position.longitude}');
             Get.back();
               if (position.longitude != 0.0) {
-
                 AppState.instance.userLat = position.latitude;
                 AppState.instance.userLong = position.longitude;
-
-                print('Location ${AppState.instance.userLat}');
-
                 await Future.wait([
                   SharedPrefHelper().saveUserLocation({'Latitude': position.latitude.toString(), 'Longitude': position.longitude.toString()}),
                 ]);
@@ -127,12 +112,6 @@ class LocationService {
       );
 
       // ✅ 3. Get current position
-      // return await Geolocator.getCurrentPosition(
-      //   locationSettings: LocationSettings(
-      //     accuracy: LocationAccuracy.high,
-      //     distanceFilter: 100, // meters to move before update
-      //   ),
-      // );
       completer.complete(position);
       return position;
 
@@ -140,7 +119,6 @@ class LocationService {
       completer.completeError(e);
       rethrow;
     } finally {
-      // _isRequestingPermission = false; // release lock
       _activeRequest = null; // ✅ release for next call
     }
   }

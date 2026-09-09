@@ -23,7 +23,6 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
 
   void setKillMode(bool value) {
     isKillMode = value;
-    print('isKillMode $isKillMode');
     if(isKillMode) {
       _hasNavigated = true;
       checkLogin();
@@ -97,13 +96,8 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
     try {
       final pos = await LocationService.getCurrentLocation();
       if (pos != null) {
-        print('Location $pos');
-
         AppState.instance.userLat = pos.latitude;
         AppState.instance.userLong = pos.longitude;
-
-        print('Location ${AppState.instance.userLat}');
-
         await Future.wait([
           sharedPref.saveUserLocation({'Latitude': pos.latitude.toString(), 'Longitude': pos.longitude.toString()}),
         ]);
@@ -113,11 +107,5 @@ class SplashController extends GetxController with GetTickerProviderStateMixin {
     } finally {
       debugPrint('location get');
     }
-  }
-
-  @override
-  void onClose() {
-    // controller?.dispose();
-    super.onClose();
   }
 }

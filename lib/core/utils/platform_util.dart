@@ -2,13 +2,11 @@ import 'dart:io' show Platform;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:device_marketing_names/device_marketing_names.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 class PlatformUtil {
-  // static const String _deviceIdKey = "device_id";
 
   static int getRequestFrom() {
     if (Platform.isAndroid) {
@@ -39,28 +37,7 @@ class PlatformUtil {
   static Future<String> getDeviceId() async {
     final deviceMarketingNames = DeviceMarketingNames();
     final currentSingleDeviceName = await deviceMarketingNames.getSingleName();
-    // final currentDeviceNames = await deviceMarketingNames.getNames();
-
-    // print('currentSingleDeviceName ${currentSingleDeviceName}');
-    // print('currentDeviceNames ${currentDeviceNames}');
-
     return currentSingleDeviceName;
-
-    /*if (Platform.isAndroid) {
-      final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-
-      // For Android 8.0 (API 26) and below
-      if (androidInfo.version.sdkInt <= 26) {
-        return androidInfo.model; // e.g. "Moto G (4)"
-      }
-    } else if (Platform.isIOS) {
-      final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-
-      return iosInfo.model; // e.g. "iPod7,1"
-    }
-    return "Android"; // Default/Other platforms*/
   }
 
   static Future<String> getDeviceUDID() async {

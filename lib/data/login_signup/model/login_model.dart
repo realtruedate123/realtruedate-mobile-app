@@ -147,11 +147,6 @@ class ProfileModel {
     maxAgePreference: json["max_age_preference"] as int,
     maxDistance: json["max_distance"] as int,
     interests: json["interests"] == null ? [] : List<String>.from(json["interests"]!.map((x) => x)),
-    // profileVisible: json["profile_visible"] as bool,
-    // showDistance: json["show_distance"] as bool,
-    // showLastActive: json["show_last_active"] as bool,
-    // showAge: json["show_age"] as bool,
-
     // Safe bool parsing (prevents Null crash)
     profileVisible: json["profile_visible"] == true,
     showDistance: json["show_distance"] == true,

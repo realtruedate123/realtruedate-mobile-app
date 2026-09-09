@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
@@ -113,39 +112,6 @@ class CameraScreen extends StatelessWidget {
               )
                   : const SizedBox()),
             ),
-
-            /// 📝 OVERLAY TEXT
-            /*Positioned(
-              top: 80,
-              left: 0,
-              right: 0,
-              child: Obx(() {
-                final text = controller.overlayText.value;
-                if (text.isEmpty) return const SizedBox();
-
-                return Center(
-                  child: Container(
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(Get.context!).size.width * 0.8, // max width 80% of screen
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      text,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ),*/
-
             /// 🔴 RECORD / RETAKE / USE BUTTONS
             Positioned(
               bottom: 40.h,
@@ -180,8 +146,6 @@ class CameraScreen extends StatelessWidget {
                         TextButton(
                           onPressed: () {
                             final file = controller.recordedFile.value!;
-                            print("Final file: ${file.path}");
-                            // Get.back<File>(result: file);
                             Get.back(result: {
                               "file": file,
                               "session_id": controller.sessionID,

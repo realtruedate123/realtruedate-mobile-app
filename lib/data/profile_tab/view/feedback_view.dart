@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/login_signup/widgets/auth_input.dart';
-import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:real_true_date/data/profile_tab/controller/feedback_controller.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/transparent_appbar.dart';
@@ -14,7 +13,6 @@ class FeedbackView extends GetView<FeedbackController> {
 
   @override
   Widget build(BuildContext context) {
-    // const primaryThemeColor = Color(0xFF625197);
     final theme = AppTheme.of(context);
 
     final List<Map<String, dynamic>> ratingOptions = [
@@ -181,9 +179,6 @@ class FeedbackView extends GetView<FeedbackController> {
                                         inactiveTrackColor: theme.primaryColor.withOpacity(0.2),
                                         thumbColor: const Color(0xFFEE8A9C),
                                         overlayColor: Colors.transparent,
-                                        // thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.r),
-                                        // trackShape: const RoundedRectSliderTrackShape(),
-        
                                         // 1. Set track shape
                                         trackShape: const RoundedRectSliderTrackShape(),
                                         // 2. Hide the division dots/ticks along the slider
@@ -243,14 +238,6 @@ class FeedbackView extends GetView<FeedbackController> {
                             SizedBox(height: 32.h),
         
                             // 5. Submit Button
-                            // Obx(() => PrimaryButton(
-                            //   title: 'Submit',
-                            //   loading: controller.isLoading.value,
-                            //   fontWeight: FontWeight.w600,
-                            //   onTap: controller.isLoading.value
-                            //       ? () => controller.submitFeedback()
-                            //       : null,
-                            // )),
                             SizedBox(
                               width: double.infinity,
                               height: 52.h,
@@ -295,52 +282,6 @@ class FeedbackView extends GetView<FeedbackController> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCardTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData prefixIcon,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            spreadRadius: 1,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        style: TextStyle(fontSize: 15.sp, color: Colors.black),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: TextStyle(
-            color: Colors.grey.shade400,
-            fontSize: 15.sp,
-          ),
-          prefixIcon: Padding(
-            padding: EdgeInsets.only(left: 16.w, right: 12.w),
-            child: Icon(
-              prefixIcon,
-              color: Colors.grey.shade400,
-              size: 22.sp,
-            ),
-          ),
-          prefixIconConstraints:
-          const BoxConstraints(minWidth: 0, minHeight: 0),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(vertical: 16.h),
         ),
       ),
     );

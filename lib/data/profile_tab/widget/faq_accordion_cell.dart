@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/profile_tab/controller/help_support_controller.dart';
 import 'package:real_true_date/data/profile_tab/model/help_faq_model.dart';
-import 'package:real_true_date/helper/app_text_font.dart';
 
 class FAQAccordionCell extends StatelessWidget {
   final FAQObjectModel item;

@@ -1,7 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
-// import 'package:luma_expert/core/local/preference_key.dart';
-// import 'package:luma_expert/data/model/auth_model.dart';
 import 'package:real_true_date/core/local/preference_key.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -57,7 +57,6 @@ class HelpSupportController extends GetxController with GetSingleTickerProviderS
 
     if (response.isSuccess) {
       faqModelList.value = response.data?.data?.faqs ?? [];
-
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {

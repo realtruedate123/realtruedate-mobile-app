@@ -60,7 +60,6 @@ class DreamDateItem {
       name: json['name'] ?? '',
       gender: json['gender'] ?? '',
       imageUrl: json['image_url'],
-      // attributes: DreamDateAttributes.fromJson(json['attributes'] ?? {}),
     );
   }
 }

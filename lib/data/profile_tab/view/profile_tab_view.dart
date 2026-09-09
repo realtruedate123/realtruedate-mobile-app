@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/data/profile_tab/controller/profile_tab_controller.dart';
 import 'package:real_true_date/data/profile_tab/model/profile_model.dart';
-import 'package:real_true_date/data/profile_tab/view/about_view.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/custom_dialog/confirmation_dialog.dart';
 import 'package:real_true_date/helper/global_setting.dart';
@@ -145,7 +144,6 @@ class ProfileTabView extends StatelessWidget {
                       ),
                     );
                   })
-
                   ]
                 ),
               ),
@@ -191,7 +189,6 @@ class ProfileTabView extends StatelessWidget {
         color: Colors.black,
       ),
       trailing: AppIcons.getRightArrowIcon(Get.context!),
-      // onTap: item.onTap,
       onTap: () {
         print("Tapped ${item.title}");
         _buildMenuItemIndex(item.title, context);
@@ -211,7 +208,6 @@ class ProfileTabView extends StatelessWidget {
         Get.toNamed(Routes.changePassword);
       } else if(name == 'Update Video & Photos'){
         Get.toNamed(Routes.uploadVideoPage, arguments: 'update_video');
-        // Get.toNamed(Routes.uploadPhotoPage, arguments: 'update_video');
       } else if(name == 'Subscriptions'){
         Get.toNamed(Routes.subscriptionView);
       } else if(name == 'Payment History'){
@@ -232,7 +228,6 @@ class ProfileTabView extends StatelessWidget {
             message: 'Are you sure you want to Logout?',
             onConfirm: () {
               controller.removePreference();
-              // controller.logoutApiCall();
             },
           ),
         );

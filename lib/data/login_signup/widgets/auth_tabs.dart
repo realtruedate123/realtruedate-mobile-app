@@ -81,9 +81,6 @@ class AuthTabs extends StatelessWidget {
             style: TextStyle(
               fontSize: MediaQuery.textScalerOf(context).scale(17.0),
               fontWeight: isActive ? FontWeight.w400 : FontWeight.w300,
-              // color: isActive
-              //     ? Color(0xFF1C2A44)
-              //     : Color(0xFF8A94A6),
               color: theme.iconTintHighlightColor
             ),
           ),

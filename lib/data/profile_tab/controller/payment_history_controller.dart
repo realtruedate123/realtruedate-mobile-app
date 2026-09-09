@@ -23,7 +23,6 @@ class PaymentHistoryController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     getPaymentHistoryApiCall();
   }
 
@@ -42,8 +41,6 @@ class PaymentHistoryController extends GetxController {
       showLoader: false,
       fromJson: (json) => PaymentHistoryModel.fromJson(json),
     );
-
-    print('Get me api $header');
     isLoading.value = false;
 
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {

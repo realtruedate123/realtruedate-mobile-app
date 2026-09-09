@@ -5,7 +5,6 @@ import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/data/home_tab/model/profile_match_details_model.dart';
-import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/message_tab/model/chat_model.dart';
 import 'package:real_true_date/data/message_tab/model/message_model.dart';
@@ -37,13 +36,7 @@ class ChatProfileController extends GetxController {
     getProfileApiCall();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
   void toggleFavorite() {
-    // isFavorite.toggle();
     favoritesMatchProfileApiCall();
   }
 
@@ -163,8 +156,6 @@ class ChatProfileController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200) {
-
-      print("Response data: ${response.data?.message}");
       isFavorite.value = response.data?.data?.isFavorite ?? false;
       Get.snackbar('Success', response.message ?? 'Profile saved',
           colorText: Colors.white,

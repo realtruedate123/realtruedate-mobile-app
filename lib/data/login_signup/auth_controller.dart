@@ -29,7 +29,6 @@ class AuthController extends GetxController {
   RxBool isChecked = false.obs;
   RxBool isFormValid = false.obs;
   RxBool isSecondFormValid = false.obs;
-  // RxString selectedGender = 'Male'.obs;
   RxnString selectedGender = RxnString();
 
   /// FORM KEYS
@@ -80,33 +79,11 @@ class AuthController extends GetxController {
       [selectedGender, lookingGender, dob, isChecked],
           (_) => _validateForm(),
     );
-
-    // everAll(
-    //   [selectedGender],
-    //       (_) => _validateTwoForm(),
-    // );
-
     /// Selected form type
     if(Get.arguments != null) {
       currentTab.value = Get.arguments;
     }
   }
-
-  // @override
-  // void onClose() {
-  //   emailCtrl.dispose();
-  //   passwordCtrl.dispose();
-  //
-  //   lookingGender.value = '';
-  //   zipCtrl.dispose();
-  //   dobCtrl.dispose();
-  //   nameCtrl.dispose();
-  //   singUpEmailCtrl.dispose();
-  //   singUpPasswordCtrl.dispose();
-  //   selectedGender.value = '';
-  //
-  //   super.onClose();
-  // }
 
   void _checkLoginEnable() {
     isLoginEnabled.value =
@@ -140,10 +117,6 @@ class AuthController extends GetxController {
 
   /// Login api call
   Future<void> login() async {
-    // Get.offAll(() => BottomNavWrapper());
-
-    // Get.offAll(() => SelectDreamPartnerView());
-
     emailError.value = null;
     passwordError.value = null;
     errorMessage.value = '';
@@ -185,9 +158,6 @@ class AuthController extends GetxController {
       signUpPasswordError.value = 'This password is too short. It must contain at least 8 characters.';
       return;
     }
-
-    // if (!signupStepTwoKey.currentState!.validate()) return;
-
     isLoading.value = true;
     userRegisterApiCall();
   }
@@ -200,13 +170,6 @@ class AuthController extends GetxController {
 
   /// SignUp Step One FORM VALIDATION
   void _validateForm() {
-    // isFormValid.value =
-    //     lookingGender.value != null &&
-    //         zipCtrl.text.trim().isNotEmpty &&
-    //         dob.value != null &&
-    //         isChecked.value;
-
-
     isFormValid.value =
         nameCtrl.text.trim().isNotEmpty &&
             dob.value != null &&
@@ -276,8 +239,6 @@ class AuthController extends GetxController {
       "longitude": userLong.toString()
     };
 
-    print('params $params');
-
     final response = await BaseApiService().postRawData<RegisterResponseModel>(
       endpoint: Endpoints.userRegister,
       fields: params,
@@ -291,7 +252,6 @@ class AuthController extends GetxController {
       nameCtrl.text = '';
       zipCtrl.text = '';
       lookingGender.value = null;
-      // selectedGender.value = null;
       dob.value = null;
       agreeTC.value = false;
 
@@ -314,11 +274,7 @@ class AuthController extends GetxController {
         else if(response.data?.data?.verificationStatus?.photoVerified == false){
           Get.toNamed(Routes.uploadPhotoPage);
         }
-        // else {
-          // Get.toNamed(Routes.profileUnderReviewScreen);
-        // }
       } else { /// New user register
-        print('signup page ${selectedGender.value.toString()[0]}');
         Get.toNamed(
             Routes.otpScreen,
             arguments: {
@@ -333,7 +289,6 @@ class AuthController extends GetxController {
       InternetDialog.showNoInternetDialog();
     } else {
       errorMessageStepTwo.value = 'Registration failed';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
 
@@ -355,8 +310,6 @@ class AuthController extends GetxController {
       "longitude": userLong.toString()
     };
 
-    print('params $params');
-
     final response = await BaseApiService().postRawData<LoginModel>(
       endpoint: Endpoints.userLogin,
       fields: params,
@@ -374,7 +327,6 @@ class AuthController extends GetxController {
         sharedPref.saveAuthToken(response.data?.data?.tokens?.access ?? '')
       ]);
 
-
       /// Checked dream data profile complete or not
       if(response.data?.data?.verificationStatus?.hasDreamDateProfile == false){
         Get.toNamed(Routes.selectDreamPartnerView);
@@ -391,11 +343,6 @@ class AuthController extends GetxController {
         Get.toNamed(Routes.uploadPhotoPage);
       }
       else { /// Login User
-        //
-        // print("Response data: ${response.data}");
-        // print("Response inner data: ${response.data?.data}");
-        // print("User: ${response.data?.data?.user}");
-
         // SAFELY unwrap the data to prevent the Null Check Operator crash
         final responseData = response.data?.data;
 
@@ -410,22 +357,11 @@ class AuthController extends GetxController {
         } else {
           errorMessage.value = 'Failed to load user profile data';
         }
-
-        // await Future.wait([
-        //   sharedPref.saveIsLoggedIn(true),
-        //
-        //   sharedPref.savePersonList(response.data!.data!),
-        //   sharedPref.saveUserId(response.data?.data?.user?.id ?? '')
-        // ]);
-
-        // Get.offAll(() => BottomNavWrapper());
-        // Get.toNamed(Routes.uploadPhotoPage);
       }
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
       errorMessage.value = 'Login failed';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
 }

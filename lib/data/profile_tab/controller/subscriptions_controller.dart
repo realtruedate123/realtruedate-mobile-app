@@ -10,7 +10,6 @@ import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/core/utils/singleton.dart';
 import 'package:real_true_date/data/home_tab/controller/home_tab_controller.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
-import 'package:real_true_date/data/profile_tab/model/subscription_plan_model.dart';
 import 'package:real_true_date/data/root_tab_controller.dart';
 import 'package:real_true_date/helper/custom_dialog/common_dialog_view.dart';
 
@@ -34,7 +33,6 @@ class SubscriptionsController extends GetxController {
 
     getUserData();
     fetchOfferings();
-    // checkSubscriptionStatus();
   }
 
   /// Get saved local user data
@@ -63,45 +61,17 @@ class SubscriptionsController extends GetxController {
 
       if (offerings.current != null && offerings.current!.availablePackages.isNotEmpty) {
         packages.assignAll(offerings.current!.availablePackages);
-
-        /*print('packages ${packages.length}');
-        print('price ${packages.first.storeProduct.price}');
-        print('title ${packages.first.storeProduct.title}');
-        print('description ${packages.first.storeProduct.description}');*/
-
-        /*for (final package in packages) {
-          print('Package ID: ${package.identifier}');
-          print('Product ID: ${package.storeProduct.identifier}');
-          print('Price: ${package.storeProduct.priceString}');
-          print('Title: ${package.storeProduct.title}');
-          print('Description: ${package.storeProduct.description}');
-        }*/
-
         // Get user's current subscription
         final CustomerInfo customerInfo = await Purchases.getCustomerInfo();
 
         if (customerInfo.entitlements.active.isNotEmpty) {
           for (final entitlement in customerInfo.entitlements.active.values) {
-            print('-------------------------');
-            print('Active Entitlement: ${entitlement.identifier}');
-            print('Purchased Product ID: ${entitlement.productIdentifier}');
-            print('Expiration: ${entitlement.expirationDate}');
-            print('-------------------------');
-
-            // Find matching package from offerings
-            // final activePackage = packages.firstWhereOrNull((package) =>
-            //   package.storeProduct.identifier == entitlement.productIdentifier,
-            // );
-
             final activePackageIndex = packages.indexWhere((package) =>
               package.storeProduct.identifier == entitlement.productIdentifier,
             );
 
             if (activePackageIndex != -1) {
               final activePackage = packages[activePackageIndex];
-              print('Active Package: ${activePackage.identifier}',);
-              print('Active Package Price: ''${activePackage.storeProduct.priceString}',);
-
               activePackageIdentifier.value = entitlement.productIdentifier;
               isAlreadyPurchased.value = true;
               selectedIndex.value = activePackageIndex;
@@ -208,11 +178,6 @@ class SubscriptionsController extends GetxController {
 
       final CustomerInfo customerInfo = result.customerInfo;
       final StoreTransaction transaction = result.storeTransaction;
-      print('transaction 1: $transaction');
-
-      print("RevenueCat App User ID: ${customerInfo.originalAppUserId}");
-      print("Active entitlements: ${customerInfo.entitlements.active.keys}");
-
       final activeEntitlements = customerInfo.entitlements.active;
       if (activeEntitlements.isNotEmpty) {
         final entitlement = activeEntitlements.values.first;
@@ -222,69 +187,17 @@ class SubscriptionsController extends GetxController {
         print('Purchased 1: ${activePackageIdentifier.value}',);
       }
 
-      /*customerInfo.entitlements.all.forEach((key, entitlement) {
-        print('Entitlement: $key');
-        print('  Active: ${entitlement.isActive}');
-        print('  Product ID: ${entitlement.productIdentifier}');
-        print('  Expiration: ${entitlement.expirationDate}');
-        print('  Will renew: ${entitlement.willRenew}');
-      });*/
-
-      // Build backend payload
-      /*final Map<String, dynamic> payload = {
-        "app_user_id": customerInfo.originalAppUserId,
-
-        "product_id": selectedPackage.storeProduct.identifier,
-
-        "package_identifier": selectedPackage.identifier,
-        "transaction": {
-          "product_identifier": transaction.productIdentifier,
-          "transaction_identifier": transaction.transactionIdentifier,
-        },
-
-        "entitlements": customerInfo.entitlements.all.map(
-              (key, entitlement) => MapEntry(key, {
-            "identifier": entitlement.identifier,
-            "is_active": entitlement.isActive,
-            "product_identifier": entitlement.productIdentifier,
-            "expiration_date": entitlement.expirationDate,
-            "will_renew": entitlement.willRenew,
-            "unsubscribe_detected_at": entitlement.unsubscribeDetectedAt,
-            "billing_issue_detected_at": entitlement.billingIssueDetectedAt,
-          }),
-        ),
-      };
-
-      print("Backend Payload:");
-      print("Backend Payload: ${customerInfo.latestExpirationDate}");
-      print(payload);*/
-
-      print('Real True Date Pro ==== ${customerInfo.entitlements.all["Real True Date Pro"]?.isActive == true}');
-
       // Check if user unlocked entitlement (replace 'pro' with your entitlement identifier in RevenueCat)
       if (customerInfo.entitlements.all["Real True Date Pro"]?.isActive == true) {
-        print('Subscription activated successfully!');
-
-        print('originalAppUserId ${customerInfo.originalAppUserId}');
-        print('productIdentifier ${transaction.productIdentifier}');
-        print('transactionIdentifier ${transaction.transactionIdentifier}');
-
         getUserDataApiCall();
 
         /// Subscription Save Api Call
         // subscriptionSaveApiCall(transaction.productIdentifier, transaction.transactionIdentifier);
-
-        // Get.snackbar("Success", "Subscription activated successfully!",
-        //     backgroundColor: Colors.green,
-        //     colorText: Colors.white
-        // );
-        // Get.back(); // Navigate back or to home page
       }
     } on PlatformException catch (e) {
       EasyLoading.dismiss();
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
-        print('Purchase Failed');
         Get.snackbar("Purchase Failed", e.message ?? "An error occurred",
             backgroundColor: Colors.red,
             colorText: Colors.white
@@ -387,10 +300,7 @@ class SubscriptionsController extends GetxController {
       fromJson: (json) => LoginModel.fromJson(json),
     );
 
-    print('Get me api $header');
-
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      print('get me ${response.data?.data?.user?.id}');
       await Future.wait([
         prefHelper.savePersonList(response.data!.data!),
       ]);

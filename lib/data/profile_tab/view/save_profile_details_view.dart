@@ -18,9 +18,7 @@ class SaveProfileDetailsView extends StatelessWidget {
     final theme = AppTheme.of(context);
 
     return Obx(() {
-
       final userInterests = controller.profileData.value.profile?.interests ?? [];
-      // final availableInterests = ['Nature', 'Travel', 'Writing'];
       var profileImage = controller.matchData.photoUrl ?? '';
       if(controller.profileData.value.photos?.isNotEmpty ?? false){
         profileImage = controller.profileData.value.photos?.first.photoUrl ?? '';

@@ -57,13 +57,7 @@ class UserRequestController extends GetxController {
     getProfileApiCall();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
   void toggleFavorite() {
-    // isFavorite.toggle();
     favoritesMatchProfileApiCall();
   }
 
@@ -148,7 +142,6 @@ class UserRequestController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      print('swipe card ${response.data?.message}');
       if(response.data?.data?.matched == true){
         showDialog(
           context: Get.context!,
@@ -193,8 +186,6 @@ class UserRequestController extends GetxController {
       } else {
         Get.snackbar('Failed', response.message ?? 'failed');
       }
-      // errorMessage.value = response.message ?? 'Login failed';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
 
@@ -238,8 +229,6 @@ class UserRequestController extends GetxController {
       } else {
         Get.snackbar('Failed', response.message ?? 'failed');
       }
-      // errorMessage.value = response.message ?? 'Login failed';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
 
@@ -258,8 +247,6 @@ class UserRequestController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200) {
-
-      print("Response data: ${response.data?.message}");
       isFavorite.value = response.data?.data?.isFavorite ?? false;
       Get.snackbar('Success', response.message ?? 'Profile saved',
           colorText: Colors.white,

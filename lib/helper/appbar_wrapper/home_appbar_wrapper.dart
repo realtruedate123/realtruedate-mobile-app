@@ -4,7 +4,6 @@ import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:real_true_date/helper/custom_dialog/upgrade_plan_dialog_view.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class HomeAppbarWrapper extends StatelessWidget {
@@ -18,29 +17,16 @@ class HomeAppbarWrapper extends StatelessWidget {
 
     return Container(
       color: Colors.white,
-      // height: height + MediaQuery.of(context).padding.top,
       padding: EdgeInsets.only(
-        // top: MediaQuery.of(context).padding.top,
         left: 16.w,
         right: 16.w,
       ),
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.black.withOpacity(0.06),
-      //       blurRadius: 12,
-      //       offset: const Offset(0, 4),
-      //     ),
-      //   ],
-      // ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Left: title + subtitle
           Expanded(
             child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 5.h,),
@@ -74,7 +60,6 @@ class HomeAppbarWrapper extends StatelessWidget {
                   highlightColor: Colors.transparent, // Hides the click highlight
                   onTap: () {
                     // Notification click event
-                    print('Notification clicked');
                     Get.toNamed(Routes.notificationView,);
                   },
                   child: AppIcons.getNotificationIcon(context, size: 38),
@@ -85,7 +70,6 @@ class HomeAppbarWrapper extends StatelessWidget {
                   highlightColor: Colors.transparent, // Hides the click highlight
                   onTap: () {
                     // Favourite click event
-                    print('Favourite clicked');
                     Get.toNamed(Routes.savedProfileView,);
                   },
                   child: AppIcons.getFavouriteIcon(context, size: 38),
@@ -93,11 +77,6 @@ class HomeAppbarWrapper extends StatelessWidget {
               ],
             ),
           ),
-
-          // _NavIcon(icon: Icons.notifications_none),
-          // AppIcons.getNotificationIcon(context, size: 38),
-          // SizedBox(width: 12.h),
-          // AppIcons.getFavouriteIcon(context, size: 38),
         ],
       ),
     );

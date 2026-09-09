@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
-import 'package:get/get.dart';
 
 class AppIcons{
 
@@ -676,12 +675,4 @@ class AppIcons{
       height: size.h,
     );
   }
-
-
-// static Widget getEmptyBookingRequest(BuildContext context, {double size = 24}){
-  //   return SvgPicture.asset(emptyBookingRequest,
-  //     width: size,
-  //     height: size,
-  //   );
-  // }
 }

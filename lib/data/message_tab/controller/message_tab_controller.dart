@@ -4,9 +4,7 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
-import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/data/message_tab/model/chat_model.dart';
-
 
 class MessageTabController extends GetxController {
 
@@ -43,7 +41,6 @@ class MessageTabController extends GetxController {
 
     if (response.isSuccess && response.statusCode == 200) {
       userChatList.value = response.data?.data?.conversations ?? [];
-      // searchChatList.value = response.data?.data?.conversations ?? [];
       searchChatList.assignAll(response.data?.data?.conversations ?? []);
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();

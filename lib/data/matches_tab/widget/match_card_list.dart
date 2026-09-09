@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
@@ -46,14 +45,9 @@ class MatchCardListCell extends StatelessWidget {
                   /// Image
                   AspectRatio(
                     aspectRatio: 3 / 4,
-                    // child: Image.asset(AppIcons.dummyProfileCard, fit: BoxFit.cover,),
                     child: AppCachedImage(
                       imageUrl: match.user?.photoUrl ?? '',
                     )
-                    // Image.network(
-                    //   match.imageUrl,
-                    //   fit: BoxFit.cover,
-                    // ),
                   ),
 
                   /// Match % (Top Center)
@@ -116,7 +110,6 @@ class MatchCardListCell extends StatelessWidget {
               children: [
                 Flexible(
                   child: AppTextFont(
-                    // "${match.user?.firstName}, ${match.age}",
                     "${match.user?.firstName}, ${match.user?.age}",
                     font: AppFontType.urbanist,
                     fontSize: 18,
@@ -138,9 +131,6 @@ class MatchCardListCell extends StatelessWidget {
               ],
             ),
           ),
-
-          // SizedBox(height: 6.h),
-
           /// Location
           Center(
             child: AppTextFont(

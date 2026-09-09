@@ -19,14 +19,12 @@ class UploadPhotoController extends GetxController {
   final ImagePicker _picker = ImagePicker();
 
   /// UI State
-  // final RxList<File> photos = <File>[].obs;
   final isLoading = false.obs;
   final photoListModel = <PhotoObject>[].obs;
   final errorMessage = ''.obs;
 
   int get maxPhotos => 2;
   bool get isButtonEnabled => photoListModel.length == maxPhotos;
-  // bool get isButtonEnabled => photoListModel.isNotEmpty;
   final sharedPref = SharedPrefHelper();
   File? localImageFile;
   late var isVideoVerify = false;
@@ -38,7 +36,6 @@ class UploadPhotoController extends GetxController {
     super.onInit();
 
     final String args = Get.arguments ?? '';
-    print('args $args');
     isComing = args;
 
     getImageListApiCall();
@@ -49,37 +46,6 @@ class UploadPhotoController extends GetxController {
     if (photoListModel.length >= maxPhotos) return;
 
     // Check camera permission
-   /* PermissionStatus status = await Permission.camera.status;
-    print("Camera permission status: $status");
-
-    if (status.isDenied) {
-      print('camer request');
-      // Request permission
-      status = await Permission.camera.request();
-    }
-
-    if (status.isGranted) {
-      // Permission granted, capture image
-      try {
-        final XFile? image = await _picker.pickImage(
-          source: ImageSource.camera,
-        );
-
-        if (image != null) {
-          localImageFile = File(image.path);
-          uploadImagesApiCall();
-        }
-      } catch (e) {
-        errorMessage.value = "Failed to capture image: $e";
-      }
-    } else if (status.isPermanentlyDenied) {
-      // Permission permanently denied, show dialog
-      _showPermissionDialog();
-    } else {
-      errorMessage.value = "Camera permission is required.";
-    }*/
-
-
     final XFile? image = await _picker.pickImage(
       source: ImageSource.camera,
       preferredCameraDevice: CameraDevice.front,
@@ -87,23 +53,11 @@ class UploadPhotoController extends GetxController {
     );
 
     if (image != null) {
-
       int fSize = await image.length();
-      print('Image size ${formatFileSize(fSize)}');
-
       // photos.add(File(image.path));
       localImageFile = File(image.path);
       uploadImagesApiCall();
     }
-
-
-    /*final result = await Get.to(() => CustomCamera());
-
-    if(result != null){
-      print('result ${result.path}');
-      localImageFile = File(result.path);
-      uploadImagesApiCall();
-    }*/
   }
 
   void openCameraAndUpload() async {
@@ -112,9 +66,6 @@ class UploadPhotoController extends GetxController {
 
     // 2. Upload to server only if user tapped "Use Photo"
     if (localImageFile != null) {
-      // int fSize = await localImageFile.length();
-      // print('Confirmed Mirrored Image Size: $fSize bytes');
-
       // Trigger your upload API call
       uploadImagesApiCall();
     }
@@ -137,14 +88,6 @@ class UploadPhotoController extends GetxController {
   }
 
   Future<void> redirectVideoPage() async {
-    // if(isVideoVerify){
-    //   Get.back();
-    // }
-    // else{
-    //   Get.toNamed(Routes.uploadVideoPage,);
-    // }
-
-    // Get.toNamed(Routes.selectDreamPartnerView,);
     Get.toNamed(Routes.confirmationInfo, arguments: {
         'initialIndex': 3,
       },
@@ -163,7 +106,6 @@ class UploadPhotoController extends GetxController {
       method = 'PUT';
       url = '${Endpoints.getPhotos}/$selectedPhotoID/update';
     }
-    print('$isComing update photo url $url');
     final header = {
       'Content-Type': 'application/json',
       "Authorization": 'Bearer $authToken'
@@ -178,16 +120,11 @@ class UploadPhotoController extends GetxController {
       fromJson: (json) => CommonModel.fromJson(json),
       isLoading: false
     );
-    print('response ${response.tokenExpired}');
-
     AuthenticatingDialog.hideLoader();
 
     if (response.isSuccess && response.statusCode == 200) {
       getImageListApiCall();
-      // if(isButtonEnabled) {
-        print('Go to feed page');
-        getUserDataApiCall();
-      // }
+      getUserDataApiCall();
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
@@ -197,10 +134,7 @@ class UploadPhotoController extends GetxController {
           uploadImagesApiCall();
         }
       } else {
-        // Get.snackbar('Failed', response.message ?? 'Picture upload failed');
-        // errorMessage.value = response.message ?? 'Picture upload failed';
         AuthenticatingDialog.showError(response.message ?? 'Picture upload failed');
-
       }
     }
   }
@@ -225,14 +159,10 @@ class UploadPhotoController extends GetxController {
 
     isLoading.value = false; // hide shimmer
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-        print(response.data?.data?.photos?.length);
-
         photoListModel.value = response.data?.data?.photos?.reversed.toList() ?? [];
-
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      print('response.tokenExpired ${response.tokenExpired}');
       if(response.tokenExpired == true){
         final result = await BaseApiService().refreshToken();
         if (result.isSuccess) {
@@ -291,11 +221,7 @@ class UploadPhotoController extends GetxController {
       showLoader: false,
       fromJson: (json) => LoginModel.fromJson(json),
     );
-
-    print('Get me api $header');
-
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      print('get me ${response.data?.data?.user?.id}');
       await Future.wait([
         sharedPref.saveIsLoggedIn(true),
         sharedPref.savePersonList(response.data!.data!),

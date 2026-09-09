@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 /// Main response model
 class FeedResponse {
   final bool success;

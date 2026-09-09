@@ -46,10 +46,6 @@ class _VideoSlideState extends State<VideoSlide> {
     Get.toNamed(Routes.confirmationInfo, arguments: {
       'initialIndex': 0,
     })?.then((_) {
-      // Optional: resume video if the user returns back to this screen
-      // if (mounted && !_controller.value.isPlaying) {
-      //   _controller.play();
-      // }
     });
   }
 

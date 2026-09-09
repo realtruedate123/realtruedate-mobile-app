@@ -110,7 +110,6 @@ class SubscriptionsView extends GetView<SubscriptionsController> {
                                     isSelected: isSelected,
                                     isActivated: isActivated,
                                     onTap: () {
-                                      print('index $index');
                                       controller.selectedPackages(index);
                                     },
                                   ),
@@ -157,35 +156,6 @@ class SubscriptionsView extends GetView<SubscriptionsController> {
                               ],
                             ),
                           ),
-                          /*Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20.w,
-                              vertical: 16.h,
-                            ),
-                            child: Column(
-                              children: [
-                                Obx(() => PrimaryButton(
-                                  title: controller.isPurchasing.value
-                                      ? 'Processing...'
-                                      : 'Subscribe',
-                                  onTap: controller.isPurchasing.value
-                                      ? null
-                                      : () => controller.makePurchase(),
-                                )),
-                                SizedBox(height: 8.h),
-                                TextButton(
-                                  onPressed: controller.restorePurchases,
-                                  child: Text(
-                                    "Restore Purchases",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),*/
                         ],
                       );
                     })

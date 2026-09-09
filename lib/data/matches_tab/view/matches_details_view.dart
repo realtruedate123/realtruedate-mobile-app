@@ -8,21 +8,16 @@ import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/helper/appbar_wrapper/matches_details_appbar_wrapper.dart';
 import 'package:real_true_date/helper/string_class.dart';
-import 'package:real_true_date/routes/routes.dart';
 
 class MatchesDetailsView extends StatelessWidget {
   final controller = Get.find<MatchesDetailsController>();
-
   MatchesDetailsView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
-
     return Obx(() {
-
       final userInterests = controller.profileData.value.profile?.interests ?? [];
-      // final availableInterests = ['Nature', 'Travel', 'Writing'];
       var profileImage = controller.matchData?.user?.photoUrl ?? '';
       if(controller.profileData.value.photos?.isNotEmpty ?? false){
         profileImage = controller.profileData.value.photos?.first.photoUrl ?? '';
@@ -42,11 +37,6 @@ class MatchesDetailsView extends StatelessWidget {
           children: [
             /// Profile Image
             Positioned.fill(
-              // child: Image.asset(
-              //   AppIcons.dummyProfileDetailsCard,
-              //   fit: BoxFit.contain,
-              //   alignment: Alignment.topCenter,
-              // ),
               child: AppCachedImage(
                 imageUrl: profileImage,
               ),
@@ -135,18 +125,7 @@ class MatchesDetailsView extends StatelessWidget {
                               );
                             }).toList(),
                           )
-
-                          // Wrap(
-                          //   spacing: 12.w,
-                          //   runSpacing: 12.h,
-                          //   children: [
-                          //     _interestChip(context, 'Nature', filled: true),
-                          //     _interestChip(context, 'Travel'),
-                          //     _interestChip(context, 'Writing'),
-                          //   ],
-                          // ),
                         ]
-
                       ],
                     ),
                   ),
@@ -162,13 +141,7 @@ class MatchesDetailsView extends StatelessWidget {
                             behavior: HitTestBehavior.translucent,
                             onTap: () {
                               // TODO: comment action
-                              print('Comment tapped 1');
                               controller.createMessageApiCall(controller.matchData?.matchId ?? '');
-                              // showDialog(
-                              //   context: context,
-                              //   barrierDismissible: false,
-                              //   builder: (_) => RejectMatchDialog(),
-                              // );
                             },
                             child: AppIcons.getCommentIcon(context, size: 40)
                         ),

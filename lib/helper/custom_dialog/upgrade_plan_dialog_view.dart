@@ -85,25 +85,6 @@ class UpgradePlanDialogView extends StatelessWidget {
                     onTap: onConfirm,
                   ),
                 )
-                // ElevatedButton(
-                //   onPressed: onConfirm,
-                //   style: ElevatedButton.styleFrom(
-                //     backgroundColor: theme.buttonBG,
-                //     // minimumSize: Size(131.w, 45.h),
-                //     shape: RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.circular(24.r),
-                //     ),
-                //   ),
-                //   child: Text(
-                //     confirmText,
-                //     style: TextStyle(
-                //       fontSize: MediaQuery.textScalerOf(context).scale(18.0),
-                //       fontWeight: FontWeight.w500,
-                //       fontFamily: 'Inter',
-                //       color: theme.buttonText,
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ],

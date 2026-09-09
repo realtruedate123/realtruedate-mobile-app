@@ -62,23 +62,9 @@ class _AuthInputState extends State<AuthInput> {
   }
 
   Color _textColor() {
-    // print('call textColor');
     final theme = AppTheme.of(Get.context!);
     return _hasError ? theme.alert : theme.primaryColor;
   }
-
- /* Color _iconColor() {
-    if (_errorText != null) return AppTheme.of(Get.context!).alert;
-    if (_focusNode.hasFocus || widget.controller.text.isNotEmpty) {
-      return AppTheme.of(Get.context!).iconTintHighlightColor; // primary
-    }
-    return AppTheme.of(Get.context!).iconTintColor;
-  }
-
-  Color _textColor() {
-    if (_errorText != null) return AppTheme.of(Get.context!).alert;
-    return AppTheme.of(Get.context!).primaryColor;
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -114,18 +100,7 @@ class _AuthInputState extends State<AuthInput> {
                 color: _textColor(),
                   fontWeight: FontWeight.w300
               ),
-              // validator: (v) {
-              //   final res = widget.validator?.call(v);
-              //   WidgetsBinding.instance.addPostFrameCallback((_) {
-              //     if (_errorText != res) {
-              //       setState(() => _errorText = res);
-              //     }
-              //   });
-              //   return res;
-              // },
               decoration: InputDecoration(
-                // errorText: widget.errorText,
-                // isDense: true,
                 filled: true,
                 fillColor: Colors.transparent,
                 hintText: widget.hint,
@@ -138,27 +113,10 @@ class _AuthInputState extends State<AuthInput> {
                   maxHeight: 58.h,
                   minHeight: 58.h
                 ),
-                /// FLOATING LABEL
-                // labelText: widget.hint,
-                // floatingLabelBehavior: FloatingLabelBehavior.auto,
-                // labelStyle: TextStyle(
-                //   color: theme.iconTintColor,
-                //   fontSize: MediaQuery.textScalerOf(context).scale(15),
-                //   fontWeight: FontWeight.w400,
-                // ),
-                // floatingLabelStyle: TextStyle(
-                //   color: _errorText != null
-                //       ? theme.alert
-                //       : theme.primaryColor,
-                //   fontSize: MediaQuery.textScalerOf(context).scale(12),
-                //   fontWeight: FontWeight.w400,
-                // ),
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 55.w,
                   vertical: 18.h,
                 ),
-                // contentPadding: EdgeInsets.fromLTRB(55.w, 18.h, 55.w, 14.h),
-
                 /// LEFT ICON
                 prefixIcon: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -178,12 +136,6 @@ class _AuthInputState extends State<AuthInput> {
                       child: GestureDetector(
                                     onTap: () => setState(() => _obscure = !_obscure),
                                     child: AppIcons.getEyeOnIcon(context, size: 24)
-                                    // Icon(
-                                    //   _obscure
-                                    //       ? Icons.visibility_outlined
-                                    //       : Icons.visibility_off_outlined,
-                                    //   color: AppTheme.of(Get.context!).iconTintColor,
-                                    // ),
                                   ),
                     )
                     : null,
@@ -250,80 +202,3 @@ class _AuthInputState extends State<AuthInput> {
     );
   }
 }
-
-/*class AuthInput extends StatelessWidget {
-  final String hint;
-  final TextEditingController controller;
-  final String? Function(String?)? validator;
-  final bool obscure;
-  final Widget? prefixIcon;
-  final TextInputType keyboardType;
-
-  const AuthInput({
-    super.key,
-    required this.hint,
-    required this.controller,
-    this.validator,
-    this.obscure = false,
-    this.prefixIcon,
-    this.keyboardType = TextInputType.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 16.h),
-      child: TextFormField(
-        controller: controller,
-        validator: validator,
-        obscureText: obscure,
-        keyboardType: keyboardType,
-        style: TextStyle(
-          fontSize: 16.sp,
-          color: const Color(0xFF1C2A44),
-        ),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: TextStyle(
-            color: const Color(0xFFB0B7C3),
-            fontSize: 16.sp,
-          ),
-          prefixIcon: prefixIcon,
-          filled: true,
-          fillColor: const Color(0xFFF7F8FA),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 20.w,
-            vertical: 18.h,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(40.r),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(40.r),
-            borderSide: BorderSide.none,
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(40.r),
-            borderSide: BorderSide(
-              color: Colors.red.shade400,
-              width: 1,
-            ),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(40.r),
-            borderSide: BorderSide(
-              color: Colors.red.shade400,
-              width: 1,
-            ),
-          ),
-          errorStyle: TextStyle(
-            fontSize: 13.sp,
-            height: 1.2,
-          ),
-        ),
-      ),
-    );
-  }
-}
-*/

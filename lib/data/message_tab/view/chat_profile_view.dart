@@ -31,11 +31,6 @@ class ChatProfileDetailsScreen extends StatelessWidget {
         children: [
           /// Profile Image
           Positioned.fill(
-            // child: Image.asset(
-            //   AppIcons.dummyProfileDetailsCard,
-            //   fit: BoxFit.contain,
-            //   alignment: Alignment.topCenter,
-            // ),
             child: AppCachedImage(
               imageUrl: controller.recipientData.value.photoUrl ?? '',
             ),
@@ -126,16 +121,6 @@ class ChatProfileDetailsScreen extends StatelessWidget {
                             );
                           }).toList(),
                         ),
-
-                        /*Wrap(
-                          spacing: 12.w,
-                          runSpacing: 12.h,
-                          children: [
-                            _interestChip(context, 'Nature', filled: true),
-                            _interestChip(context, 'Travel'),
-                            _interestChip(context, 'Writing'),
-                          ],
-                        ),*/
                       ],
                     ),
                   ),

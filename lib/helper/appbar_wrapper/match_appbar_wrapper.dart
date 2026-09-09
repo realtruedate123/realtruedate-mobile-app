@@ -40,13 +40,6 @@ class MatchAppbarWrapper extends StatelessWidget
         fontWeight: FontWeight.w600,
         color: theme.blackColor,
       ),
-      // leading: Padding(
-      //   padding: EdgeInsets.only(left: 16.w),
-      //   child: _roundedIconButton(
-      //     icon: AppIcons.getBackButtonIcon(context, size: 38),
-      //     onTap: onBack ?? () => Navigator.pop(context),
-      //   ),
-      // ),
       actions: [
         _roundedIconButton(
           icon: AppIcons.getNotificationIcon(context, size: 38),

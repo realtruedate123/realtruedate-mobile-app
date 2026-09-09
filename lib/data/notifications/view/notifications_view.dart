@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/notifications/controller/notification_controller.dart';
 import 'package:real_true_date/data/notifications/widget/notification_tile.dart';
 import 'package:get/get.dart';
-import 'package:real_true_date/data/root_tab_controller.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/routes/routes.dart';
@@ -43,50 +41,7 @@ class NotificationsScreen extends StatelessWidget {
             },
             child: AppIcons.getBackButtonIcon(context, size: 38),
           ),
-          // IconButton(
-          //   icon: AppIcons.getBackButtonIcon(context, size: 38),
-          //   onPressed: () => Get.back(),
-          // ),
         ),
-        /*actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 16.w),
-            child: Row(
-              children: [
-                InkWell(
-                  splashColor: Colors.transparent, // Hides the ripple
-                  highlightColor: Colors.transparent, // Hides the click highlight
-                  onTap: () {
-                    // Fav click event
-                    print('clicked');
-                  },
-                  child: AppIcons.getFavouriteIcon(context, size: 38),
-                ),
-                SizedBox(width: 12.w),
-                InkWell(
-                  splashColor: Colors.transparent, // Hides the ripple
-                  highlightColor: Colors.transparent, // Hides the click highlight
-                  onTap: () {
-                    // Home click event
-                    print('Home clicked');
-                    Get.find<RootTabController>().switchTo(0);
-                  },
-                  child: AppIcons.getHomeAppbar(context, size: 38),
-                ),
-                // IconButton(
-                //   icon: AppIcons.getBackButtonIcon(context, size: 38),
-                //   onPressed: () {
-                //     print('click');
-                //   },
-                // ),
-                // IconButton(
-                //   icon: AppIcons.getHomeAppbar(context, size: 38),
-                //   onPressed: () {},
-                // ),
-              ],
-            ),
-          ),
-        ],*/
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -127,21 +82,18 @@ class NotificationsScreen extends StatelessWidget {
                 return NotificationTile(
                   notification: data,
                   onAccept: () {
-                    print("Accepted ${data.conversationId}");
                     controller.acceptOrDeclineApiCall(
                       'accept',
                       data.conversationId ?? '',
                     );
                   },
                   onDecline: () {
-                    print("Declined ${data.conversationId}");
                     controller.acceptOrDeclineApiCall(
                       'decline',
                       data.conversationId ?? '',
                     );
                   },
                   onMessage: () {
-                    print("Open chat ${data.conversationId}");
                     Get.toNamed(Routes.chatView, arguments: {
                       'conversation_id': data.conversationId
                     });

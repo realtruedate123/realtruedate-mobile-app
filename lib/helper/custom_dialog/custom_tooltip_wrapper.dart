@@ -19,41 +19,6 @@ class _CustomTooltipWrapperState extends State<CustomTooltipWrapper> {
   OverlayEntry? _overlayEntry;
 
   bool get _isTooltipVisible => _overlayEntry != null;
-
-  /*
-  void _showTooltip() {
-    if (_overlayEntry != null) return;
-
-    final renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
-    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
-
-    if (renderBox == null) return;
-
-    final targetGlobalPosition = renderBox.localToGlobal(Offset.zero, ancestor: overlay);
-
-    _overlayEntry = OverlayEntry(
-      builder: (context) => GestureDetector(
-        onTap: _hideTooltip, // Tap outside hides tooltip
-        behavior: HitTestBehavior.translucent,
-        child: Stack(
-          children: [
-            Positioned(
-              left: targetGlobalPosition.dx,
-              top: targetGlobalPosition.dy - 50, // Position above child
-              child: Material(
-                color: Colors.transparent,
-                child: _TooltipContent(message: widget.message),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    Overlay.of(context).insert(_overlayEntry!);
-  }
-  */
-
   void _showTooltip() {
     if (_overlayEntry != null) return;
 
@@ -61,7 +26,6 @@ class _CustomTooltipWrapperState extends State<CustomTooltipWrapper> {
     if (renderBox == null) return;
 
     final overlay = Overlay.of(context, rootOverlay: true);
-    if (overlay == null) return;
 
     final overlayBox =
     overlay.context.findRenderObject() as RenderBox;

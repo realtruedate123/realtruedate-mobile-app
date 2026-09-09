@@ -26,7 +26,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _initializeAppAndNavigate() async {
     // 1. Simulate app loading time (Splash animation, Auth check, API calls)
     await Future.delayed(const Duration(seconds: 2));
-    print('mounted =====');
     if (!mounted) return;
     final controller = Get.find<SplashController>();
     final user = await SharedPrefHelper().getPersonList();

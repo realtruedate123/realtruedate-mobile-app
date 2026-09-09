@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 
@@ -30,16 +29,6 @@ class UserBlockDialog extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            /// Close Icon
-            /*Positioned(
-              top: 0,
-              right: 0,
-              child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: AppIcons.getCloseRedIcon(context),
-              ),
-            ),*/
-
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [

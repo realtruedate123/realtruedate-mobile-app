@@ -45,8 +45,6 @@ class ResetPasswordController extends GetxController {
   }
 
   void resetPassword() {
-    print(passwordCtrl.text);
-    print(reTypePasswordCtrl.text);
     passwordError.value = null;
     reTypePasswordError.value = null;
     errorMessage.value = '';
@@ -75,7 +73,6 @@ class ResetPasswordController extends GetxController {
       "new_password": passwordCtrl.text,
       "confirm_password": reTypePasswordCtrl.text
     };
-    // print('params $params');
     isLoading.value = true;
     final response = await BaseApiService().postRawData<VerifyOtpModel>(
       endpoint: Endpoints.resetPassword,
@@ -84,9 +81,6 @@ class ResetPasswordController extends GetxController {
     );
     isLoading.value = false;
     if (response.isSuccess && response.statusCode == 200) {
-      // print('reset password success ${response.data?.message}');
-      // Get.snackbar('Success', response.message ?? 'Your password has been updated');
-
       Get.toNamed(
         Routes.passwordResetSuccess,
       );
@@ -94,7 +88,6 @@ class ResetPasswordController extends GetxController {
       InternetDialog.showNoInternetDialog();
     } else {
       errorMessage.value = response.message ?? 'Something went wrong';
-      // Get.snackbar('Failed', response.message ?? 'Password update failed');
     }
   }
 }

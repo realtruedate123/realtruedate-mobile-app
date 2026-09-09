@@ -39,16 +39,6 @@ class SavedProfileView extends StatelessWidget {
               ,
               child: AppIcons.getBackButtonIcon(context, size: 38),)
         ),
-        // actions: [
-        //   Padding(
-        //     padding: EdgeInsets.only(right: 16.w),
-        //     child: InkWell(
-        //     onTap: () {
-        //         Navigator.pop(context);
-        //         },
-        //         child: AppIcons.getHomeAppbar(context, size: 38)),
-        //   ),
-        // ],
       ),
       body: SafeArea(
         child: Padding(

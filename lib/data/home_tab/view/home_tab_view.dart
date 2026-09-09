@@ -24,13 +24,8 @@ class HomeTabView extends StatelessWidget {
           backgroundColor: CupertinoColors.white,
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.68,
-            // width: MediaQuery.of(context).size.width - 100,
             child:
             Obx(() {
-              // if (controller.isLoading.value) {
-              //   return GlobalSkeletonWrapper(type: SkeletonType.home);
-              // }
-
               if (controller.feedListModel.isEmpty) {
                 return const Center(
                   child: Column(

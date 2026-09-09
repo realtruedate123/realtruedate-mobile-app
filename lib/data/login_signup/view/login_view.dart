@@ -10,7 +10,7 @@ import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class LoginView extends GetView<AuthController> {
-  const LoginView({Key? key}) : super(key: key);
+  const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,6 @@ class LoginView extends GetView<AuthController> {
                 icon: AppIcons.getEmailIcon(context),
                 keyboardType: TextInputType.emailAddress,
                 errorText: controller.emailError.value,
-                // onChanged: controller.clearEmailError,
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Email required';
                   if (!GetUtils.isEmail(v)) return 'Invalid email address';
@@ -45,7 +44,6 @@ class LoginView extends GetView<AuthController> {
                 icon: AppIcons.getPasswordIcon(context),
                 isPassword: true,
                 errorText: controller.passwordError.value,
-                // onChanged: controller.clearPasswordError,
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Password required';
                   if (v.length < 6) return 'Minimum 6 characters';
@@ -53,26 +51,6 @@ class LoginView extends GetView<AuthController> {
                 },
               ),
               ),
-
-              // Using the fixed FloatingTextField
-              // Example 1: Email Field
-              // FloatingLabelTextField1(
-              //   labelText: 'Email Address',
-              //   hintText: 'Enter your email',
-              //   controller: controller.emailCtrl,
-              //   keyboardType: TextInputType.emailAddress,
-              //   prefixIcon: const Icon(Icons.email_outlined),
-              //   floatingLabelColor: const Color(0xFF3B82F6),
-              //   focusedBorderColor: const Color(0xFF3B82F6),
-              //   borderRadius: 12,
-              //   customValidation: (value) {
-              //     if (value.isEmpty) return 'Email is required';
-              //     final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-              //     if (!emailRegex.hasMatch(value)) return 'Please enter a valid email';
-              //     return null;
-              //   },
-              // ),
-
               /// Forgot password
               Align(
                 alignment: Alignment.centerRight,
@@ -83,7 +61,6 @@ class LoginView extends GetView<AuthController> {
                         Get.toNamed(
                           Routes.forgotPassword,
                         );
-                        // Get.toNamed(Routes.uploadPhotoPage,);
                       },
                       child: AppTextFont(
                         'Forgot Password?',

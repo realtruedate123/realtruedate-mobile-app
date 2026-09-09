@@ -6,7 +6,6 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
-import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/message_tab/model/message_model.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -15,10 +14,8 @@ class ChatController extends GetxController with WidgetsBindingObserver {
   // Arguments passed from Navigation
   late String conversationId;
   late String currentUserId;
-  // late String accessToken;
 
   // Observable States
-  // var messages = <MessageModel>[].obs;
   var messages = <MessageObject>[].obs;
   var status = 'pending'.obs; // 'accepted', 'pending', 'declined'
   var isInitiator = false.obs;
@@ -41,14 +38,9 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     getUserData();
-
     // Read route arguments
     final args = Get.arguments as Map<String, dynamic>? ?? {};
     conversationId = args['conversation_id'] ?? '';
-    // currentUserId = args['current_user_id'] ?? '';
-    // accessToken = args['access_token'] ?? '';
-
-    // fetchChatMessagesAndEvaluateRules();
     getChatConversationsApiCall();
     connectWebSocket();
   }
@@ -58,17 +50,6 @@ class ChatController extends GetxController with WidgetsBindingObserver {
     try {
       // Fetch from API or storage
       currentUserId = await sharedPref.getUserId;
-
-      final data = await sharedPref.getPersonList();
-      final userProfile = data ?? DataModel();
-
-      // userProfileUrl = userProfile.user?.profileImage ?? '';
-      // if(userProfile.user?.profileImage?.isEmpty ?? false){
-      //   userProfileUrl = userProfile.photos?.first.photoUrl ?? '';
-      // }
-
-      print('home userid $currentUserId');
-      // print('home userProfileUrl $userProfileUrl');
     } finally {
     }
   }
@@ -144,8 +125,6 @@ class ChatController extends GetxController with WidgetsBindingObserver {
           final data = jsonDecode(rawData as String);
           final type = data['type'];
 
-          print('rawData $rawData');
-
           if (type == 'status') {
             otherUserStatus.value = data['data']?['status'] ?? 'offline';
           } else if (type == 'typing') {
@@ -205,7 +184,6 @@ class ChatController extends GetxController with WidgetsBindingObserver {
 
     if (response.isSuccess && response.statusCode == 200) {
       isLoading.value = false;
-      print('get message ${response.data?.data?.recipient}');
       conversationData.value = response.data?.data ?? ConversationData();
 
       status.value = response.data?.data?.status ?? 'pending';

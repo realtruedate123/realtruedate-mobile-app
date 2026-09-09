@@ -3,15 +3,12 @@ import 'package:get/get.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
-import 'package:real_true_date/data/login_signup/auth_controller.dart';
 import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:real_true_date/data/upload_picture_and_video/upload_video_controller.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/transparent_appbar.dart';
 import 'package:real_true_date/routes/routes.dart';
-import 'package:video_player/video_player.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class UploadVideoScreen extends StatelessWidget {
   UploadVideoScreen({super.key});
@@ -52,9 +49,6 @@ class UploadVideoScreen extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          /// Live recording timer
-                          // _recordingOverlay(),
-
                           /// White card
                           Container(
                             padding: EdgeInsets.all(20.r),
@@ -93,7 +87,6 @@ class UploadVideoScreen extends StatelessWidget {
                                     SizedBox(height: 20.h),
                                     _uploadedVideoTile(context),
                                     SizedBox(height: 10.h),
-                                    // SizedBox(height: MediaQuery.of(context).size.height * 0.10),
                                   ] else ...[
                                       SizedBox(height: MediaQuery.of(context).size.height * 0.14),
                                   ],
@@ -114,13 +107,10 @@ class UploadVideoScreen extends StatelessWidget {
                                       ),
                                     ),
                                   )),
-
-                                  // SizedBox(height: 20.h),
                                 ],
                               );
                             }),
                           ),
-                          // _submitButton(),
                         ],
                       ),
 
@@ -204,52 +194,6 @@ class UploadVideoScreen extends StatelessWidget {
     );
   }
 
-  /// ⏱ Recording overlay
-  Widget _recordingOverlay() {
-    return Positioned(
-      top: 90.h,
-      left: 0,
-      right: 0,
-      child: Obx(() {
-        if (!controller.isRecording.value) return const SizedBox();
-
-        return Center(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              /// blinking red dot
-              TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0.3, end: 1),
-                duration: const Duration(milliseconds: 700),
-                builder: (_, value, __) => Opacity(
-                  opacity: value,
-                  child: Icon(Icons.circle,
-                      color: Colors.red, size: 10),
-                ),
-                onEnd: () {},
-              ),
-              SizedBox(width: 8.h),
-
-              /// timer
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(20.r),
-                ),
-                child: Text(
-                  controller.formattedTime,
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-        );
-      }),
-    );
-  }
-
   /// ➕ Record card
   Widget _recordCard(BuildContext context) {
     final theme = AppTheme.of(context);
@@ -258,7 +202,6 @@ class UploadVideoScreen extends StatelessWidget {
       splashColor: Colors.transparent, // Hides the ripple
       highlightColor: Colors.transparent, // Hides the click highlight
       onTap: controller.recordVideo,
-      // onTap: controller.cameraVideo,
       child: DottedBorder(
         options: RoundedRectDottedBorderOptions(
           dashPattern: [8, 6],
@@ -396,35 +339,9 @@ class UploadVideoScreen extends StatelessWidget {
         fontWeight: FontWeight.w600,
         onTap: enabled
             ? () {
-          // if (controller.loginKey.currentState!.validate()) {
-          // controller.login();
-          // }
-          print('click $enabled');
           Get.toNamed(Routes.uploadPhotoPage, arguments: controller.isComing);
-          // Get.offAllNamed(
-          //   Routes.authPage,
-          //   arguments: AuthTab.login,
-          // );
-
         } : null,
       );
-      //   Container(
-      //   height: 54,
-      //   width: double.infinity,
-      //   decoration: BoxDecoration(
-      //     color: enabled ? const Color(0xFF6B63A8) : Colors.grey.shade300,
-      //     borderRadius: BorderRadius.circular(30),
-      //   ),
-      //   alignment: Alignment.center,
-      //   child: Text(
-      //     'Submit',
-      //     style: TextStyle(
-      //       color: enabled ? Colors.white : Colors.grey,
-      //       fontWeight: FontWeight.w600,
-      //       fontSize: 16,
-      //     ),
-      //   ),
-      // );
     });
   }
 }

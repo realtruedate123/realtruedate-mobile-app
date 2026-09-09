@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:real_true_date/data/confirmation_screens/model/info_step_model.dart';
 import 'package:real_true_date/helper/bottom_nav_wrapper.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class LivePhotoInformationController extends GetxController {
   late final int initialIndex = Get.arguments['initialIndex'];
-  // LivePhotoInformationController({this.initialIndex = 0});
 
   // Change from int to RxInt
   var currentIndex = 0.obs;
@@ -50,8 +48,6 @@ class LivePhotoInformationController extends GetxController {
 
     void nextStep() {
     if (currentIndex < steps.length - 1) {
-      print('currentIndex $currentIndex');
-
       if(currentIndex.value == 0){
         currentIndex.value += 1;
         Get.toNamed(
@@ -69,9 +65,6 @@ class LivePhotoInformationController extends GetxController {
       }
       update();
     } else {
-      // Final navigation
-      // Get.offAllNamed('/home');
-      print('final currentIndex $currentIndex');
       Get.offAll(() => BottomNavWrapper());
     }
   }

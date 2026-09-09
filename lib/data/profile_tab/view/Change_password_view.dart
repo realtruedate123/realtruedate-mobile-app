@@ -5,7 +5,6 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
-import 'package:real_true_date/data/login_signup/widgets/auth_header.dart';
 import 'package:real_true_date/data/login_signup/widgets/auth_input.dart';
 import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:real_true_date/data/profile_tab/controller/change_password_controller.dart';
@@ -65,7 +64,6 @@ class ChangePasswordView extends GetView<ChangePasswordController> {
                           icon: AppIcons.getPasswordIcon(context),
                           isPassword: true,
                           errorText: controller.currentPasswordError.value,
-                          // onChanged: controller.clearCurrentPasswordError,
                           validator: (v) {
                             if (v == null || v.isEmpty) return 'Current password required';
                             return null;
@@ -81,7 +79,6 @@ class ChangePasswordView extends GetView<ChangePasswordController> {
                           icon: AppIcons.getPasswordIcon(context),
                           isPassword: true,
                           errorText: controller.newPasswordError.value,
-                          // onChanged: controller.clearNewPasswordError,
                           validator: (v) {
                             if (v == null || v.isEmpty) return 'New password required';
                             if (v.length < 6) return 'Minimum 6 characters';
@@ -98,7 +95,6 @@ class ChangePasswordView extends GetView<ChangePasswordController> {
                           icon: AppIcons.getPasswordIcon(context),
                           isPassword: true,
                           errorText: controller.confirmPasswordError.value,
-                          // onChanged: controller.clearConfirmPasswordError,
                           validator: (v) {
                             if (v == null || v.isEmpty) return 'Please confirm password';
                             if (v != controller.newPasswordCtrl.text) return 'Passwords do not match';

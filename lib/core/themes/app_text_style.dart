@@ -34,4 +34,3 @@ TextTheme textTheme = TextTheme(
     fontWeight: FontWeight.normal,
   ),
 );
-// }

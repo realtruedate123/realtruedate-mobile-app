@@ -7,28 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1065335431597:android:ca4bdeea32e5105b284124",
+        "mobilesdk_app_id": "1:1065335431597:android:6c5d7fc3986d1844284124",
         "android_client_info": {
-          "package_name": "com.truedate"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCPS1B6sGXbajPkyYhL-iwhldbimaJ9Sd4"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1065335431597:android:13436d7c017d61e1284124",
-        "android_client_info": {
-          "package_name": "com.truedates"
+          "package_name": "com.realtruedate"
         }
       },
       "oauth_client": [],

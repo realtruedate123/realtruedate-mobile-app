@@ -4,12 +4,10 @@ import 'package:real_true_date/data/confirmation_screens/controller/LivePhotoInf
 import 'package:get/get.dart';
 import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
-import 'dart:ui';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LivePhotoInformationView extends StatelessWidget {
-  LivePhotoInformationView({super.key});
-
+  const LivePhotoInformationView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +25,6 @@ class LivePhotoInformationView extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
             child:
-            // Obx(() =>
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,11 +77,8 @@ class LivePhotoInformationView extends StatelessWidget {
                     onTap: controller.nextStep,
                   ),
                 ),
-
-                // SizedBox(height: 20.h),
               ],
             ),
-            // ),
           );
         },
       ),

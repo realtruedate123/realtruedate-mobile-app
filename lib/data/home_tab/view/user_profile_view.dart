@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/home_tab/controller/user_profile_controller.dart';
-import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
 import 'package:real_true_date/helper/app_cached_image.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/appbar_wrapper/user_profile_appbar_wrapper.dart';
@@ -33,11 +32,6 @@ class UserProfileDetailsScreen extends StatelessWidget {
         children: [
           /// Profile Image
           Positioned.fill(
-            // child: Image.asset(
-            //   AppIcons.dummyProfileDetailsCard,
-            //   fit: BoxFit.contain,
-            //   alignment: Alignment.topCenter,
-            // ),
             child: AppCachedImage(
               imageUrl: controller.matchData.photoUrl ?? '',
             ),
@@ -126,16 +120,6 @@ class UserProfileDetailsScreen extends StatelessWidget {
                             );
                           }).toList(),
                         ),
-
-                        /*Wrap(
-                          spacing: 12.w,
-                          runSpacing: 12.h,
-                          children: [
-                            _interestChip(context, 'Nature', filled: true),
-                            _interestChip(context, 'Travel'),
-                            _interestChip(context, 'Writing'),
-                          ],
-                        ),*/
                       ],
                     ),
                   ),

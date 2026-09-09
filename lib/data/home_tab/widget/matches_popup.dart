@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
@@ -36,7 +35,6 @@ class MatchPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
-    print('userProfileUrl $userProfileUrl');
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -79,7 +77,6 @@ class MatchPopup extends StatelessWidget {
                         child: _buildProfileImage(
                           context,
                           photoUrl
-                          // "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&q=80",
                         ),
                       ),
 
@@ -194,24 +191,4 @@ class MatchPopup extends StatelessWidget {
       ),
     );
   }
-
-/*
-  Widget _buildProfileImage(String image) {
-    return Container(
-      height: 110.h,
-      width: 110.w,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: Color(0xff6C63FF),
-          width: 4,
-        ),
-        image: DecorationImage(
-          image: NetworkImage(image),
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
-  */
 }

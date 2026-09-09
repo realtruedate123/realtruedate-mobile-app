@@ -70,13 +70,4 @@ class AuthenticatingDialog {
         )
     );
   }
-
-  // showError(
-  // "Something went wrong",
-  // onConfirmCallback: () {
-  // // Your controller logic here
-  // print("Confirmed from controller");
-  // fetchData();
-  // },
-  // );
 }

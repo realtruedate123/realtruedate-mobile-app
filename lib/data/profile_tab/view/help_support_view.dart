@@ -56,11 +56,8 @@ class HelpSupportView extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      // SizedBox(height: 12.h),
-
                       // Custom Reactive Tab Header
                       _buildTabBar(),
-
                       // Tab View Content Area
                       Expanded(
                         child: Obx(() {
@@ -90,7 +87,6 @@ class HelpSupportView extends StatelessWidget {
           top: Radius.circular(28.r),
         ),
       ),
-      // color: Colors.white, // Background color
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

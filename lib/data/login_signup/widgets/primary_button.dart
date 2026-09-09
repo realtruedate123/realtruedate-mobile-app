@@ -38,16 +38,6 @@ class PrimaryButton extends StatelessWidget {
           ),
         ),
         child:
-        // loading
-        //     ? SizedBox(
-        //   height: 22.h,
-        //   width: 22.w,
-        //   child: CircularProgressIndicator(
-        //     strokeWidth: 2.w,
-        //     color: Colors.white,
-        //   ),
-        // )
-        //     :
         AppTextFont(
           title,
           font: AppFontType.inter,
@@ -55,12 +45,6 @@ class PrimaryButton extends StatelessWidget {
           fontWeight: fontWeight,
           color: onTap == null ? theme.textDisableColor : Colors.white,
         )
-        // Text(
-        //   title,
-        //   style: TextStyle(
-        //     color: onTap == null ? theme.textDisableColor : Colors.white,
-        //   ),
-        // ),
       ),
     );
   }

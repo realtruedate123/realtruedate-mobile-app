@@ -24,11 +24,6 @@ class SavedProfileController extends GetxController{
     getSaveProfileListApiCall();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
   //TODO: Get Save profile List API Call
   Future<void> getSaveProfileListApiCall() async {
 

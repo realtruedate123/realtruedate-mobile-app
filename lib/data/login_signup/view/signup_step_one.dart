@@ -158,34 +158,6 @@ class SignupStepOne extends GetView<AuthController> {
             ),
           ),
           SizedBox(height: 20.h,),
-
-          /// Select your gender
-          // Align(
-          //   alignment: Alignment.centerLeft,
-          //   child: AppTextFont(
-          //     'Select your gender',
-          //     font: AppFontType.manrope,
-          //     fontSize: 13,
-          //     fontWeight: FontWeight.w500,
-          //     color: theme.inactiveTabColor,
-          //     maxLines: 1,
-          //     textAlign: TextAlign.center,
-          //   ),
-          // ),
-          // SizedBox(height: 8.h,),
-          // GenderToggle(controller: controller),
-
-          // SizedBox(height: 25.h,),
-          /// Zipcode
-          // AuthInput(
-          //     hint: 'Enter your zipcode',
-          //     controller: controller.zipCtrl,
-          //     icon: AppIcons.getPlaceIcon(context),
-          //     keyboardType: TextInputType.number
-          // ),
-
-
-          SizedBox(height: 20.h,),
           /// T&C
           Obx(() =>
               Row(
@@ -258,7 +230,6 @@ class SignupStepOne extends GetView<AuthController> {
             onTap: controller.isFormValid.value
                 ? () {
               print('Signup one allowed');
-              // controller.nextSignupStep();
               controller.submitSignup();
             }
                 : null,

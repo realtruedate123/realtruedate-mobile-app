@@ -1,8 +1,6 @@
 import 'package:get/get.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
-import 'package:real_true_date/data/login_signup/auth_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
 
@@ -36,13 +34,6 @@ class GenderToggle extends StatelessWidget {
               isSelected: controller.selectedGender.value == 'Female',
               onTap: () => controller.setGender('Female'),
             ),
-            // SizedBox(width: 20.w,),
-            // _genderButton(
-            //   context: context,
-            //   title: 'Other',
-            //   isSelected: controller.selectedGender.value == 'Other',
-            //   onTap: () => controller.setGender('Other'),
-            // ),
           ],
         ),
       );

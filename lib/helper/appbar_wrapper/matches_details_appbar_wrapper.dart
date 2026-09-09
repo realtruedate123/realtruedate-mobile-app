@@ -49,7 +49,6 @@ class MatchesDetailsAppbarWrapper extends StatelessWidget
                   highlightColor: Colors.transparent, // Hides the click highlight
                   onTap: () {
                     // Entire view click action
-                    print('block click');
                     Get.back();
                     showDialog(
                       context: context,
@@ -147,13 +146,6 @@ class MatchesDetailsAppbarWrapper extends StatelessWidget
 
         /// Close Button (flag based)
         if (showCloseButton)
-          // Padding(
-          //   padding: EdgeInsets.only(right: 16.w, left: 12.w),
-          //   child: _iconContainer(
-          //     icon: AppIcons.getCloseWhite(context, size: 38),
-          //     onTap: () => _showBlockPopup(context),
-          //   ),
-          // ),
           Padding(
             padding: EdgeInsets.only(right: 16.w, left: 12.w),
             child: Container(

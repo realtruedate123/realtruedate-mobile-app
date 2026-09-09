@@ -13,7 +13,6 @@ import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
 import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/helper/address_service_wrapper.dart';
-import 'package:real_true_date/helper/common_model.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class UserProfileController extends GetxController {
@@ -38,13 +37,7 @@ class UserProfileController extends GetxController {
     getProfileApiCall();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
   void toggleFavorite() {
-    // isFavorite.toggle();
     favoritesMatchProfileApiCall();
   }
 
@@ -106,7 +99,6 @@ class UserProfileController extends GetxController {
 
   Future<void> swipeCardApiCall(String direction) async {
     final authToken = await sharedPref.getAuthToken;
-
     final params = {
       "user_id": profileData.value.id ?? '',
       "direction": direction
@@ -116,10 +108,6 @@ class UserProfileController extends GetxController {
       'Content-Type': 'application/json',
       "Authorization": 'Bearer $authToken',
     };
-
-    print('token $authToken');
-    print('params $params');
-
     final response = await BaseApiService().postRawData<SwipeCardModel>(
         endpoint: Endpoints.swipeCard,
         fields: params,
@@ -129,7 +117,6 @@ class UserProfileController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      print('swipe card ${response.data?.message}');
       if(response.data?.data?.matched == true){
         showDialog(
           context: Get.context!,
@@ -144,7 +131,6 @@ class UserProfileController extends GetxController {
               isVerified: matchData.isVerified,
             userProfileUrl: userProfileUrl,
             onMessage: () {
-              print('message');
               createMessageApiCall();
             }
           ),
@@ -174,8 +160,6 @@ class UserProfileController extends GetxController {
       } else {
         Get.snackbar('Failed', response.message ?? 'failed');
       }
-      // errorMessage.value = response.message ?? 'Login failed';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
 
@@ -191,9 +175,6 @@ class UserProfileController extends GetxController {
       "Authorization": 'Bearer $authToken',
     };
 
-    print('token $authToken');
-    print('params $params');
-
     final response = await BaseApiService().postRawData<CreateChatModel>(
         endpoint: Endpoints.conversationsGetOrCreate,
         fields: params,
@@ -202,12 +183,9 @@ class UserProfileController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      print('create message ${response.data?.data?.conversationId}');
-
       Get.toNamed(Routes.chatView, arguments: {
         'conversation_id': response.data?.data?.conversationId
       });
-
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
@@ -219,8 +197,6 @@ class UserProfileController extends GetxController {
       } else {
         Get.snackbar('Failed', response.message ?? 'failed');
       }
-      // errorMessage.value = response.message ?? 'Login failed';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
 
@@ -239,8 +215,6 @@ class UserProfileController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200) {
-
-      print("Response data: ${response.data?.message}");
       isFavorite.value = response.data?.data?.isFavorite ?? false;
       Get.snackbar('Success', response.message ?? 'Profile saved',
           colorText: Colors.white,

@@ -26,7 +26,6 @@ class CameraViewController extends GetxController {
   final sharedPref = SharedPrefHelper();
 
   Timer? _timer;
-  // Timer? _textTimer;
   int currentCameraIndex = 0;
 
   List<CameraDescription> cameras = [];
@@ -46,9 +45,7 @@ class CameraViewController extends GetxController {
   Future<void> initCamera() async {
     try {
       cameras = await availableCameras();
-
       if (cameras.isEmpty) {
-        print("No cameras found");
         return;
       }
       currentCameraIndex = 0;
@@ -74,15 +71,6 @@ class CameraViewController extends GetxController {
     await cameraController.startVideoRecording();
     isRecording.value = true;
     countdown.value = seconds;
-
-   /* overlayText.value = randomTexts.first;
-
-    /// Random text changer
-    _textTimer = Timer.periodic(const Duration(seconds: 6), (timer) {
-      texts.shuffle();
-      overlayText.value = texts.first;
-    });
-*/
     /// Countdown timer
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       countdown.value--;
@@ -93,33 +81,10 @@ class CameraViewController extends GetxController {
     });
   }
 
-  /*Future<XFile?> stopRecording() async {
-    if (!isRecording.value) return null;
-
-    _timer?.cancel();
-    _textTimer?.cancel();
-
-    final file = await cameraController.stopVideoRecording();
-    isRecording.value = false;
-    recordedFile.value = file;
-
-    // initialize video preview
-    videoController.value = VideoPlayerController.file(File(file.path));
-    await videoController.value!.initialize();
-    await videoController.value!.setLooping(true);
-    await videoController.value!.play();
-
-    return file;
-  }*/
-
   Future<void> stopRecording() async {
     // Stop timers
     _timer?.cancel();
-    // _textTimer?.cancel();
     _timer = null;
-    // _textTimer = null;
-    // overlayText.value = '';
-
     if (!isRecording.value || !cameraController.value.isRecordingVideo) {
       // Already stopped
       isRecording.value = false;
@@ -134,7 +99,6 @@ class CameraViewController extends GetxController {
 
     await vController.initialize();   // ✅ initialize the local controller
     await vController.setLooping(false);
-    // await vController.play();
 
     videoController.value = vController; // assign first
     recordedFile.value = File(file.path); // then recorded file
@@ -165,17 +129,12 @@ class CameraViewController extends GetxController {
   }
 
   Future<void> switchCamera() async {
-    print('currentCameraIndex ${cameras.length}');
-
     if (cameras.isEmpty || cameras.length < 2) {
       debugPrint("Only one camera available");
       return;
     }
 
-    currentCameraIndex =
-        (currentCameraIndex + 1) % cameras.length;
-    print('currentCameraIndex $currentCameraIndex');
-
+    currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
     try {
       isInitialized.value = false;
 
@@ -221,21 +180,15 @@ class CameraViewController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      print(response.data?.data?.challenges?.length);
-
       sessionID = response.data?.data?.sessionId ?? '';
       challengeListModel.value = response.data?.data?.challenges ?? [];
-
       // Extract instructions into List<String>
       randomTexts = List<String>.from(
           challengeListModel.map((challenge) => capitalizeWords(challenge.instruction ?? ''))
       );
-
-
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      print('response.tokenExpired ${response.tokenExpired}');
       if(response.tokenExpired == true){
         final result = await BaseApiService().refreshToken();
         if (result.isSuccess) {
@@ -254,7 +207,6 @@ class CameraViewController extends GetxController {
     word.isNotEmpty
         ? word[0].toUpperCase() + word.substring(1)
         : ''
-    )
-        .join(' ');                       // join back into a sentence
+    ).join(' ');                       // join back into a sentence
   }
 }

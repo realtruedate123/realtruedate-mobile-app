@@ -17,16 +17,6 @@ class AuthScreen extends GetView<AuthController> {
     return Scaffold(
       backgroundColor: Colors.white,
       body:
-      // Container(
-      //   width: double.infinity,
-      //   height: double.infinity,
-      //   decoration: BoxDecoration(
-      //     image: DecorationImage(
-      //       image: AssetImage(AppIcons.headerImagePng),
-      //       fit: BoxFit.cover,
-      //     ),
-      //   ),
-      //   child:
         LayoutBuilder(
             builder: (context, constraints) {
               return SingleChildScrollView(
@@ -126,57 +116,6 @@ class AuthScreen extends GetView<AuthController> {
                             ),
                           ),
                         )
-                    /*
-                        Expanded(
-                          child: Container(
-                              // constraints: BoxConstraints(
-                              //   minHeight: MediaQuery.of(context).size.height * 0.95,
-                              //   // maxHeight: MediaQuery.of(context).size.height * 0.85,
-                              // ),
-                            padding: EdgeInsets.only(top: 10.h, left: 20.w, right: 20.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(28.r),
-                              ),
-                            ),
-                            child: SafeArea(
-                              top: false, // only bottom safe area inside
-                              child: Column(
-                                children: [
-                                  AuthTabs(controller: controller),
-                                  SizedBox(height: 20.h),
-
-                                  /// ANIMATED STEP TRANSITION
-                                  Expanded(
-                                    child: Obx(() {
-                                      return AnimatedSwitcher(
-                                        duration: const Duration(milliseconds: 350),
-                                        transitionBuilder: (child, anim) {
-                                          return SlideTransition(
-                                            position: Tween(
-                                              begin: const Offset(1, 0),
-                                              end: Offset.zero,
-                                            ).animate(anim),
-                                            child: FadeTransition(
-                                              opacity: anim,
-                                              child: child,
-                                            ),
-                                          );
-                                        },
-                                        child: controller.currentTab.value ==
-                                            AuthTab.signup
-                                            ? _SignupAnimated()
-                                            : LoginView(),
-                                      );
-                                    }),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        */
                       ],
                     ),
                   ),
@@ -185,7 +124,6 @@ class AuthScreen extends GetView<AuthController> {
             }
         ),
       );
-    // );
   }
 }
 

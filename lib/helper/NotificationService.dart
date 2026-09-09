@@ -11,9 +11,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/data/root_tab_controller.dart';
-import 'package:real_true_date/helper/notification_channel.dart';
 import 'package:real_true_date/routes/routes.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // 1️⃣ Firebase Messaging background handler
 @pragma('vm:entry-point') // Required for background execution
@@ -52,11 +50,6 @@ class NotificationService {
 
     // SAFELY FETCH INITIAL MESSAGE (Non-blocking for iOS)
     _checkInitialMessageSafely();
-
-    // _listenNotification();
-    // _getInitialNotification();
-    // _checkStoredNotification();
-
     // Fetch token after permissions are handled
     await getFCMToken();
 
@@ -69,31 +62,6 @@ class NotificationService {
       }
     });
   }
-
-  // NEW: Setup native notification channel
- /* void _listenNotification() {
-    IOSNotificationChannel.onNotification.listen((payload) {
-      print('LIVE NOTIFICATION: $payload');
-
-      final type = payload['type'];
-      final chatId = payload['chat_id'];
-      final screen = payload['screen'];
-
-      print('type: $type');
-      print('chatId: $chatId');
-      print('screen: $screen');
-    });
-  }
-
-  Future<void> _getInitialNotification() async {
-    final payload = await IOSNotificationChannel.getInitialNotification();
-
-    if (payload != null) {
-      print('INITIAL NOTIFICATION: $payload');
-
-      // App was opened from notification.
-    }
-  }*/
 
   void _checkInitialMessageSafely() {
     // Microtask ensures this runs without blocking app initialization/rendering
@@ -159,7 +127,7 @@ class NotificationService {
 
     // Listen for token refreshes
     FirebaseMessaging.instance.onTokenRefresh.listen((final String newToken) {
-      debugPrint('FIREBASE TOKEN REFRESH ==> $newToken');
+      // debugPrint('FIREBASE TOKEN REFRESH ==> $newToken');
       sharedPref.saveFirebaseToken(newToken);
     });
   }
@@ -206,15 +174,15 @@ class NotificationService {
     FirebaseMessaging.onMessage.listen((final RemoteMessage? message) async {
       try {
         if (message == null) return;
-        debugPrint('Received foreground FCM message: ${message.data}');
+        // debugPrint('Received foreground FCM message: ${message.data}');
         final RemoteNotification? notification = message.notification;
         final title = notification?.title ?? message.data['title'];
         final body = notification?.body ?? message.data['body'];
 
         if (title != null && body != null) {
-          debugPrint('notification Data${message.data}');
-          debugPrint('notification title${message.notification?.title}');
-          debugPrint('notification body${message.notification?.body}');
+          // debugPrint('notification Data${message.data}');
+          // debugPrint('notification title${message.notification?.title}');
+          // debugPrint('notification body${message.notification?.body}');
 
           // Trigger local notification show on BOTH Android and iOS
           if (Platform.isAndroid || (Platform.isIOS && message.notification == null)) {
@@ -310,7 +278,7 @@ class NotificationService {
 
   Future<void> redirectFromNotification(Map<String, dynamic> payload) async {
     //redirect to any specific screen.
-    print('payload $payload');
+    // print('payload $payload');
 
     try {
       final user = await sharedPref.getPersonList();
@@ -320,13 +288,13 @@ class NotificationService {
           Get.toNamed(Routes.chatView, arguments: {
             'conversation_id': payload['conversation_id']
           });
-          print('new message redirectFromNotification');
+          // print('new message redirectFromNotification');
         }
         else if(payload['type'] == 'profile_view'){
           Get.toNamed(Routes.someOneViewProfile, arguments: {
             'id': payload['sender_id']
           });
-          print('new message redirectFromNotification');
+          // print('new message redirectFromNotification');
         }
       } else {
         print('not logged');
@@ -334,9 +302,5 @@ class NotificationService {
     } catch (e) {
       print('not logged');
     }
-
-    //if (sharedPref.isLoggedIn) {
-    // final RedirectData redirectData = RedirectData.fromJson(payload);
-    // }
   }
 }

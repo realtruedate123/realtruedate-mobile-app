@@ -7,7 +7,6 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/core/network/check_connectivity.dart';
 import 'package:real_true_date/data/login_signup/model/register_model.dart';
-import 'package:real_true_date/helper/common_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 
@@ -19,44 +18,10 @@ enum HttpMethod {
 }
 
 class BaseApiService {
-  // final String baseUrl;
-
-  // BaseApiService({required key});
-  // final connectivity = Get.find<ConnectivityService>();
-
-  /// Checked internet connectivity
-  /*Future<bool> checkInternet() async {
-    print('No Internet 1 ${connectivity.isConnected}');
-    if (!connectivity.isConnected) {
-      print('No Internet');
-      EasyLoading.dismiss();
-
-      // Get.defaultDialog(
-      //   title: 'No Internet',
-      //   middleText: 'Please check your internet connection and try again.',
-      //   textConfirm: 'OK',
-      //   confirmTextColor: Colors.white,
-      //   onConfirm: () => Get.back(),
-      // );
-
-      return false;
-    }
-    return true;
-  }
-*/
-
   Future<bool> checkInternet() async {
     final isConnected = await ConnectivityService.isOnline();
     if (!isConnected) {
       EasyLoading.dismiss();
-      // Get.snackbar(
-      //   "No Internet",
-      //   "Please check your internet connection",
-      //   backgroundColor: Colors.red,
-      //   colorText: Colors.white,
-      //   snackPosition: SnackPosition.BOTTOM,
-      //   duration: Duration(seconds: 2),
-      // );
     }
     return isConnected;
   }
@@ -202,7 +167,7 @@ class BaseApiService {
         final Map<String, dynamic> jsonData = jsonDecode(body);
 
         if (statusCode >= 200 && statusCode < 300) {
-          debugPrint(" Form-data API data: ${jsonData['data']}");
+          // debugPrint(" Form-data API data: ${jsonData['data']}");
           // ✅ Success
           return ApiResponse(
             statusCode: statusCode,
@@ -219,7 +184,7 @@ class BaseApiService {
           );
         }
       } catch (e) {
-        debugPrint('URL: $endpoint');
+        // debugPrint('URL: $endpoint');
         // ❌ Invalid JSON
         return ApiResponse(
           statusCode: statusCode,
@@ -280,17 +245,17 @@ class BaseApiService {
 
       try {
         final Map<String, dynamic> jsonData = jsonDecode(responseBody);
-        debugPrint("Raw API data: $jsonData");
+        // debugPrint("Raw API data: $jsonData");
 
         if (statusCode >= 200 && statusCode < 300) {
-          debugPrint("Raw API data: ${jsonData['data']}");
+          // debugPrint("Raw API data: ${jsonData['data']}");
           return ApiResponse<T>(
             statusCode: statusCode,
             data: fromJson(jsonData),
             message: jsonData['message'] ?? "Success",
           );
         } else {
-          debugPrint("$statusCode Raw API data: ${jsonData['data']}");
+          // debugPrint("$statusCode Raw API data: ${jsonData['data']}");
           return ApiResponse<T>(
             statusCode: statusCode,
             message: jsonData['message'] ?? "Something went wrong",
@@ -299,7 +264,7 @@ class BaseApiService {
           );
         }
       } catch (e) {
-        debugPrint('URL: $endpoint');
+        // debugPrint('URL: $endpoint');
         return ApiResponse<T>(
           statusCode: statusCode,
           message: "Invalid JSON: $responseBody",
@@ -357,7 +322,7 @@ class BaseApiService {
       try {
         final Map<String, dynamic> jsonData = jsonDecode(responseBody);
 
-        debugPrint("Raw DELETE API data: $jsonData");
+        // debugPrint("Raw DELETE API data: $jsonData");
 
         if (statusCode >= 200 && statusCode < 300) {
           return ApiResponse<T>(
@@ -374,7 +339,7 @@ class BaseApiService {
           );
         }
       } catch (e) {
-        debugPrint('URL: $endpoint');
+        // debugPrint('URL: $endpoint');
 
         return ApiResponse<T>(
           statusCode: statusCode,
@@ -472,7 +437,7 @@ class BaseApiService {
 
       try {
         final Map<String, dynamic> jsonData = jsonDecode(responseBody);
-        debugPrint("Raw API data: $jsonData");
+        // debugPrint("Raw API data: $jsonData");
 
         if (statusCode >= 200 && statusCode < 300) {
           return ApiResponse<T>(
@@ -489,7 +454,7 @@ class BaseApiService {
           );
         }
       } catch (e) {
-        debugPrint('URL: $endpoint');
+        // debugPrint('URL: $endpoint');
         return ApiResponse<T>(
           statusCode: statusCode,
           message: "Invalid JSON: $responseBody",
@@ -557,12 +522,12 @@ class BaseApiService {
         if (file != null) {
           // Upload File object
           request.files.add(await http.MultipartFile.fromPath(fileField, file.path));
-          debugPrint("📤 Uploading File: ${file.path}");
+          // debugPrint("📤 Uploading File: ${file.path}");
         } else if (filePath != null && filePath.isNotEmpty) {
           if (filePath.startsWith('http')) {
             // 🌐 Remote URL — just send as form field
             request.fields[fileField] = filePath;
-            debugPrint("🌐 Using remote image URL: $filePath");
+            // debugPrint("🌐 Using remote image URL: $filePath");
           } else {
             // 📁 Local file path
             final fileToUpload = File(filePath);
@@ -613,7 +578,7 @@ class BaseApiService {
       final statusCode = response.statusCode;
       final model = fromJson(jsonData);
 
-      debugPrint('hasMultipart $model');
+      // debugPrint('hasMultipart $model');
 
       // ✅ Save locally if required
       if (saveLocal) {
@@ -621,18 +586,18 @@ class BaseApiService {
         await prefs.setString("userJson", jsonEncode(jsonData));
       }
 
-      debugPrint("✅ API upload success: $endpoint");
-      debugPrint("✅ API upload success: ${jsonData['message']?.toString() ?? "Success"}");
+      // debugPrint("✅ API upload success: $endpoint");
+      // debugPrint("✅ API upload success: ${jsonData['message']?.toString() ?? "Success"}");
 
       if (statusCode >= 200 && statusCode < 300) {
-        debugPrint("$endpoint ✅ GET API Success: ${jsonData['data']}");
+        // debugPrint("$endpoint ✅ GET API Success: ${jsonData['data']}");
         return ApiResponse(
           statusCode: statusCode,
           data: model,
           message: jsonData['message']?.toString() ?? "Success",
         );
       } else {
-        debugPrint("❌ GET API Error: $body");
+        // debugPrint("❌ GET API Error: $body");
         return ApiResponse(
             statusCode: statusCode,
             message: jsonData['message'] ?? "Something went wrong",
@@ -641,7 +606,7 @@ class BaseApiService {
         );
       }
     } catch (e, s) {
-      debugPrint('URL: $endpoint');
+      // debugPrint('URL: $endpoint');
       debugPrint("❌ API upload error: $e\n$s");
       return ApiResponse(
         statusCode: 500,
@@ -725,7 +690,7 @@ class BaseApiService {
     try {
       // Build URL with query parameters
       final uri = Uri.parse('${Endpoints.baseUrl}$endpoint').replace(queryParameters: queryParams);
-      debugPrint("$headers 📡 GET Request: $uri");
+      // debugPrint("$headers 📡 GET Request: $uri");
 
       final response = await http.get(uri, headers: headers);
       final statusCode = response.statusCode;
@@ -736,14 +701,14 @@ class BaseApiService {
 
         if (showLoader) EasyLoading.dismiss();
         if (statusCode >= 200 && statusCode < 300) {
-          debugPrint("$endpoint ✅ GET API Success: ${jsonData['data']}");
+          // debugPrint("$endpoint ✅ GET API Success: ${jsonData['data']}");
           return ApiResponse(
             statusCode: statusCode,
             data: fromJson(jsonData),
             message: jsonData['message'] ?? "Success",
           );
         } else {
-          debugPrint("❌ GET API Error: $body");
+          // debugPrint("❌ GET API Error: $body");
           return ApiResponse(
             statusCode: statusCode,
             message: jsonData['message'] ?? "Something went wrong",
@@ -753,7 +718,7 @@ class BaseApiService {
         }
       } catch (e) {
         if (showLoader) EasyLoading.dismiss();
-        debugPrint('URL: $endpoint');
+        // debugPrint('URL: $endpoint');
         debugPrint("⚠️ JSON Decode Error: $e");
         return ApiResponse(
           statusCode: statusCode,
@@ -779,7 +744,7 @@ class BaseApiService {
       http.Response response,
       T Function(Map<String, dynamic>) fromJson,
       ) {
-    debugPrint("📡 Response [${response.statusCode}]: ${response.body}");
+    // debugPrint("📡 Response [${response.statusCode}]: ${response.body}");
 
     if (response.statusCode == 401) {
       // 🔑 Handle unauthorized globally
@@ -876,14 +841,14 @@ class BaseApiService {
       final statusCode = response.statusCode;
 
       if (statusCode! >= 200 && statusCode < 300) {
-        debugPrint("$endpoint ✅ GET API Success: ${jsonData['data']}");
+        // debugPrint("$endpoint ✅ GET API Success: ${jsonData['data']}");
         return ApiResponse<T>(
           statusCode: response.statusCode ?? 200,
           message: jsonData['message'] ?? "Success",
           data: fromJson(jsonData),
         );
       } else {
-        debugPrint("❌ GET API Error: ${jsonData['data']}");
+        // debugPrint("❌ GET API Error: ${jsonData['data']}");
         return ApiResponse(
             statusCode: statusCode,
             message: jsonData['message'] ?? "Something went wrong",

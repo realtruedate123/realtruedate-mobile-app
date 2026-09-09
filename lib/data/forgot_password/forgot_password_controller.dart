@@ -40,27 +40,21 @@ class ForgotPasswordController extends GetxController {
   void forgotPassword(){
     emailError.value = null;
     errorMessage.value = '';
-
     if(validateEmail(emailCtrl.text) == false){
-      print('login');
       emailError.value = 'Enter a valid email address';
       isLoading.value = false;
       return;
     }
     else{
-      print('$emailCtrl.text');
       forgotPasswordApiCall();
     }
   }
 
   //TODO: Forgot password API Call
   Future<void> forgotPasswordApiCall() async {
-
     final params = {
       "email": emailCtrl.text,
     };
-
-    print('params $params');
 
     final response = await BaseApiService().postRawData<RegisterResponseModel>(
       endpoint: Endpoints.forgotPassword,
@@ -70,7 +64,6 @@ class ForgotPasswordController extends GetxController {
     isLoading.value = false;
 
     if (response.isSuccess && response.statusCode == 200) {
-
       Get.toNamed(
           Routes.otpScreen,
           arguments: {
@@ -83,7 +76,6 @@ class ForgotPasswordController extends GetxController {
       InternetDialog.showNoInternetDialog();
     } else {
       errorMessage.value = response.message ?? 'Something went wrong';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
   }
 }

@@ -1,12 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
-import 'package:image_picker/image_picker.dart';
-
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/login_signup/widgets/auth_input.dart';
@@ -191,60 +188,6 @@ class EditProfileView extends StatelessWidget {
                                 ),
       
                                 SizedBox(height: 5.h),
-      
-                                /// Gender picker (Looking for)
-                                /*InputContainer(
-                                  height: 58.h,
-                                  child: InkWell(
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onTap: () => showGenderPicker(context, controller),
-                                    child: Obx(
-                                          () => Row(
-                                        children: [
-                                          AppIcons.getPeopleIcon(
-                                            context,
-                                            color: controller.lookingGender.value == null
-                                                ? theme.iconTintColor
-                                                : theme.primaryColor,
-                                          ),
-                                          SizedBox(width: 20.w),
-                                          Expanded(
-                                            child: Text(
-                                              controller.lookingGender.value ??
-                                                  'Looking for (Male/Female)',
-                                              style: TextStyle(
-                                                fontSize: MediaQuery.textScalerOf(context).scale(15),
-                                                color: controller.lookingGender.value == null
-                                                    ? theme.iconTintColor
-                                                    : theme.primaryColor,
-                                              ),
-                                            ),
-                                          ),
-                                          Align(
-                                            alignment: Alignment.center,
-                                            child: AppIcons.getDownArrowIcon(
-                                              context,
-                                              size: 18,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),*/
-                                // SizedBox(height: 25.h),
-      
-                                /// How far are you willing to drive?
-                                /*Obx(
-                                      () => AuthInput(
-                                    hint: 'How far are you willing to drive?',
-                                    controller: controller.farWilingToDriveCtrl,
-                                    icon: AppIcons.getDriveEtaIcon(context),
-                                    errorText: controller.farWilingToDriveError.value,
-                                  ),
-                                ),*/
-      
                                 /// Interest Selection
                             Obx(() => InterestSelectionWidget(
                               interests: [
@@ -322,7 +265,6 @@ class EditProfileView extends StatelessWidget {
                                 PrimaryButton(
                                   title: 'Update Profile',
                                   onTap: () {
-                                    print('Update Profile');
                                     controller.updateProfileApiCall();
                                   },
                                 ),
@@ -495,26 +437,6 @@ class EditProfileView extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildSection(ProfileSection section) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (section.title != null) ...[
-          SizedBox(height: 20.h),
-          AppTextFont(
-            section.title!,
-            font: AppFontType.urbanist,
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-          SizedBox(height: 20.h),
-        ],
-        ...section.items.map((item) => _buildMenuItem(item)),
-      ],
     );
   }
 

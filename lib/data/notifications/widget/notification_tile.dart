@@ -68,31 +68,12 @@ class NotificationTile extends StatelessWidget {
             /// Profile Image
             Stack(
               children: [
-                // CircleAvatar(
-                //   radius: 26,
-                //   backgroundImage: NetworkImage(notification.senderPhoto ?? ''),
-                // ),
                 AppCachedImage(
                   imageUrl: notification.senderPhoto ?? '',
                   height: 40,
                   width: 40,
                   borderRadius: 40,
                 ),
-
-               /* if (notification.isOnline)
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      height: 12.h,
-                      width: 12.w,
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                    ),
-                  )*/
               ],
             ),
 
@@ -148,23 +129,6 @@ class NotificationTile extends StatelessWidget {
       ),
     );
   }
-
-  /*Widget _buildActionButtons(BuildContext context){
-    //connect_accepted
-    final bool isHighlight =
-        notification.notificationType == 'connect_request' &&
-            notification.conversationStatus == 'pending';
-
-    return isHighlight ?
-    Row(
-      children: [
-        _outlineButton(context, "Decline", onDecline ?? () {},),
-        const SizedBox(width: 10),
-        _filledButton(context, "Accept", onAccept ?? () {},),
-      ],
-    )
-        :  _outlinePurpleButton(context, "Message", onMessage ?? () {});
-  }*/
 
   Widget? _buildActionButtons(BuildContext context) {
     final bool isHighlight =
@@ -250,17 +214,6 @@ class NotificationTile extends StatelessWidget {
         fontWeight: FontWeight.w400,
         color: theme.primaryColor,
       ),
-    );
-  }
-
-  Widget _normalMessage(BuildContext context, String text) {
-    final theme = AppTheme.of(context);
-    return AppTextFont(
-      text,
-      font: AppFontType.inter,
-      fontSize: 12,
-      fontWeight: FontWeight.w400,
-      color: theme.primaryColor,
     );
   }
 }

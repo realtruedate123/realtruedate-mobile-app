@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -165,7 +164,6 @@ class EditProfileController extends GetxController {
       endpoint: Endpoints.updateUserProfile,
       method: 'PUT',
       fields: params,
-      // file: localImageFile.value,
       filePath: avatarPath.value,
       fileField: 'profile_image',
       headers: {
@@ -203,17 +201,7 @@ class EditProfileController extends GetxController {
       fromJson: (json) => LoginModel.fromJson(json),
     );
 
-    print('Get me api $header');
-
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      print('get me ${response.data?.data?.user?.id}');
-
-      print('response ${response.message}');
-      print('profile dob ${response.data?.data?.user?.dateOfBirth}');
-      print('profile url ${response.data?.data?.user?.profileImage}');
-      print('profile bio ${response.data?.data?.user?.bio}');
-      print('profile interests ${response.data?.data?.profile?.interests}');
-
       await Future.wait([
         prefHelper.savePersonList(response.data!.data!),
       ]);
@@ -237,10 +225,5 @@ class EditProfileController extends GetxController {
         // Get.snackbar('Failed', response.message ?? 'failed');
       }
     }
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 }

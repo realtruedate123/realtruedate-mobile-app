@@ -86,10 +86,6 @@ class ProfileData {
     photos: json["photos"] == null ? [] : List<Photo>.from(json["photos"]!.map((x) => Photo.fromJson(x))),
     profile: json["profile"] == null ? null : Profile.fromJson(json["profile"]),
     isFavorite: json["is_favorite"],
-    // latitude: json["latitude"],
-    // longitude: json["longitude"],
-    // latitude: double.tryParse(json["latitude"]?.toString() ?? ""),
-    // longitude: double.tryParse(json["longitude"]?.toString() ?? ""),
     latitude: _parseDouble(json["latitude"]),
     longitude: _parseDouble(json["longitude"]),
   );

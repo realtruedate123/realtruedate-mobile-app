@@ -100,8 +100,6 @@ class FeedbackController extends GetxController {
       "description": descriptionController.text,
     };
 
-    print('update params $params');
-
     final response = await BaseApiService().postRawData<CommonModel>(
       endpoint: Endpoints.feedback,
       fields: params,
@@ -121,7 +119,6 @@ class FeedbackController extends GetxController {
               Get.back();
             },
               onCancel: () {
-              print('back');
                 Get.back();
                 Future.delayed(const Duration(milliseconds: 500), () async {
                   Get.back();
@@ -129,14 +126,6 @@ class FeedbackController extends GetxController {
               }
           )
       );
-
-      // Get.snackbar(
-      //   'Success',
-      //   response.data?.message ?? 'Thank you! Your feedback has been submitted.',
-      //   snackPosition: SnackPosition.TOP,
-      //   backgroundColor: Colors.green.withOpacity(0.8),
-      //   colorText: Colors.white,
-      // );
       //'Thank you! Your feedback has been submitted.'
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();

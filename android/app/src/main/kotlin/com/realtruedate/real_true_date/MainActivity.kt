@@ -1,4 +1,4 @@
-package com.truedate
+package com.realtruedate
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
@@ -13,23 +12,12 @@ class MatchesTabController extends GetxController {
   final errorMessage = ''.obs;
 
   final sharedPref = SharedPrefHelper();
-
-  /// CONTROLLERS
-
-  /// Button enable state
-
   var matchesList = <MatchList>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-
     getMatchesListApiCall();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
   }
 
   //TODO: Get Matches List API Call
@@ -55,7 +43,6 @@ class MatchesTabController extends GetxController {
       InternetDialog.showNoInternetDialog();
     } else {
       errorMessage.value = response.message ?? 'Something went wrong';
-      // Get.snackbar('Failed', response.message ?? 'Registration failed');
     }
     update();
   }

@@ -100,7 +100,6 @@ class CustomCamera extends StatelessWidget {
                         TextButton(
                           onPressed: () {
                             final file = controller.capturedImage.value!;
-                            print("Final file: ${file.path}");
                             Get.back(result: file);
                           },
                           child: const Text(

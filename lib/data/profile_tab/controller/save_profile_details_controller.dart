@@ -29,13 +29,7 @@ class SaveProfileDetailsController extends GetxController {
     getProfileApiCall();
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
   void toggleFavorite() {
-    // isFavorite.toggle();
     favoritesMatchProfileApiCall();
   }
 
@@ -77,7 +71,6 @@ class SaveProfileDetailsController extends GetxController {
           getProfileApiCall();
         }
       } else {
-        print(response.message ?? 'failed');
         // Get.snackbar('Failed', response.message ?? 'failed');
       }
     }
@@ -99,8 +92,6 @@ class SaveProfileDetailsController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200) {
-
-      print("Response data: ${response.data?.message}");
       isFavorite.value = response.data?.data?.isFavorite ?? false;
       Get.snackbar('Success', response.message ?? 'Profile saved',
           colorText: Colors.white,

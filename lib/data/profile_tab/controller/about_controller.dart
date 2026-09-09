@@ -11,7 +11,6 @@ class AboutController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     webViewLoad();
   }
 

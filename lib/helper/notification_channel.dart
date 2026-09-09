@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/services.dart';
 
 class IOSNotificationChannel {
@@ -21,9 +20,6 @@ class IOSNotificationChannel {
         final payload = Map<String, dynamic>.from(
           call.arguments as Map,
         );
-
-        print('iOS notification payload: $payload');
-
         _notificationController.add(payload);
       }
     });

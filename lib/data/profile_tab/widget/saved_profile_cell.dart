@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
@@ -48,14 +46,9 @@ class SavedProfileCell extends StatelessWidget {
                   /// Image
                   AspectRatio(
                       aspectRatio: 3 / 4,
-                      // child: Image.asset(AppIcons.dummyProfileCard, fit: BoxFit.cover,),
                       child: AppCachedImage(
                         imageUrl: match.photoUrl ?? '',
                       )
-                    // Image.network(
-                    //   match.imageUrl,
-                    //   fit: BoxFit.cover,
-                    // ),
                   ),
 
                   Positioned(
@@ -100,15 +93,6 @@ class SavedProfileCell extends StatelessWidget {
                     overflow: TextOverflow.ellipsis, // truncates with "..."
                   ),
                 ),
-                /*SizedBox(width: 5.w),
-                Container(
-                  width: 5.w,
-                  height: 5.h,
-                  decoration: BoxDecoration(
-                    color: Color(0xff13E398),
-                    shape: BoxShape.circle,
-                  ),
-                ),*/
               ],
             ),
           ),

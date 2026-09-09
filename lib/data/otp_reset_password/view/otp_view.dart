@@ -118,7 +118,6 @@ class OtpView extends GetView<OtpController> {
                                 ),
                                 onPressed: () {
                                   // Code to execute when the button is pressed
-                                  // print('Text button pressed');
                                   controller.reSendOTP();
                                 },
                                 child: AppTextFont(
@@ -155,12 +154,7 @@ class OtpView extends GetView<OtpController> {
                               fontWeight: FontWeight.w600,
                               onTap: controller.isOtpValid.value
                                   ? () {
-                                // if (controller.loginKey.currentState!.validate()) {
-                                // controller.login();
-                                // }
-                                // print('click ${controller.verifyOtp}');
                                 controller.verifyOtp();
-
                               } : null,
                             ),
                           ),

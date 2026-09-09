@@ -62,9 +62,6 @@ class CustomCameraController extends GetxController {
 
     try {
       final XFile photo = await cameraController.takePicture();
-
-      // capturedImage.value = photo; // ✅ correct assignment
-
       // DO NOT manually declare Uint8List
       final bytes = await photo.readAsBytes();
 
@@ -81,13 +78,8 @@ class CustomCameraController extends GetxController {
         directory.path,
         'flipped_${DateTime.now().millisecondsSinceEpoch}.jpg',
       );
-
       final File newFile = File(newPath);
-
       await newFile.writeAsBytes(img.encodeJpg(flipped));
-
-      print("Flipped Image Path: ${newFile.path}");
-
       capturedImage.value = XFile(newFile.path);
 
     } catch (e) {

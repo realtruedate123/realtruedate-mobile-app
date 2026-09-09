@@ -117,12 +117,7 @@ class ResetPassword extends GetView<ResetPasswordController> {
                                   fontWeight: FontWeight.w600,
                                   onTap: controller.isResetPasswordEnabled.value
                                       ? () {
-                                    // if (controller.loginKey.currentState!.validate()) {
-                                    // controller.login();
-                                    // }
                                     controller.resetPassword();
-                                    // print('click reset password');
-
                                   } : null,
                                 ),
                               ),

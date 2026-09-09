@@ -47,10 +47,6 @@ class PasswordResetSuccess extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                     cornerRadius: true,
                   onTap: (){
-                    // Get.offAllNamed(
-                    //     Routes.authPage,
-                    //     arguments: AuthTab.login
-                    // );
                     Navigator.popUntil(context, ModalRoute.withName('/authPage'));
                   }
                 )

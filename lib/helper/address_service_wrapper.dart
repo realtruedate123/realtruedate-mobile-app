@@ -13,9 +13,6 @@ class AddressServiceWrapper {
 
   /// Fetch address details from latitude and longitude
   Future<UserLocationAddressModel?> getAddressFromLatLng(double latitude, double longitude) async {
-    // print('getAddressFromLatLng');
-    // print('$latitude $longitude');
-
     if(latitude == 0 && longitude == 0){
       addressModel = UserLocationAddressModel(
         streetName: '',
@@ -45,14 +42,6 @@ class AddressServiceWrapper {
         currentAddress.value =
         "${p.street ?? ''}, ${p.subLocality ?? ''}, ${p.locality ?? ''}, "
             "${p.administrativeArea ?? ''}, ${p.postalCode ?? ''}";
-
-        // Debug info
-        debugPrint('street: ${p.street}');
-        debugPrint('locality: ${p.locality}');
-        debugPrint('administrativeArea: ${p.administrativeArea}');
-        debugPrint('country: ${p.country}');
-        debugPrint('subLocality: ${p.subLocality}');
-        debugPrint('postalCode: ${p.postalCode}');
 
         addressModel = UserLocationAddressModel(
           streetName: p.street,

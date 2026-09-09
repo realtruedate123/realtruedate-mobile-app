@@ -4,21 +4,14 @@ import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
-import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/select_dream_partner/model/dream_date_response_model.dart';
-import 'package:real_true_date/helper/bottom_nav_wrapper.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 // CONTROLLER
 class SelectDreamPartnerController extends GetxController {
   final isLoading = false.obs;
-
-
   final errorMessage = ''.obs;
-
   final sharedPref = SharedPrefHelper();
-
-  final List<DreamDateItem> _selectedItems = [];
 
   // Make these reactive
   var catalogListModel = <DreamDateItem>[].obs;
@@ -83,11 +76,8 @@ class SelectDreamPartnerController extends GetxController {
 
     isLoading.value = false;
 
-    if (response.isSuccess &&
-response.statusCode == 200 &&
-        response.data?.success == true) {
-      catalogListModel.value =
-          response.data?.data.catalog.reversed.toList() ?? [];
+    if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
+      catalogListModel.value = response.data?.data.catalog.reversed.toList() ?? [];
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
@@ -127,7 +117,6 @@ response.statusCode == 200 &&
       "catalog_ids": catalogIds,
     };
 
-    print('Payload: $payload');
     final authToken = await sharedPref.getAuthToken;
 
     final header = {
@@ -145,24 +134,14 @@ response.statusCode == 200 &&
     isLoading.value = false;
 
     if (response.isSuccess && response.statusCode == 200) {
-      // Success feedback
-      // Get.snackbar(
-      //   'Success',
-      //   'Selection submitted successfully!',
-      //   snackPosition: SnackPosition.BOTTOM,
-      // );
-
       // Optional: clear selection after submit
       controller.selectedCatalogListModel.clear();
       // controller.isSubmitButtonEnable.value = false;
       controller.update();
-      // Get.offAll(() => BottomNavWrapper());
-
       Get.toNamed(Routes.confirmationInfo, arguments: {
         'initialIndex': 1,
         },
       );
-
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {

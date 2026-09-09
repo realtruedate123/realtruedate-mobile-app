@@ -1,32 +1,3 @@
-// class MessageModel {
-//   final String id;
-//   final String senderId;
-//   final String message;
-//   final String? imageUrl;
-//   final bool isMe;
-//   final String type; // 'text' or 'image'
-//
-//   MessageModel({
-//     required this.id,
-//     required this.senderId,
-//     required this.message,
-//     this.imageUrl,
-//     required this.isMe,
-//     this.type = 'text',
-//   });
-//
-//   factory MessageModel.fromJson(Map<String, dynamic> json, String currentUserId) {
-//     return MessageModel(
-//       id: json['message_id'] ?? '',
-//       senderId: json['sender_id'] ?? '',
-//       message: json['content'] ?? '',
-//       imageUrl: json['image_url'],
-//       isMe: json['sender_id'] == currentUserId,
-//       type: json['message_type'] ?? 'text',
-//     );
-//   }
-// }
-
 /// Message List
 class MessageListModel {
   final bool? success;

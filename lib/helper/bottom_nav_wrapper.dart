@@ -26,7 +26,6 @@ class _BottomNavWrapperState extends State<BottomNavWrapper> {
   @override
   void initState() {
     super.initState();
-    // controller = PersistentTabController(initialIndex: 0);
   }
 
   List<Widget> _buildScreens() {
@@ -203,13 +202,6 @@ class _BottomNavWrapperState extends State<BottomNavWrapper> {
       backgroundColor: Colors.white,
       decoration: NavBarDecoration(
         borderRadius: BorderRadius.circular(0),
-        // Add top border (1px line)
-        // border: Border(
-        //   top: BorderSide(
-        //     color: theme.text, // color of the line
-        //     width: 0.1,                     // thickness of the line
-        //   ),
-        // ),
         boxShadow: [
           BoxShadow(
             color: theme.inactiveTabColor.withOpacity(0.4),
@@ -248,12 +240,6 @@ class _BottomNavWrapperState extends State<BottomNavWrapper> {
             controller.getMatchesListApiCall(); // load initial state
           }
         }
-        // else if (index == 3) {
-        //   if (Get.isRegistered<ProfileController>()) {
-        //     final controller = Get.find<ProfileController>();
-        //     controller.getUserData(); // load initial state
-        //   }
-        // }
       },
     );
   }
