@@ -107,7 +107,7 @@ class NotificationController extends GetxController {
     };
 
     final response = await BaseApiService().postRawData<CommonModel>(
-      endpoint: '${Endpoints.notificationsAcceptOrDecline}/$conversationId/respond',
+      endpoint: '${Endpoints.chatConversations}/$conversationId/respond',
       fields: params,
       headers: header,
       fromJson: (json) => CommonModel.fromJson(json),

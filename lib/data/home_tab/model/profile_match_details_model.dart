@@ -43,6 +43,7 @@ class ProfileData {
   final bool? isFavorite;
   final double? latitude;
   final double? longitude;
+  final bool? isBlocked;
 
   ProfileData({
     this.id,
@@ -65,6 +66,7 @@ class ProfileData {
     this.isFavorite,
     this.latitude,
     this.longitude,
+    this.isBlocked,
   });
 
   factory ProfileData.fromJson(Map<String, dynamic> json) => ProfileData(
@@ -88,6 +90,7 @@ class ProfileData {
     isFavorite: json["is_favorite"],
     latitude: _parseDouble(json["latitude"]),
     longitude: _parseDouble(json["longitude"]),
+    isBlocked: json["is_blocked"],
   );
 
   static double? _parseDouble(dynamic value) {
@@ -120,6 +123,7 @@ class ProfileData {
     "is_favorite": isFavorite,
     "latitude": latitude,
     "longitude": longitude,
+    "is_blocked": isBlocked,
   };
 }
 

@@ -84,7 +84,7 @@ class HomeTabController extends GetxController {
   Future<void> getFeedListApiCall() async {
     isLoading.value = true;
     final authToken = await sharedPref.getAuthToken;
-
+    print('getFeedListApiCall');
     errorMessage.value = '';
     final header = {
       'Content-Type': 'application/json',

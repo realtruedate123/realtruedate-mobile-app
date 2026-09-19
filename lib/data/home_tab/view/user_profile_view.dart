@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
@@ -8,7 +10,6 @@ import 'package:real_true_date/helper/app_text_font.dart';
 import 'package:real_true_date/helper/appbar_wrapper/user_profile_appbar_wrapper.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/helper/custom_dialog/reject_match_dialog.dart';
-import 'package:real_true_date/helper/string_class.dart';
 
 class UserProfileDetailsScreen extends StatelessWidget {
   final controller = Get.find<UserProfileController>();
@@ -18,145 +19,181 @@ class UserProfileDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
-    final userInterests = controller.profileData.value.profile?.interests ?? [];
+    return  Obx(() {
+      final userInterests = controller.profileData.value.profile?.interests ?? [];
 
-    return Scaffold(
-      extendBodyBehindAppBar: true, // This is key to allow the body to go behind the app bar
-      backgroundColor: Colors.black,
-      appBar: UserProfileAppbarWrapper(
-        isStarFilled: controller.isFavorite,
-        onStarTap: controller.toggleFavorite,
-        showShadow: true,
-      ),
-      body: Stack(
-        children: [
-          /// Profile Image
-          Positioned.fill(
-            child: AppCachedImage(
-              imageUrl: controller.matchData.photoUrl ?? '',
-            ),
+        return Scaffold(
+          extendBodyBehindAppBar: true, // This is key to allow the body to go behind the app bar
+          backgroundColor: Colors.black,
+          appBar: UserProfileAppbarWrapper(
+            isStarFilled: controller.isFavorite,
+            onStarTap: controller.toggleFavorite,
+            isBlocked: controller.profileData.value.isBlocked ?? false,
+            showShadow: true,
+            isBlockedButton: true,
+            onBlock: () {
+              controller.blockUser();
+            },
           ),
+          body: Stack(
+            children: [
+              /// Profile Image
+              Positioned.fill(
+                child: AppCachedImage(
+                  imageUrl: controller.matchData.photoUrl ?? '',
+                ),
+              ),
 
-          /// Bottom Card
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                /// White Card
-                Padding(
-                  padding: EdgeInsets.only(top: 32.r),
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(24.w, 64.h, 24.w, 32.h),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(40.r),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Column(
-                            children: [
-                              AppTextFont(
-                                '${controller.matchData.firstName}, ${controller.matchData.age}',
-                                font: AppFontType.urbanist,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
-                                color: theme.dark,
-                                textAlign: TextAlign.center,
+              /// Bottom Card
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    /// White Card
+                    Padding(
+                      padding: EdgeInsets.only(top: 32.r),
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(24.w, 64.h, 24.w, 32.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(40.r),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Center(
+                              child: Column(
+                                children: [
+                                  AppTextFont(
+                                    '${controller.matchData.firstName}, ${controller.matchData.age}',
+                                    font: AppFontType.urbanist,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w600,
+                                    color: theme.dark,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  AppTextFont(
+                                    '${controller.cityName.value}, ${controller.stateName.value}',
+                                    font: AppFontType.lato,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: theme.inactiveTabColor,
+                                  ),
+                                ],
                               ),
-                              SizedBox(height: 4.h),
+                            ),
+
+                            SizedBox(height: 15.h),
+                            AppTextFont(
+                              'About',
+                              font: AppFontType.urbanist,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: theme.blackColor,
+                            ),
+
+                            SizedBox(height: 8.h),
+
+                            if(controller.profileData.value.bio != '')...[
                               AppTextFont(
-                                '${controller.cityName.value}, ${controller.stateName.value}',
+                                controller.profileData.value.bio ?? '',
                                 font: AppFontType.lato,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 color: theme.inactiveTabColor,
+                                maxLines: 4,
+                              ),
+                            ]else...[
+                              AppTextFont(
+                                'No bio provided yet.',
+                                font: AppFontType.urbanist,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: theme.inactiveTabColor,
                               ),
                             ],
-                          ),
-                        ),
 
-                        SizedBox(height: 15.h),
-                        AppTextFont(
-                          'About',
-                          font: AppFontType.urbanist,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: theme.blackColor,
-                        ),
-                        SizedBox(height: 8.h),
-                        AppTextFont(
-                          controller.profileData.value.bio ?? '',
-                          font: AppFontType.lato,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: theme.inactiveTabColor,
-                          maxLines: 4,
-                        ),
 
-                        SizedBox(height: 24.h),
-                        AppTextFont(
-                          'Interest',
-                          font: AppFontType.urbanist,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: theme.blackColor,
-                        ),
-                        SizedBox(height: 12.h),
-                        Wrap(
-                          spacing: 12.w,
-                          runSpacing: 12.h,
-                          children: availableInterests.map((interest) {
-                            final isSelected = userInterests.contains(interest);
-                            return _interestChip(
-                              context,
-                              interest,
-                              filled: isSelected,
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                            /// ==================================================
+                            /// INTERESTS
+                            /// ==================================================
+                            SizedBox(height: 24.h),
 
-                /// Floating Buttons (HALF OVER CARD)
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            // TODO: cancel action
-                            print('Cancel tapped');
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (_) => RejectMatchDialog(
-                                onReject: () {
-                                  controller.swipeCardApiCall('left');
-                                },
+                            AppTextFont(
+                              'Interest',
+                              font: AppFontType.urbanist,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: theme.blackColor,
+                            ),
+
+                            if (userInterests.isNotEmpty) ...[
+                              SizedBox(height: 12.h),
+
+                              Wrap(
+                                spacing: 12.w,
+                                runSpacing: 12.h,
+                                children: userInterests.map((interest) {
+                                  return _interestChip(
+                                    context,
+                                    interest,
+                                    filled: true,
+                                  );
+                                }).toList(),
                               ),
-                            );
-                          },
-                          child: AppIcons.getCancelCardIcon(context, size: 60)
+                            ]else...[
+                              SizedBox(height: 8.h),
+
+                              AppTextFont(
+                                'No interests listed.',
+                                font: AppFontType.urbanist,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: theme.inactiveTabColor,
+                              ),
+                            ]
+                          ],
+                        ),
                       ),
-                      SizedBox(width: 24.w),
-                      GestureDetector(
-                          onTap: () {
-                            // TODO: liked action
-                            print('Liked tapped');
-                            controller.swipeCardApiCall('right');
-                            /*showDialog(
+                    ),
+
+                    /// Floating Buttons (HALF OVER CARD)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                // TODO: cancel action
+                                print('Cancel tapped');
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (_) => RejectMatchDialog(
+                                    onReject: () {
+                                      controller.swipeCardApiCall('left');
+                                    },
+                                  ),
+                                );
+                              },
+                              child: AppIcons.getCancelCardIcon(context, size: 60)
+                          ),
+                          SizedBox(width: 24.w),
+                          GestureDetector(
+                              onTap: () {
+                                // TODO: liked action
+                                print('Liked tapped');
+                                controller.swipeCardApiCall('right');
+                                /*showDialog(
                               context: context,
                               barrierDismissible: false,
                               builder: (_) => MatchPopup(
@@ -173,18 +210,19 @@ class UserProfileDetailsScreen extends StatelessWidget {
                                 },
                               ),
                             );*/
-                          },
-                          child: AppIcons.getLikeCardIcon(context, size: 60)
+                              },
+                              child: AppIcons.getLikeCardIcon(context, size: 60)
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        );
+    });
   }
 
   Widget _interestChip(BuildContext context, String text, {bool filled = false}) {

@@ -117,6 +117,7 @@ class Recipient {
   final bool? isVerified;
   final bool? isOnline;
   final String? lastSeen;
+  final bool? isBlocked;
 
   Recipient({
     this.id,
@@ -125,6 +126,7 @@ class Recipient {
     this.isVerified,
     this.isOnline,
     this.lastSeen,
+    this.isBlocked,
   });
 
   factory Recipient.fromJson(Map<String, dynamic> json) => Recipient(
@@ -134,6 +136,7 @@ class Recipient {
     isVerified: json["is_verified"],
     isOnline: json["is_online"],
     lastSeen: json["last_seen"],
+    isBlocked: json["is_blocked"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -143,5 +146,6 @@ class Recipient {
     "is_verified": isVerified,
     "is_online": isOnline,
     "last_seen": lastSeen,
+    "is_blocked": isBlocked,
   };
 }

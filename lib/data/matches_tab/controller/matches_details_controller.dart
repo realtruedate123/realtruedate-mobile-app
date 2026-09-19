@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_true_date/core/local/shared_pref.dart';
 import 'package:real_true_date/core/network/InternetDialog.dart';
@@ -44,6 +45,15 @@ class MatchesDetailsController extends GetxController {
   }
 
   //TODO: Block user API call
+  Future<void> blockUser() async {
+    if(matchData?.user?.isBlocked == true){
+      unBlockedUserApiCall();
+    }
+    else{
+      blockUserApiCall();
+    }
+  }
+
   Future<void> blockUserApiCall() async {
     final authToken = await sharedPref.getAuthToken;
     final header = {
@@ -51,23 +61,86 @@ class MatchesDetailsController extends GetxController {
       "Authorization": 'Bearer $authToken',
     };
 
-    final Map<String, String> params = {
-      "user_id": matchDataId,
-    };
+    // final Map<String, String> params = {
+    //   "user_id": matchDataId,
+    // };
 
     final response = await BaseApiService().postRawData<CommonModel>(
-      endpoint: Endpoints.blockUser,
-      fields: params,
+      endpoint: '${Endpoints.blockUser}/$matchDataId',
+      // fields: params,
       headers: header,
       fromJson: (json) => CommonModel.fromJson(json),
     );
-    if (response.isSuccess && response.statusCode == 200) {
-      Get.snackbar('Success', response.message ?? 'User blocked successfully');
-      Get.back(result: true);
+    if (response.isSuccess && response.statusCode == 201) {
+      Get.snackbar('Success', response.message ?? 'User blocked successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
+      Future.delayed(const Duration(seconds: 4), () {
+        Get.back(result: true);
+      });
+    } else if (response.isSuccess && response.statusCode == 200) {
+      Get.snackbar('Success', response.message ?? 'User blocked successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
+      Future.delayed(const Duration(seconds: 4), () {
+        Get.back(result: true);
+      });
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      Get.snackbar('Failed', response.message ?? 'Block failed');
+      Get.snackbar('Failed', response.message ?? 'Block failed',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
+    }
+  }
+
+  Future<void> unBlockedUserApiCall() async {
+    final authToken = await sharedPref.getAuthToken;
+
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    final response = await BaseApiService().deleteRawData<CommonModel>(
+      endpoint: '${Endpoints.unBlockUser}/$matchDataId',
+      headers: header,
+      fromJson: (json) => CommonModel.fromJson(json),
+    );
+    isLoading.value = false;
+
+    if (response.isSuccess && response.statusCode == 200) {
+      Get.snackbar('Success', response.message ?? 'User Unblocked successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
+      Future.delayed(const Duration(seconds: 4), () {
+        Get.back(result: true);
+      });
+    } else if (response.isSuccess && response.statusCode == 201) {
+      Get.snackbar('Success', response.message ?? 'User Unblocked successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
+      Future.delayed(const Duration(seconds: 4), () {
+        Get.back(result: true);
+      });
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      Get.snackbar('Failed', response.message ?? 'Unblock failed',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
     }
   }
 
@@ -132,10 +205,13 @@ class MatchesDetailsController extends GetxController {
     );
 
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
-      Get.toNamed(Routes.chatView, arguments: {
-        'conversation_id': response.data?.data?.conversationId
+      final result = await Get.toNamed(Routes.chatView, arguments: {
+        'conversation_id': response.data?.data?.conversationId,
+        'is_blocked': matchData?.user?.isBlocked ?? false
       });
-
+      if(result == true){
+        getProfileApiCall();
+      }
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {

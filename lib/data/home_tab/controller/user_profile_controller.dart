@@ -13,6 +13,7 @@ import 'package:real_true_date/data/home_tab/model/swipe_card_model.dart';
 import 'package:real_true_date/data/home_tab/widget/matches_popup.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/helper/address_service_wrapper.dart';
+import 'package:real_true_date/helper/common_model.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class UserProfileController extends GetxController {
@@ -61,7 +62,6 @@ class UserProfileController extends GetxController {
       'Content-Type': 'application/json',
       "Authorization": 'Bearer $authToken',
     };
-
     final response = await BaseApiService().getMethod<ProfileMatchDetailsModel>(
       endpoint: '${Endpoints.matchProfileUser}/${matchData.userId}/profile',
       headers: header,
@@ -74,7 +74,6 @@ class UserProfileController extends GetxController {
     if (response.isSuccess && response.statusCode == 200 && response.data?.success == true) {
       profileData.value = response.data?.data ?? ProfileData();
       isFavorite.value = response.data?.data?.isFavorite ?? false;
-
       final address = await locationService.getAddressFromLatLng(
         profileData.value.latitude ?? 0,
         profileData.value.longitude ?? 0,
@@ -234,6 +233,101 @@ class UserProfileController extends GetxController {
             backgroundColor: Colors.red
         );
       }
+    }
+  }
+
+  //TODO: Block user API call
+  Future<void> blockUser() async {
+    if(profileData.value.isBlocked == true){
+      unBlockedUserApiCall();
+    }
+    else{
+      blockUserApiCall();
+    }
+  }
+
+  Future<void> blockUserApiCall() async {
+    final authToken = await sharedPref.getAuthToken;
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    final response = await BaseApiService().postRawData<CommonModel>(
+      endpoint: '${Endpoints.blockUser}/${matchData.userId}',
+      headers: header,
+      fromJson: (json) => CommonModel.fromJson(json),
+    );
+    if (response.isSuccess && response.statusCode == 201) {
+      Get.snackbar('Success', response.message ?? 'User blocked successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
+      Future.delayed(const Duration(seconds: 4), () {
+        Get.back(result: true);
+      });
+    } else if (response.isSuccess && response.statusCode == 200) {
+      Get.snackbar('Success', response.message ?? 'User blocked successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
+      Future.delayed(const Duration(seconds: 4), () {
+        Get.back(result: true);
+      });
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      Get.snackbar('Failed', response.message ?? 'Block failed',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
+    }
+  }
+
+  Future<void> unBlockedUserApiCall() async {
+    final authToken = await sharedPref.getAuthToken;
+
+    final header = {
+      'Content-Type': 'application/json',
+      "Authorization": 'Bearer $authToken',
+    };
+
+    final response = await BaseApiService().deleteRawData<CommonModel>(
+      endpoint: '${Endpoints.unBlockUser}/${matchData.userId}',
+      headers: header,
+      fromJson: (json) => CommonModel.fromJson(json),
+    );
+    isLoading.value = false;
+
+    if (response.isSuccess && response.statusCode == 200) {
+      Get.snackbar('Success', response.message ?? 'User Unblocked successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
+      Future.delayed(const Duration(seconds: 4), () {
+        Get.back(result: true);
+      });
+    } else if (response.isSuccess && response.statusCode == 201) {
+      Get.snackbar('Success', response.message ?? 'User Unblocked successfully',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
+      Future.delayed(const Duration(seconds: 4), () {
+        Get.back(result: true);
+      });
+    } else if (response.statusCode == 0) {
+      InternetDialog.showNoInternetDialog();
+    } else {
+      Get.snackbar('Failed', response.message ?? 'Unblock failed',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2)
+      );
     }
   }
 }

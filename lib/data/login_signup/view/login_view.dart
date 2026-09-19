@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
@@ -7,6 +8,7 @@ import 'package:real_true_date/data/login_signup/widgets/auth_input.dart';
 import 'package:real_true_date/data/login_signup/widgets/primary_button.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
+import 'package:real_true_date/helper/icon_checkbox.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class LoginView extends GetView<AuthController> {
@@ -74,30 +76,80 @@ class LoginView extends GetView<AuthController> {
               ),
             ],
           ),
-
           Spacer(),
+          /// Error message
+          Obx(() => controller.errorMessage.isEmpty
+              ? const SizedBox()
+              : Padding(
+            padding: EdgeInsets.only(top: 12.h, bottom: 20.h),
+            child: Text(
+              controller.errorMessage.value,
+              style: TextStyle(
+                color: theme.alert,
+                fontSize: 14.sp,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          )),
+          SizedBox(height: 10.h,),
+          /// T&C
+          Obx(() =>
+              Row(
+                children: [
+                  SizedBox(width: 10.w,),
+                  SvgIconCheckbox(
+                    value: controller.isTCChecked.value,
+                    checkedSvg: AppIcons.checkMark,
+                    uncheckedSvg: AppIcons.uncheckMark,
+                    onChanged: (v) {
+                      controller.isTCChecked.value = v;
+                      controller.toggleLoginTC(v);
+                    },
+                  ),
+                  SizedBox(width: 5.w,),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                            color: theme.primaryColor,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12.sp
+                        ),
+                        children: [
+                          TextSpan(text: 'I agree to the ', style: TextStyle(color: theme.dark)),
+                          TextSpan(
+                            text: 'Terms of Service',
+                            style: TextStyle(decoration: TextDecoration.underline),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                // Navigate to Terms of Service
+                                controller.openTermPolicy('terms');
+                              },
+                          ),
+                          TextSpan(text: ' and ', style: TextStyle(color: theme.dark)),
+                          TextSpan(
+                            text: 'Privacy Policy',
+                            style: TextStyle(decoration: TextDecoration.underline),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                // Navigate to Terms of Service
+                                controller.openTermPolicy('policy');
+                              },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+          ),
+        SizedBox(height: 20.h,),
           /// Login button
           SafeArea(
             top: false,
             child: Column(
               children: [
-                /// Error message
-                Obx(() => controller.errorMessage.isEmpty
-                    ? const SizedBox()
-                    : Padding(
-                  padding: EdgeInsets.only(top: 12.h, bottom: 20.h),
-                  child: Text(
-                    controller.errorMessage.value,
-                    style: TextStyle(
-                      color: theme.alert,
-                      fontSize: 14.sp,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                )),
-                SizedBox(height: 5.h,),
-                Obx(
-                      () => PrimaryButton(
+                Obx(() => PrimaryButton(
                     title: 'Login',
                     loading: controller.isLoading.value,
                     fontWeight: FontWeight.w600,

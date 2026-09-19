@@ -16,7 +16,6 @@ class ChatProfileDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
-    final userInterests = controller.profileData.value.profile?.interests ?? [];
 
     return Scaffold(
       extendBodyBehindAppBar: true, // This is key to allow the body to go behind the app bar
@@ -46,7 +45,7 @@ class ChatProfileDetailsScreen extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(top: 32.r),
                   child: Container(
-                    padding: EdgeInsets.fromLTRB(24.w, 64.h, 24.w, 32.h),
+                    padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 32.h),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.vertical(
@@ -82,45 +81,74 @@ class ChatProfileDetailsScreen extends StatelessWidget {
                           ),
                       ),
 
-                        SizedBox(height: 15.h),
-                        AppTextFont(
-                          'About',
-                          font: AppFontType.urbanist,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: theme.blackColor,
-                        ),
-                        SizedBox(height: 8.h),
-                        AppTextFont(
-                          controller.profileData.value.bio ?? '',
-                          font: AppFontType.lato,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: theme.inactiveTabColor,
-                          maxLines: 4,
-                        ),
+                      Obx(() {
+                        final userInterests = controller.profileData.value.profile?.interests ?? [];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 15.h),
+                            AppTextFont(
+                              'About',
+                              font: AppFontType.urbanist,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: theme.blackColor,
+                            ),
+                            SizedBox(height: 8.h),
+                            if(controller.profileData.value.bio != '')...[
+                              AppTextFont(
+                                controller.profileData.value.bio ?? '',
+                                font: AppFontType.lato,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color: theme.inactiveTabColor,
+                                maxLines: 4,
+                              ),
+                            ]else...[
+                              AppTextFont(
+                                'No bio provided yet.',
+                                font: AppFontType.urbanist,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: theme.inactiveTabColor,
+                              ),
+                            ],
 
-                        SizedBox(height: 24.h),
-                        AppTextFont(
-                          'Interest',
-                          font: AppFontType.urbanist,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: theme.blackColor,
-                        ),
-                        SizedBox(height: 12.h),
-                        Wrap(
-                          spacing: 12.w,
-                          runSpacing: 12.h,
-                          children: availableInterests.map((interest) {
-                            final isSelected = userInterests.contains(interest);
-                            return _interestChip(
-                              context,
-                              interest,
-                              filled: isSelected,
-                            );
-                          }).toList(),
-                        ),
+                            SizedBox(height: 24.h),
+                            AppTextFont(
+                              'Interest',
+                              font: AppFontType.urbanist,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: theme.blackColor,
+                            ),
+                            if (userInterests.isNotEmpty) ...[
+                              SizedBox(height: 12.h),
+                              Wrap(
+                                spacing: 12.w,
+                                runSpacing: 12.h,
+                                children: availableInterests.map((interest) {
+                                  final isSelected = userInterests.contains(interest);
+                                  return _interestChip(
+                                    context,
+                                    interest,
+                                    filled: isSelected,
+                                  );
+                                }).toList(),
+                              ),
+                            ]else...[
+                              SizedBox(height: 8.h),
+                              AppTextFont(
+                                'No interests listed.',
+                                font: AppFontType.urbanist,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: theme.inactiveTabColor,
+                              ),
+                            ],
+                          ],
+                        );
+                      }),
                       ],
                     ),
                   ),

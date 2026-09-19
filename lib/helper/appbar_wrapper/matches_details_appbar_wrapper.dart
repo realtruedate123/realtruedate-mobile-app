@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_true_date/core/themes/app_theme.dart';
 import 'package:real_true_date/data/matches_tab/controller/matches_details_controller.dart';
 import 'package:real_true_date/helper/app_text_font.dart';
+import 'package:real_true_date/helper/custom_dialog/confirmation_dialog.dart';
 import 'package:real_true_date/helper/custom_dialog/user_block_dialog.dart';
 
 class MatchesDetailsAppbarWrapper extends StatelessWidget
@@ -12,6 +13,7 @@ class MatchesDetailsAppbarWrapper extends StatelessWidget
   final bool showCloseButton;
   final bool verifiedProfile;
   final bool showShadow;
+  final bool isBlocked;
   final VoidCallback? onBack;
   final VoidCallback? onBlock;
   final MatchesDetailsController controller; // add dynamic controller
@@ -21,6 +23,7 @@ class MatchesDetailsAppbarWrapper extends StatelessWidget
     this.showCloseButton = false,
     this.verifiedProfile = false,
     this.showShadow = false,
+    this.isBlocked = false,
     this.onBack,
     this.onBlock,
     required this.controller,
@@ -31,6 +34,7 @@ class MatchesDetailsAppbarWrapper extends StatelessWidget
       onBlock!();
       return;
     }
+    final blockUserText = isBlocked ? 'Unblock' : 'Block';
 
     showDialog(
       context: context,
@@ -52,15 +56,16 @@ class MatchesDetailsAppbarWrapper extends StatelessWidget
                     Get.back();
                     showDialog(
                       context: context,
-                      barrierDismissible: false,
-                      builder: (_) => UserBlockDialog(
-                        onSure: () {
-                          // Block user
-                          controller.blockUserApiCall();
+                      barrierColor: Colors.black12.withAlpha(204),
+                      builder: (context) => ConfirmationDialog(
+                        title: '$blockUserText User',
+                        message: 'Are you sure you want to ${blockUserText.toLowerCase()}. this user?',
+                        onConfirm: () {
+                          Get.back();
+                          controller.blockUser();
                         },
-                        onCancel: () {
-                          // Optional cancel action
-                        },
+                        confirmText: blockUserText,
+                        cancelText: 'Cancel',
                       ),
                     );
                   },
@@ -80,7 +85,7 @@ class MatchesDetailsAppbarWrapper extends StatelessWidget
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: AppTextFont(
-                        'Block',
+                        isBlocked ? 'Unblock' : 'Block',
                         font: AppFontType.inter,
                         fontSize: 12,
                         fontWeight: FontWeight.w500,

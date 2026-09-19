@@ -79,6 +79,7 @@ class User {
   final String? city;
   final String? state;
   final int? age;
+  final bool? isBlocked;
 
   User({
     this.id,
@@ -89,6 +90,7 @@ class User {
     this.city,
     this.state,
     this.age,
+    this.isBlocked,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -100,6 +102,7 @@ class User {
     city: json["city"],
     state: json["state"],
     age: json["age"],
+    isBlocked: json["is_blocked"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -111,5 +114,6 @@ class User {
     "city": city,
     "state": state,
     "age": age,
+    "is_blocked": isBlocked,
   };
 }

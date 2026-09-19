@@ -19,8 +19,10 @@ class MatchesDetailsView extends StatelessWidget {
     return Obx(() {
       final userInterests = controller.profileData.value.profile?.interests ?? [];
       var profileImage = controller.matchData?.user?.photoUrl ?? '';
+      var isBlockedUser = false;
       if(controller.profileData.value.photos?.isNotEmpty ?? false){
         profileImage = controller.profileData.value.photos?.first.photoUrl ?? '';
+        isBlockedUser = controller.profileData.value.isBlocked ?? false;
       }
 
       return Scaffold(
@@ -30,7 +32,11 @@ class MatchesDetailsView extends StatelessWidget {
           showCloseButton: true,
           verifiedProfile: controller.matchData?.user?.isVerified ?? false,
           showShadow: true,
+          isBlocked: isBlockedUser,
           controller: controller,
+          onBack: () {
+            Get.back(result: true);
+          },
         ),
         body: Stack(
           clipBehavior: Clip.none,
@@ -93,24 +99,35 @@ class MatchesDetailsView extends StatelessWidget {
                           color: theme.blackColor,
                         ),
                         SizedBox(height: 8.h),
-                        AppTextFont(
-                          controller.profileData.value.bio ?? '',
-                          font: AppFontType.lato,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: theme.inactiveTabColor,
-                          maxLines: 4,
-                        ),
-
-                        if (controller.profileData.value.profile?.interests?.isNotEmpty ?? false) ...[
-                          SizedBox(height: 24.h),
+                        if(controller.profileData.value.bio != '')...[
                           AppTextFont(
-                            'Interest',
-                            font: AppFontType.urbanist,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: theme.blackColor,
+                            controller.profileData.value.bio ?? '',
+                            font: AppFontType.lato,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: theme.inactiveTabColor,
+                            maxLines: 4,
                           ),
+                        ]else...[
+                          AppTextFont(
+                            'No bio provided yet.',
+                            font: AppFontType.urbanist,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: theme.inactiveTabColor,
+                          ),
+                        ],
+
+                        SizedBox(height: 24.h),
+
+                        AppTextFont(
+                          'Interest',
+                          font: AppFontType.urbanist,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: theme.blackColor,
+                        ),
+                        if (controller.profileData.value.profile?.interests?.isNotEmpty ?? false) ...[
                           SizedBox(height: 12.h),
 
                           Wrap(
@@ -125,7 +142,17 @@ class MatchesDetailsView extends StatelessWidget {
                               );
                             }).toList(),
                           )
-                        ]
+                        ]else...[
+                          SizedBox(height: 8.h),
+
+                          AppTextFont(
+                            'No interests listed.',
+                            font: AppFontType.urbanist,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: theme.inactiveTabColor,
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -148,6 +175,26 @@ class MatchesDetailsView extends StatelessWidget {
                       ],
                     ),
                   ),
+                  /// User Blocked
+                  if(isBlockedUser)...[
+                    Positioned(
+                      top: 20,
+                      left: 20,
+                      child: Container(
+                        width: 25,
+                        height: 25,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.block,
+                          size: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ]
                 ],
               ),
             ),

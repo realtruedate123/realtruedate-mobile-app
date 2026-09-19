@@ -66,7 +66,7 @@ class ConfirmationDialog extends StatelessWidget {
                 AppTextFont(
                   message,
                   font: AppFontType.lato,
-                  fontSize: 12,
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                   color: theme.headerTitleColor,
                   maxLines: 2,

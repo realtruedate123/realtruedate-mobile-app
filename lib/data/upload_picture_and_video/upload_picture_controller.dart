@@ -11,7 +11,6 @@ import 'package:real_true_date/data/upload_picture_and_video/custom_camera/camer
 import 'package:real_true_date/data/upload_picture_and_video/model/photo_list_model.dart';
 import 'package:real_true_date/helper/common_model.dart';
 import 'package:real_true_date/helper/custom_dialog/authenticating_dialog.dart';
-import 'package:real_true_date/helper/string_class.dart';
 import 'package:real_true_date/routes/routes.dart';
 
 class UploadPhotoController extends GetxController {
@@ -53,7 +52,7 @@ class UploadPhotoController extends GetxController {
     );
 
     if (image != null) {
-      int fSize = await image.length();
+      // int fSize = await image.length();
       // photos.add(File(image.path));
       localImageFile = File(image.path);
       uploadImagesApiCall();

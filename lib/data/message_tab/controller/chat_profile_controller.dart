@@ -31,7 +31,7 @@ class ChatProfileController extends GetxController {
     super.onInit();
 
     recipientData.value = Get.arguments['data'] ?? Recipient();
-
+    print('recipientData ${recipientData.value.photoUrl}');
     getUserData();
     getProfileApiCall();
   }

@@ -27,6 +27,7 @@ class AuthController extends GetxController {
   final errorMessageStepTwo = ''.obs;
   RxBool agreeTC = false.obs;
   RxBool isChecked = false.obs;
+  RxBool isTCChecked = false.obs;
   RxBool isFormValid = false.obs;
   RxBool isSecondFormValid = false.obs;
   RxnString selectedGender = RxnString();
@@ -87,7 +88,7 @@ class AuthController extends GetxController {
 
   void _checkLoginEnable() {
     isLoginEnabled.value =
-        emailCtrl.text.isNotEmpty && passwordCtrl.text.isNotEmpty;
+        emailCtrl.text.isNotEmpty && passwordCtrl.text.isNotEmpty && isTCChecked.value;
   }
 
   /// ======================== START ==========================
@@ -181,9 +182,15 @@ class AuthController extends GetxController {
   }
 
   void toggleTC(bool value) {
-    agreeTC.value = value;
+    // agreeTC.value = value;
     isChecked.value = value;
     _validateForm();
+  }
+
+  void toggleLoginTC(bool value) {
+    agreeTC.value = value;
+    isTCChecked.value = value;
+    _checkLoginEnable();
   }
 
   void setLookingGender(String value) {

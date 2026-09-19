@@ -106,7 +106,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                       SizedBox(height: 5,),
                       AppTextFont(
-                        "World's 1st AI-Powered\nDating App",
+                        "Real People. Real Connections.\nAI Matching Based on Real Attraction.",
                         font: AppFontType.manrope,
                         fontSize: 12,
                         fontWeight: FontWeight.w700,

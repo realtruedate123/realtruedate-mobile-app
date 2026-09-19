@@ -53,51 +53,54 @@ class MatchesTabView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Expanded(
-                  child: controller.matchesList.isEmpty
-                      ? const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.person_off, size: 64, color: Colors.grey),
-                        SizedBox(height: 16),
-                        Text(
-                          'No matches profile available',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
+                Obx(() =>
+                    Expanded(
+                      child: controller.matchesList.isEmpty
+                          ? const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.person_off, size: 64, color: Colors.grey),
+                            SizedBox(height: 16),
+                            Text(
+                              'No matches profile available',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )
-                      : GridView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w),
-                    itemCount: controller.matchesList.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16.w,
-                      mainAxisSpacing: 5.h,
-                      childAspectRatio: 0.58,
-                    ),
-                    itemBuilder: (context, index) {
-                      return MatchCardListCell(
-                        match: controller.matchesList[index],
-                        onTap: () async {
-                          final result = await Get.toNamed(
-                            Routes.matchesDetailsView,
-                            arguments: {
-                              'data': controller.matchesList[index],
-                              'id': controller.matchesList[index].matchId
+                      )
+                          : GridView.builder(
+                        padding: EdgeInsets.symmetric(horizontal: 5.w),
+                        itemCount: controller.matchesList.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 16.w,
+                          mainAxisSpacing: 5.h,
+                          childAspectRatio: 0.58,
+                        ),
+                        itemBuilder: (context, index) {
+                          return MatchCardListCell(
+                            match: controller.matchesList[index],
+                            onTap: () async {
+                              final result = await Get.toNamed(
+                                Routes.matchesDetailsView,
+                                arguments: {
+                                  'data': controller.matchesList[index],
+                                  'id': controller.matchesList[index].matchId
+                                },
+                              );
+                              if(result == true){
+                                print('result === $result');
+                                controller.getMatchesListApiCall();
+                              }
                             },
                           );
-                          if(result == true){
-                            controller.getMatchesListApiCall();
-                          }
                         },
-                      );
-                    },
-                  ),
+                      ),
+                    )
                 )
               ],
             ),

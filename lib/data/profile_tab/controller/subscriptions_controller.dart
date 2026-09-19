@@ -12,6 +12,7 @@ import 'package:real_true_date/data/home_tab/controller/home_tab_controller.dart
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/root_tab_controller.dart';
 import 'package:real_true_date/helper/custom_dialog/common_dialog_view.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SubscriptionsController extends GetxController {
 
@@ -51,6 +52,15 @@ class SubscriptionsController extends GetxController {
 
   void selectedPackages(int index){
     selectedIndex.value = index;
+  }
+
+  Future<void> openTermPolicy(String type) async {
+    final stringUrl = type == 'terms' ? AppURL.termUrl : AppURL.policyUrl;
+    final Uri url = Uri.parse(stringUrl);
+    await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    );
   }
 
   /// Fetch paywall offerings configured in RevenueCat dashboard

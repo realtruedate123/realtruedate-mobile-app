@@ -99,10 +99,14 @@ class MessageTabView extends StatelessWidget {
                         final chat = controller.userChatList[index];
                         return MessageListCell(
                           chatList: chat,
-                          onTap: () {
-                            Get.toNamed(Routes.chatView, arguments: {
-                              'conversation_id': chat.conversationId ?? ''
+                          onTap: () async {
+                            final result = await Get.toNamed(Routes.chatView, arguments: {
+                              'conversation_id': chat.conversationId ?? '',
+                              'is_blocked': chat.recipient?.isBlocked ?? false
                             });
+                            if(result == true){
+                              controller.getUserChatListApiCall();
+                            }
                           },
                         );
                       },

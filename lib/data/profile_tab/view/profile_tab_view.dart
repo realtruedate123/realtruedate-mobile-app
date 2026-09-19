@@ -218,6 +218,10 @@ class ProfileTabView extends StatelessWidget {
         Get.toNamed(Routes.feedbackView);
       } else if(name == 'About Us'){
         Get.toNamed(Routes.aboutScreen);
+      } else if(name == 'Terms of Service'){
+        controller.openTermPolicy('terms');
+      } else if(name == 'Privacy Policy'){
+        controller.openTermPolicy('policy');
       }
       else if(name == 'Log Out'){
         showDialog(

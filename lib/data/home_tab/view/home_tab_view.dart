@@ -74,12 +74,15 @@ class HomeTabView extends StatelessWidget {
                       debugPrint('Favorites clicked for index: $index');
                       controller.favoritesMatchProfileApiCall(item.userId);
                     },
-                    onPhoto: () {
+                    onPhoto: () async {
                       debugPrint('Photo clicked for index: $index');
-                      Get.toNamed(Routes.userProfileView, arguments: {
+                      final result = await Get.toNamed(Routes.userProfileView, arguments: {
                         'data': item,
                         'id': ''
                       });
+                      if(result == true){
+                        controller.getFeedListApiCall();
+                      }
                     },
                   );
                 },

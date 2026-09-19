@@ -201,7 +201,9 @@ class UploadVideoScreen extends StatelessWidget {
     return InkWell(
       splashColor: Colors.transparent, // Hides the ripple
       highlightColor: Colors.transparent, // Hides the click highlight
-      onTap: controller.recordVideo,
+      onTap: (){
+        controller.faceVerificationDialog(context);
+      },
       child: DottedBorder(
         options: RoundedRectDottedBorderOptions(
           dashPattern: [8, 6],

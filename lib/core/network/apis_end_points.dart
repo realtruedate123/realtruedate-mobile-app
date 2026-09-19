@@ -30,11 +30,12 @@ class Endpoints {
   static const String favoritesMatchProfile = 'favorites';
   static const String conversationsGetOrCreate = 'conversations/get-or-create';
   static const String getNotifications = 'notifications';
-  static const String notificationsAcceptOrDecline = 'conversations';
+  static const String chatConversations = 'conversations';
   static const String faqsList = 'faqs';
   static const String logout = 'logout';
   static const String feedback = 'feedback';
   static const String subscriptionSave = 'subscription/save';
   static const String subscriptionStatus = 'subscription/status';
   static const String subscriptionHistory = 'subscription/history';
+  static const String reportUser = 'report';
 }

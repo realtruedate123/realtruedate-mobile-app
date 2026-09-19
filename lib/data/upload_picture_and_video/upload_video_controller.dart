@@ -11,6 +11,7 @@ import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/core/utils/DateHelper.dart';
+import 'package:real_true_date/data/login_signup/widgets/face_verification_dialog.dart';
 import 'package:real_true_date/data/upload_picture_and_video/model/photo_list_model.dart';
 import 'package:real_true_date/helper/custom_dialog/authenticating_dialog.dart';
 import 'package:real_true_date/helper/custom_dialog/common_dialog_view.dart';
@@ -75,6 +76,17 @@ class UploadVideoController extends GetxController {
 
 
   /// 🎥 Record video (camera only)
+  Future<void> faceVerificationDialog(BuildContext context) async{
+    showFaceVerificationDialog(
+      context,
+      onAgreeAndContinue: () {
+        // TODO: Navigate to your camera/video recording screen for face scanning
+        print("User agreed! Launching face capture...");
+        recordVideo();
+      },
+    );
+  }
+
   Future<void> recordVideo() async {
     final picker = ImagePicker();
 
@@ -100,114 +112,119 @@ class UploadVideoController extends GetxController {
       videoUploadApiCall(sessionID);
     }
     else{
-      compressingProcessDisplay.value = true;
-      iOSVideoCheck(result!);
+      if(result != null){
+        compressingProcessDisplay.value = true;
+        iOSVideoCheck(result);
+      }
     }
   }
 
   Future<void> iOSVideoCheck(XFile result) async {
-    if (result != null) {
+    try {
+      // IMPORTANT: Don't cancel compression if one is in progress
+      // Instead, check if we need to clean up
       try {
-        // IMPORTANT: Don't cancel compression if one is in progress
-        // Instead, check if we need to clean up
-        try {
-          await VideoCompress.cancelCompression();
-        } catch (e) {
-          // Ignore if no compression to cancel
-        }
-
-        // Clear cache but keep track if it's needed
-        try {
-          await VideoCompress.deleteAllCache();
-        } catch (e) {
-          // Ignore cache deletion errors
-        }
-
-        // Create a progress subscription that can be disposed
-        final progressSubscription = VideoCompress.compressProgress$.subscribe((progress) {
-          // conversionProgress.value = progress / 100; // UNCOMMENT this
-        });
-
-        // Get local directory for saving
-        Directory? localDirectory = await _getLocalDirectory();
-
-        // Create a unique filename with timestamp to avoid conflicts
-        String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-        String outputPath = '${localDirectory!.path}/video_$timestamp.mp4';
-
-        // FORCE COMPRESSION by always using compressVideo
-        MediaInfo? compressedInfo = await VideoCompress.compressVideo(
-          result.path,
-          quality: VideoQuality.MediumQuality,
-          deleteOrigin: false,
-          includeAudio: true,
-          frameRate: 30,
-          // Use the temp path to avoid conflicts
-        );
-
-        // Always dispose the subscription
-        progressSubscription.unsubscribe();
-
-        // Verify compression happened
-        if (compressedInfo != null && compressedInfo.path != null) {
-          // Get file sizes
-          File compressedFile = File(compressedInfo.path!);
-
-          // Make sure the file exists and has content
-          if (await compressedFile.exists()) {
-            // Delete any existing file at outputPath
-            File existingFile = File(outputPath);
-            if (await existingFile.exists()) {
-              await existingFile.delete();
-            }
-
-            // Copy the compressed file to our desired location
-            File savedFile = await compressedFile.copy(outputPath);
-
-            // Delete the temporary compressed file
-            if (await compressedFile.exists() && compressedFile.path != savedFile.path) {
-              await compressedFile.delete();
-            }
-            videoFile.value = savedFile;
-            // Save file info to local storage for later retrieval
-            await _saveVideoInfo(savedFile);
-          } else {
-            throw Exception('Compressed file does not exist');
-          }
-        } else {
-          throw Exception('Compression failed - no output file');
-        }
-
+        await VideoCompress.cancelCompression();
       } catch (e) {
-        print('Error during conversion: $e');
-        // Fallback to original file
-        videoFile.value = File(result.path);
-
-        // Show error message to user
-        if (Get.context != null) {
-          Get.snackbar(
-            'Compression Failed',
-            'Using original video',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.orange,
-            colorText: Colors.white,
-          );
-        }
-      } finally {
-        // Force a small delay to ensure cleanup
-        await Future.delayed(const Duration(milliseconds: 100));
+        compressingProcessDisplay.value = false;
+        // Ignore if no compression to cancel
       }
+
+      // Clear cache but keep track if it's needed
+      try {
+        await VideoCompress.deleteAllCache();
+      } catch (e) {
+        compressingProcessDisplay.value = false;
+        // Ignore cache deletion errors
+      }
+
+      // Create a progress subscription that can be disposed
+      final progressSubscription = VideoCompress.compressProgress$.subscribe((progress) {
+        // conversionProgress.value = progress / 100; // UNCOMMENT this
+      });
+
+      // Get local directory for saving
+      Directory? localDirectory = await _getLocalDirectory();
+
+      // Create a unique filename with timestamp to avoid conflicts
+      String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      String outputPath = '${localDirectory!.path}/video_$timestamp.mp4';
+
+      // FORCE COMPRESSION by always using compressVideo
+      MediaInfo? compressedInfo = await VideoCompress.compressVideo(
+        result.path,
+        quality: VideoQuality.MediumQuality,
+        deleteOrigin: false,
+        includeAudio: true,
+        frameRate: 30,
+        // Use the temp path to avoid conflicts
+      );
+
+      // Always dispose the subscription
+      progressSubscription.unsubscribe();
+
+      // Verify compression happened
+      if (compressedInfo != null && compressedInfo.path != null) {
+        // Get file sizes
+        File compressedFile = File(compressedInfo.path!);
+
+        // Make sure the file exists and has content
+        if (await compressedFile.exists()) {
+          // Delete any existing file at outputPath
+          File existingFile = File(outputPath);
+          if (await existingFile.exists()) {
+            await existingFile.delete();
+          }
+
+          // Copy the compressed file to our desired location
+          File savedFile = await compressedFile.copy(outputPath);
+
+          // Delete the temporary compressed file
+          if (await compressedFile.exists() && compressedFile.path != savedFile.path) {
+            await compressedFile.delete();
+          }
+          videoFile.value = savedFile;
+          // Save file info to local storage for later retrieval
+          await _saveVideoInfo(savedFile);
+        } else {
+          compressingProcessDisplay.value = false;
+          throw Exception('Compressed file does not exist');
+        }
+      } else {
+        compressingProcessDisplay.value = false;
+        throw Exception('Compression failed - no output file');
+      }
+
+    } catch (e) {
+      print('Error during conversion: $e');
       compressingProcessDisplay.value = false;
+      // Fallback to original file
+      videoFile.value = File(result.path);
 
-      await _initPlayer(videoFile.value!);
-
-      String fName = path.basename(videoFile.value!.path);
-      int fSize = await videoFile.value!.length();
-      fileName.value = shortenFileName(fName);
-      fileSize.value = formatFileSize(fSize);
-      videoUploadApiCall(sessionID);
+      // Show error message to user
+      if (Get.context != null) {
+        Get.snackbar(
+          'Compression Failed',
+          'Using original video',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+        );
+      }
+    } finally {
+      // Force a small delay to ensure cleanup
+      await Future.delayed(const Duration(milliseconds: 100));
     }
-  }
+    compressingProcessDisplay.value = false;
+
+    await _initPlayer(videoFile.value!);
+
+    String fName = path.basename(videoFile.value!.path);
+    int fSize = await videoFile.value!.length();
+    fileName.value = shortenFileName(fName);
+    fileSize.value = formatFileSize(fSize);
+    videoUploadApiCall(sessionID);
+    }
 
   /// Get local directory based on platform
   Future<Directory?> _getLocalDirectory() async {

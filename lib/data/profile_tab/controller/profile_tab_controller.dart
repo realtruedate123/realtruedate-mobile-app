@@ -5,10 +5,12 @@ import 'package:real_true_date/core/network/InternetDialog.dart';
 import 'package:real_true_date/core/network/api_functions/api_request.dart';
 import 'package:real_true_date/core/network/apis_end_points.dart';
 import 'package:real_true_date/core/themes/app_icons.dart';
+import 'package:real_true_date/core/utils/singleton.dart';
 import 'package:real_true_date/data/login_signup/model/login_model.dart';
 import 'package:real_true_date/data/profile_tab/model/profile_model.dart';
 import 'package:real_true_date/helper/common_model.dart';
 import 'package:real_true_date/routes/routes.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileTabController extends GetxController {
 
@@ -68,6 +70,16 @@ class ProfileTabController extends GetxController {
           onTap: () {},
         ),
         ProfileMenuItem(
+          title: "Terms of Service",
+          icon: AppIcons.getTermIcon(Get.context!, size: 38),
+          onTap: () {},
+        ),
+        ProfileMenuItem(
+          title: "Privacy Policy",
+          icon: AppIcons.getPolicyIcon(Get.context!, size: 38),
+          onTap: () {},
+        ),
+        ProfileMenuItem(
           title: "About Us",
           icon: AppIcons.getAboutUsIcon(Get.context!, size: 38),
           onTap: () {},
@@ -101,11 +113,35 @@ class ProfileTabController extends GetxController {
   }
 
   /// Removed local data saved
-  void removePreference() {
-    Purchases.logOut();
+  Future<void> removePreference() async {
+    await logoutRevenueCat();
     prefHelper.clearAllPreferences();
     Get.deleteAll();
     Get.offAllNamed(Routes.authPage);
+  }
+
+  Future<void> logoutRevenueCat() async {
+    try {
+      final customerInfo = await Purchases.getCustomerInfo();
+
+      final isAnonymous =
+      customerInfo.originalAppUserId.startsWith(r'$RCAnonymousID:');
+
+      if (!isAnonymous) {
+        await Purchases.logOut();
+      }
+    } catch (e) {
+      print('RevenueCat logout error: $e');
+    }
+  }
+
+  Future<void> openTermPolicy(String type) async {
+    final stringUrl = type == 'terms' ? AppURL.termUrl : AppURL.policyUrl;
+    final Uri url = Uri.parse(stringUrl);
+    await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    );
   }
 
   //TODO: Logout API Call

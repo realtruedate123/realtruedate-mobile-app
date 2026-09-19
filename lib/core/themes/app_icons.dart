@@ -80,6 +80,9 @@ class AppIcons{
   static const String twitterIcon = 'assets/svg/ic_twitter.svg';
   static const String instagramIcon = 'assets/svg/ic_instagram.svg';
 
+  static const String termIcon = 'assets/svg/ic_terms.svg';
+  static const String policyIcon = 'assets/svg/ic_privacy_policy.svg';
+
   /// PNG
   static const String splashImagePng = 'assets/png/bg_splash.png';
   static const String headerImagePng = 'assets/png/ic_header.png';
@@ -671,6 +674,22 @@ class AppIcons{
   static Widget getInstagramIcon(BuildContext context, {double size = 24}) {
     return SvgPicture.asset(
       instagramIcon,
+      width: size.w,
+      height: size.h,
+    );
+  }
+
+  static Widget getTermIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+      termIcon,
+      width: size.w,
+      height: size.h,
+    );
+  }
+
+  static Widget getPolicyIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+      policyIcon,
       width: size.w,
       height: size.h,
     );

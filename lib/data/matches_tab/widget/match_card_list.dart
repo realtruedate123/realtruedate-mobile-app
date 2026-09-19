@@ -74,7 +74,7 @@ class MatchCardListCell extends StatelessWidget {
                               color: Colors.white.withOpacity(0.15),
                             ),
                             child: AppTextFont(
-                              "${match.matchPercentage}% Match",
+                              "${match.matchPercentage}100% Match",
                               font: AppFontType.urbanist,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -94,6 +94,30 @@ class MatchCardListCell extends StatelessWidget {
                       child: Container(
                         padding: EdgeInsets.all(10.r),
                         child: AppIcons.getGreenTickIcon(context),
+                      ),
+                    ),
+
+                  /// User Blocked
+                  if (match.user?.isBlocked == true)
+                    Positioned(
+                      right: 10,
+                      bottom: 10,
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                          // border: Border.all(
+                          //   color: Colors.white,
+                          //   width: 1,
+                          // ),
+                        ),
+                        child: const Icon(
+                          Icons.block,
+                          size: 11,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                 ],

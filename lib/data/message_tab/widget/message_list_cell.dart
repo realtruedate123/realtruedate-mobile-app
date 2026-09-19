@@ -35,6 +35,7 @@ class MessageListCell extends StatelessWidget {
               children: [
                 // Avatar + Online Indicator
                 Stack(
+                  clipBehavior: Clip.none,
                   children: [
                     AppCachedImage(
                         imageUrl: chatList.recipient?.photoUrl ?? '',
@@ -43,6 +44,29 @@ class MessageListCell extends StatelessWidget {
                         fit: BoxFit.cover,
                         borderRadius: 50
                     ),
+                    if(chatList.recipient?.isBlocked == true)...[
+                      Positioned(
+                        right: -2,
+                        bottom: -2,
+                        child: Container(
+                          width: 18,
+                          height: 18,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 1,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.block,
+                            size: 11,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ]
                   ],
                 ),
 

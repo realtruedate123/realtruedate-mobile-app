@@ -7,6 +7,7 @@ import 'package:real_true_date/data/home_tab/controller/home_tab_controller.dart
 import 'package:real_true_date/data/home_tab/view/home_tab_view.dart';
 import 'package:real_true_date/data/matches_tab/controller/matches_tab_controller.dart';
 import 'package:real_true_date/data/matches_tab/view/matches_tab_view.dart';
+import 'package:real_true_date/data/message_tab/controller/message_tab_controller.dart';
 import 'package:real_true_date/data/message_tab/view/message_tab_view.dart';
 import 'package:real_true_date/data/profile_tab/view/profile_tab_view.dart';
 import 'package:real_true_date/data/root_tab_controller.dart';
@@ -238,6 +239,12 @@ class _BottomNavWrapperState extends State<BottomNavWrapper> {
           if (Get.isRegistered<MatchesTabController>()) {
             final controller = Get.find<MatchesTabController>();
             controller.getMatchesListApiCall(); // load initial state
+          }
+        }
+        else if (index == 2) {
+          if (Get.isRegistered<MessageTabController>()) {
+            final controller = Get.find<MessageTabController>();
+            controller.getUserChatListApiCall(); // load initial state
           }
         }
       },

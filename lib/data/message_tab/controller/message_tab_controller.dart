@@ -32,9 +32,9 @@ class MessageTabController extends GetxController {
       'Content-Type': 'application/json',
       "Authorization": 'Bearer $authToken',
     };
-
+    print('authToken $authToken');
     final response = await BaseApiService().getMethod<ChatListModel>(
-      endpoint: Endpoints.notificationsAcceptOrDecline,
+      endpoint: Endpoints.chatConversations,
       headers: header,
       fromJson: (json) => ChatListModel.fromJson(json),
     );
@@ -42,6 +42,9 @@ class MessageTabController extends GetxController {
     if (response.isSuccess && response.statusCode == 200) {
       userChatList.value = response.data?.data?.conversations ?? [];
       searchChatList.assignAll(response.data?.data?.conversations ?? []);
+
+      print('userChatList ${response.data?.data?.conversations?.first.recipient?.id}');
+
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {

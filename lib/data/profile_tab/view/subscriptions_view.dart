@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -105,7 +106,7 @@ class SubscriptionsView extends GetView<SubscriptionsController> {
                                   padding: EdgeInsets.only(bottom: 16.r),
                                   child: SubscriptionCard(
                                     title: product.title,
-                                    price: '${product.pricePerMonthString}/month',
+                                    price: '${product.pricePerMonthString}/per month',
                                     featureText: product.description,
                                     isSelected: isSelected,
                                     isActivated: isActivated,
@@ -156,6 +157,40 @@ class SubscriptionsView extends GetView<SubscriptionsController> {
                               ],
                             ),
                           ),
+                          SizedBox(height: 5.h,),
+                          SafeArea(
+                            child: RichText(
+                              text: TextSpan(
+                                style: TextStyle(
+                                    color: theme.primaryColor,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: 'Terms of Service',
+                                    style: TextStyle(decoration: TextDecoration.underline),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        // Navigate to Terms of Service
+                                        controller.openTermPolicy('terms');
+                                      },
+                                  ),
+                                  TextSpan(text: '        ', style: TextStyle(color: theme.dark)),
+                                  TextSpan(
+                                    text: 'Privacy Policy',
+                                    style: TextStyle(decoration: TextDecoration.underline),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        // Navigate to Policy
+                                        controller.openTermPolicy('policy');
+                                      },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5.h,)
                         ],
                       );
                     })
