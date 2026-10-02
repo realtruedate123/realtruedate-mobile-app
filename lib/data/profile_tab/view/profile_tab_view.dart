@@ -65,8 +65,7 @@ class ProfileTabView extends StatelessWidget {
 
                           /// Dynamic Sections
                           ...controller.profileSections
-                              .map((section) => _buildSection(section, context))
-                              .toList(),
+                              .map((section) => _buildSection(section, context)),
 
                           SizedBox(height: 10.h),
 
@@ -175,24 +174,27 @@ class ProfileTabView extends StatelessWidget {
   }
 
   Widget _buildMenuItem(ProfileMenuItem item, BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 4.w),
-      leading: Container(
-        padding: EdgeInsets.all(0),
-        child: item.icon,
+    return Material(
+      color: Colors.transparent, // Ensures it doesn't block underlying colors
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(vertical: 4.w),
+        leading: Container(
+          padding: EdgeInsets.all(0),
+          child: item.icon,
+        ),
+        title: AppTextFont(
+          item.title,
+          font: AppFontType.urbanist,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
+        ),
+        trailing: AppIcons.getRightArrowIcon(Get.context!),
+        onTap: () {
+          print("Tapped ${item.title}");
+          _buildMenuItemIndex(item.title, context);
+        },
       ),
-      title: AppTextFont(
-        item.title,
-        font: AppFontType.urbanist,
-        fontSize: 15,
-        fontWeight: FontWeight.w600,
-        color: Colors.black,
-      ),
-      trailing: AppIcons.getRightArrowIcon(Get.context!),
-      onTap: () {
-        print("Tapped ${item.title}");
-        _buildMenuItemIndex(item.title, context);
-      },
     );
   }
 

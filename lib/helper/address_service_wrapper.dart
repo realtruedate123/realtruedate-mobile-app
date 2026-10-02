@@ -31,7 +31,7 @@ class AddressServiceWrapper {
       isLoadingAddress.value = true;
       currentAddress.value = "Fetching address...";
 
-      final List<Placemark> placemarks = await placemarkFromCoordinates(
+      final List<Placemark> placemarks = await Geocoding().placemarkFromCoordinates(
         latitude,
         longitude,
       );

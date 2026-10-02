@@ -82,6 +82,7 @@ class AppIcons{
 
   static const String termIcon = 'assets/svg/ic_terms.svg';
   static const String policyIcon = 'assets/svg/ic_privacy_policy.svg';
+  static const String tiktokIcon = 'assets/svg/ic_tiktok.svg';
 
   /// PNG
   static const String splashImagePng = 'assets/png/bg_splash.png';
@@ -690,6 +691,14 @@ class AppIcons{
   static Widget getPolicyIcon(BuildContext context, {double size = 24}) {
     return SvgPicture.asset(
       policyIcon,
+      width: size.w,
+      height: size.h,
+    );
+  }
+
+  static Widget getTikTokIcon(BuildContext context, {double size = 24}) {
+    return SvgPicture.asset(
+      tiktokIcon,
       width: size.w,
       height: size.h,
     );

@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_ticket_provider_mixin.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -54,13 +56,21 @@ class HelpSupportController extends GetxController with GetSingleTickerProviderS
       showLoader: false,
       fromJson: (json) => FAQListModel.fromJson(json),
     );
-
+    print('response.data ${response.data?.data}');
     if (response.isSuccess) {
       faqModelList.value = response.data?.data?.faqs ?? [];
+      print('faqModelList.value  ${faqModelList.length }');
     } else if (response.statusCode == 0) {
       InternetDialog.showNoInternetDialog();
     } else {
-      print("Error: ${response.message}");
+      if (response.tokenExpired == true) {
+        final result = await BaseApiService().refreshToken();
+        if (result.isSuccess) {
+          getFAQListApiCall();
+        }
+      } else {
+        Get.snackbar('Failed', 'Something want wrong');
+      }
     }
     update();
   }
@@ -132,6 +142,8 @@ class HelpSupportController extends GetxController with GetSingleTickerProviderS
       openSocialUrl('https://www.facebook.com/people/Realtruedate/61567458664477/');
     } else if(type.toLowerCase() == 'instagram'){
       openSocialUrl('https://www.instagram.com/realtruedate?igsh=MTdvYzFoODRmejN0NQ==');
+    } else if(type.toLowerCase() == 'tiktok'){
+      openSocialUrl('https://www.tiktok.com/@realtruedate?_t=8qnHRnrLBnl&_r=1');
     }
   }
 

@@ -24,7 +24,7 @@ class SubscriptionService {
         StringMessage.subscriptionExpiredTitle,
         StringMessage.subscriptionExpiredMessage,
       );
-      return true;;
+      return true;
     }
 
     if (isPremium == false &&

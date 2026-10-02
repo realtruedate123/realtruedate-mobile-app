@@ -67,13 +67,14 @@ dependencies:
   firebase_core: ^4.13.0
   flutter_local_notifications: ^22.2.0
   firebase_messaging: ^16.5.0
-  geocoding: ^3.0.0
+#  geocoding: ^3.0.0
   geolocator: ^14.0.2
   timeago: ^3.7.0
   web_socket_channel: ^3.0.3
   url_launcher: ^6.3.1
   purchases_flutter: ^10.9.1 # RevenueCat SDK
   webview_flutter: ^4.13.0
+  geocoding: ^5.0.0
 
 dev_dependencies:
   flutter_test:

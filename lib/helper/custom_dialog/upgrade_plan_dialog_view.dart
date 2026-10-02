@@ -65,6 +65,7 @@ class UpgradePlanDialogView extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: theme.blackColor,
                   maxLines: 2,
+                  textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 15.h),
                 AppTextFont(

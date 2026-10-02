@@ -185,11 +185,11 @@ class HelpSupportView extends StatelessWidget {
 
   Widget _buildContactUsTab(BuildContext context, dynamic theme) {
     final List<Map<String, dynamic>> contactOptions = [
-      {
-        'title': 'WhatsApp',
-        'icon': AppIcons.getWhatsAppIcon(context),
-        'onTap': () => controller.openWhatsApp(),
-      },
+      // {
+      //   'title': 'WhatsApp',
+      //   'icon': AppIcons.getWhatsAppIcon(context),
+      //   'onTap': () => controller.openWhatsApp(),
+      // },
       {
         'title': 'Website',
         'icon': AppIcons.getWebSiteIcon(context),
@@ -204,16 +204,23 @@ class HelpSupportView extends StatelessWidget {
           controller.openLinks('facebook');
         },
       },
-      {
-        'title': 'Twitter',
-        'icon': AppIcons.getTwitterIcon(context),
-        'onTap': () => controller.openTwitter(),
-      },
+      // {
+      //   'title': 'Twitter',
+      //   'icon': AppIcons.getTwitterIcon(context),
+      //   'onTap': () => controller.openTwitter(),
+      // },
       {
         'title': 'Instagram',
         'icon': AppIcons.getInstagramIcon(context),
         'onTap': () {
           controller.openLinks('instagram');
+        },
+      },
+      {
+        'title': 'TikTok',
+        'icon': AppIcons.getTikTokIcon(context),
+        'onTap': () {
+          controller.openLinks('tiktok');
         },
       },
     ];
